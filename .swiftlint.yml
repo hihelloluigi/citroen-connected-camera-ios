@@ -1,0 +1,18 @@
+reporter: "xcode"
+
+included:
+  - Packages/VIRBKit/Sources
+
+force_unwrapping: error
+force_try: error
+
+line_length:
+  warning: 160
+  error: 220
+
+identifier_name:
+  min_length: { warning: 2, error: 1 }
+  excluded: ["id", "x", "y", "i", "j"]
+
+disabled_rules:
+  - todo

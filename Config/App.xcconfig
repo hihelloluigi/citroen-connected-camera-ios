@@ -1,0 +1,3 @@
+// Shared, non-secret build settings.
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+SWIFT_VERSION = 6.0
