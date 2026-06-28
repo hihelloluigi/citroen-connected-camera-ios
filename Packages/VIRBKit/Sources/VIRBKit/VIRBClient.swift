@@ -40,9 +40,24 @@ public actor VIRBClient: VIRBClientProtocol {
         return try StatusResponse.decode(from: data).status()
     }
 
-    // Stubs for methods implemented in Tasks 9 and 10.
-    public func mediaList() async throws -> [MediaItem] { throw VIRBError.unexpected(result: -1) }
-    public func snapPicture() async throws -> MediaItem { throw VIRBError.unexpected(result: -1) }
+    /// Registers this phone as the active controller so the camera accepts commands.
+    public func activate() async throws {
+        try await send("activePhoneRequest", ["phoneId": .string(phoneId)])
+    }
+
+    /// Returns the list of media items stored on the camera's SD card.
+    public func mediaList() async throws -> [MediaItem] {
+        let data = try await send("mediaList")
+        return try JSONDecoder.virb.decode(MediaListResponse.self, from: data).media
+    }
+
+    /// Triggers the camera shutter and returns the captured photo item.
+    public func snapPicture() async throws -> MediaItem {
+        let data = try await send("snapPicture")
+        return try JSONDecoder.virb.decode(SnapResponse.self, from: data).media
+    }
+
+    // Stubs for methods implemented in Task 10.
     public func delete(_ items: [MediaItem]) async throws { throw VIRBError.unexpected(result: -1) }
     public func setWiFiPassword(current: String, new: String) async throws { throw VIRBError.unexpected(result: -1) }
     public func download(_ item: MediaItem, to destination: URL,

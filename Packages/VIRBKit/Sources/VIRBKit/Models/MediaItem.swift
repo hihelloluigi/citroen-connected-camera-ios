@@ -40,3 +40,9 @@ public struct MediaItem: Sendable, Equatable, Identifiable, Decodable {
 public struct MediaListResponse: Sendable, Decodable {
     public let media: [MediaItem]
 }
+
+/// Response wrapper for `snapPicture`.
+public struct SnapResponse: Sendable, Decodable {
+    public let result: Int
+    public let media: MediaItem
+}
