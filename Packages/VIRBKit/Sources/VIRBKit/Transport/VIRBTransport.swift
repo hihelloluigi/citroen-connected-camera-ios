@@ -4,7 +4,15 @@ public struct VIRBConfiguration: Sendable {
     public var baseURL: URL
     public var requestTimeout: TimeInterval
 
-    public init(baseURL: URL = URL(string: "http://192.168.0.1")!, requestTimeout: TimeInterval = 8) {
+    /// The camera's fixed AP gateway. The literal is constant and valid; guard guarantees no force-unwrap.
+    public static let defaultBaseURL: URL = {
+        guard let url = URL(string: "http://192.168.0.1") else {
+            preconditionFailure("Default base URL literal is malformed")
+        }
+        return url
+    }()
+
+    public init(baseURL: URL = VIRBConfiguration.defaultBaseURL, requestTimeout: TimeInterval = 8) {
         self.baseURL = baseURL
         self.requestTimeout = requestTimeout
     }
@@ -52,7 +60,7 @@ extension URLSession {
         config.httpMaximumConnectionsPerHost = 1
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
         config.timeoutIntervalForRequest = timeout
-        config.waitsForConnectivity = false
+        config.waitsForConnectivity = false // Avoid indefinite waits when the camera AP has no internet connectivity.
         return URLSession(configuration: config)
     }
 }
