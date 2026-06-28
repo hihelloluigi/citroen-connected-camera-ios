@@ -27,11 +27,6 @@ struct URLSessionTransport: VIRBTransport {
     let configuration: VIRBConfiguration
     let session: URLSession
 
-    init(configuration: VIRBConfiguration, session: URLSession) {
-        self.configuration = configuration
-        self.session = session
-    }
-
     func post(path: String, body: Data) async throws -> Data {
         var request = URLRequest(url: configuration.baseURL.appendingPathComponent(path))
         request.httpMethod = "POST"

@@ -21,18 +21,18 @@ public struct MediaItem: Sendable, Equatable, Identifiable, Decodable {
     }
 
     public init(from decoder: any Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        kind = try c.decode(Kind.self, forKey: .kind)
-        url = try c.decode(URL.self, forKey: .url)
-        thumbURL = try c.decode(URL.self, forKey: .thumbURL)
-        name = try c.decode(String.self, forKey: .name)
-        fileSize = try c.decodeIfPresent(Int64.self, forKey: .fileSize)
-        let epoch = try c.decode(TimeInterval.self, forKey: .date)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        kind = try container.decode(Kind.self, forKey: .kind)
+        url = try container.decode(URL.self, forKey: .url)
+        thumbURL = try container.decode(URL.self, forKey: .thumbURL)
+        name = try container.decode(String.self, forKey: .name)
+        fileSize = try container.decodeIfPresent(Int64.self, forKey: .fileSize)
+        let epoch = try container.decode(TimeInterval.self, forKey: .date)
         date = Date(timeIntervalSince1970: epoch)
-        sessionId = try c.decodeIfPresent(Int.self, forKey: .sessionId)
-        videoType = try c.decodeIfPresent(Int.self, forKey: .videoType)
-        gpsLatitude = try c.decodeIfPresent(Double.self, forKey: .gpsLatitude)
-        gpsLongitude = try c.decodeIfPresent(Double.self, forKey: .gpsLongitude)
+        sessionId = try container.decodeIfPresent(Int.self, forKey: .sessionId)
+        videoType = try container.decodeIfPresent(Int.self, forKey: .videoType)
+        gpsLatitude = try container.decodeIfPresent(Double.self, forKey: .gpsLatitude)
+        gpsLongitude = try container.decodeIfPresent(Double.self, forKey: .gpsLongitude)
     }
 }
 
