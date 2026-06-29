@@ -9,7 +9,7 @@ public struct MediaItem: Sendable, Equatable, Identifiable, Decodable {
     public let thumbURL: URL
     public let name: String
     public let fileSize: Int64?
-    public let date: Date
+    public let date: Date?
     public let sessionId: Int?
     public let videoType: Int?
     public let gpsLatitude: Double?
@@ -27,8 +27,8 @@ public struct MediaItem: Sendable, Equatable, Identifiable, Decodable {
         thumbURL = try container.decode(URL.self, forKey: .thumbURL)
         name = try container.decode(String.self, forKey: .name)
         fileSize = try container.decodeIfPresent(Int64.self, forKey: .fileSize)
-        let epoch = try container.decode(TimeInterval.self, forKey: .date)
-        date = Date(timeIntervalSince1970: epoch)
+        date = try container.decodeIfPresent(TimeInterval.self, forKey: .date)
+            .map { Date(timeIntervalSince1970: $0) }
         sessionId = try container.decodeIfPresent(Int.self, forKey: .sessionId)
         videoType = try container.decodeIfPresent(Int.self, forKey: .videoType)
         gpsLatitude = try container.decodeIfPresent(Double.self, forKey: .gpsLatitude)
