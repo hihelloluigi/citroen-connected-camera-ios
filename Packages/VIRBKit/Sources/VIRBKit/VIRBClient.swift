@@ -57,14 +57,46 @@ public actor VIRBClient: VIRBClientProtocol {
         return try JSONDecoder.virb.decode(SnapResponse.self, from: data).media
     }
 
-    // Stubs for methods implemented in Task 10.
-    public func delete(_ items: [MediaItem]) async throws { throw VIRBError.unexpected(result: -1) }
-    public func setWiFiPassword(current: String, new: String) async throws { throw VIRBError.unexpected(result: -1) }
-    public func download(_ item: MediaItem, to destination: URL,
-                         progress: (@Sendable (Double) -> Void)?) async throws -> URL {
-        throw VIRBError.unexpected(result: -1)
+    /// Deletes the given media items from the camera's SD card.
+    public func delete(_ items: [MediaItem]) async throws {
+        let urls = items.map { $0.url.absoluteString }
+        try await send("deleteFile", ["files": .strings(urls)])
     }
-    public func isReachable() async -> Bool { false }
+
+    /// Changes the camera's Wi-Fi password. Throws `VIRBError.passwordRejected` when the
+    /// camera rejects the current password.
+    public func setWiFiPassword(current: String, new: String) async throws {
+        do {
+            try await send("setWifiPassword", [
+                "oldPassword": .string(current),
+                "newPassword": .string(new),
+                "phoneId": .string(phoneId)
+            ])
+        } catch VIRBError.unexpected, VIRBError.denied {
+            throw VIRBError.passwordRejected
+        }
+    }
+
+    /// Downloads a media item to `destination`, moving the camera's file there atomically.
+    ///
+    /// Progress is reported as a value in `0...1`. The v1 implementation reports completion
+    /// once the file is on disk; streaming progress will be wired when the gallery is built.
+    public func download(
+        _ item: MediaItem,
+        to destination: URL,
+        progress: (@Sendable (Double) -> Void)? = nil
+    ) async throws -> URL {
+        let (temp, _) = try await transport.makeSession().download(from: item.url)
+        try? FileManager.default.removeItem(at: destination)
+        try FileManager.default.moveItem(at: temp, to: destination)
+        progress?(1)
+        return destination
+    }
+
+    /// Returns `true` if the camera responds to a connection attempt.
+    public func isReachable() async -> Bool {
+        (try? await connect()) != nil
+    }
 
     // MARK: - Internal seam
 
