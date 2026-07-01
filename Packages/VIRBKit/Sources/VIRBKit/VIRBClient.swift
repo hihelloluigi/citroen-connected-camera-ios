@@ -81,16 +81,15 @@ public actor VIRBClient: VIRBClientProtocol {
     ///
     /// Progress is reported as a value in `0...1`. The v1 implementation reports completion
     /// once the file is on disk; streaming progress will be wired when the gallery is built.
+    /// Throws `VIRBError` on transport or non-2xx responses.
     public func download(
         _ item: MediaItem,
         to destination: URL,
         progress: (@Sendable (Double) -> Void)? = nil
     ) async throws -> URL {
-        let (temp, _) = try await transport.makeSession().download(from: item.url)
-        try? FileManager.default.removeItem(at: destination)
-        try FileManager.default.moveItem(at: temp, to: destination)
+        let result = try await transport.download(from: item.url, to: destination)
         progress?(1)
-        return destination
+        return result
     }
 
     /// Returns `true` if the camera responds to a connection attempt.

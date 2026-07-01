@@ -24,7 +24,7 @@ public struct VIRBConfiguration: Sendable {
 /// The seam between `VIRBClient` and the network, so tests can substitute a mock transport.
 protocol VIRBTransport: Sendable {
     func post(path: String, body: Data) async throws -> Data
-    func makeSession() -> URLSession
+    func download(from url: URL, to destination: URL) async throws -> URL
 }
 
 /// The production `VIRBTransport`: posts to the camera over `URLSession` and maps
@@ -51,7 +51,24 @@ struct URLSessionTransport: VIRBTransport {
         }
     }
 
-    func makeSession() -> URLSession { session }
+    func download(from url: URL, to destination: URL) async throws -> URL {
+        let temp: URL
+        let response: URLResponse
+        do {
+            (temp, response) = try await session.download(from: url)
+        } catch let error as URLError where error.code == .cannotConnectToHost || error.code == .timedOut {
+            throw VIRBError.cameraUnreachable
+        } catch {
+            throw VIRBError.transport(error.localizedDescription)
+        }
+        if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+            try? FileManager.default.removeItem(at: temp)
+            throw VIRBError.unexpected(result: http.statusCode)
+        }
+        try? FileManager.default.removeItem(at: destination)
+        try FileManager.default.moveItem(at: temp, to: destination)
+        return destination
+    }
 }
 
 extension URLSession {
