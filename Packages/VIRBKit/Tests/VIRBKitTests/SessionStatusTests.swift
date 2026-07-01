@@ -17,6 +17,13 @@ import Testing
     #expect(session.activePhoneId == nil)
 }
 
+@Test func sessionThrowsWhenDeviceInfoMissing() throws {
+    let data = Data(#"{"result":1,"setupComplete":1,"activePhoneId":null,"deviceInfo":[]}"#.utf8)
+    #expect(throws: VIRBError.decoding("missing deviceInfo")) {
+        try ConnectResponse.decode(from: data).session()
+    }
+}
+
 @Test func decodesCameraStatus() throws {
     let data = try Fixture.load("status")
     let status = try StatusResponse.decode(from: data).status()

@@ -1,14 +1,24 @@
 import Foundation
 
+/// A point-in-time snapshot of the camera's state, as returned by `VIRBClient.status()`.
 public struct CameraStatus: Sendable, Equatable {
+    /// The phone ID the camera currently treats as active, if any phone is paired.
     public let activePhoneId: String?
+    /// The phone ID the camera treats as its primary/owner phone, if set.
     public let primaryPhoneId: String?
+    /// Number of phones/clients currently connected to the camera's Wi-Fi.
     public let numberOfConnections: Int
+    /// Length, in seconds, of each saved video clip segment.
     public let saveVideoDuration: Int
+    /// Whether the camera reports its SD card needs to be formatted.
     public let needsFormat: Bool
+    /// Whether the camera has detected an incident (e.g. a crash event) since last checked.
     public let incidentDetected: Bool
+    /// Human-readable fault text from the camera; `"No Fault"` when everything is normal.
     public let faultDescription: String
+    /// Current GPS latitude, when the camera has a fix.
     public let gpsLatitude: Double?
+    /// Current GPS longitude, when the camera has a fix.
     public let gpsLongitude: Double?
 }
 

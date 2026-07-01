@@ -12,6 +12,7 @@ import Testing
     #expect(video.name == "2026_06_27_11h57_v.MP4")
     #expect(video.sessionId == 249)
     #expect(video.date == Date(timeIntervalSince1970: 1782554222))
+    #expect(video.url.absoluteString == "http://192.168.0.1/media/video/DCIM/VID_NORM/2026_06_27_11h57_v.MP4")
 
     let photo = response.media[1]
     #expect(photo.kind == .photo)

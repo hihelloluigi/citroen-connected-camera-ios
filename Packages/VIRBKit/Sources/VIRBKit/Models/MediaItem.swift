@@ -1,18 +1,29 @@
 import Foundation
 
+/// A photo or video stored on the camera's SD card, as returned by `mediaList` or `snapPicture`.
 public struct MediaItem: Sendable, Equatable, Identifiable, Decodable {
+    /// Whether the item is a video or a still photo.
     public enum Kind: String, Sendable, Decodable { case video, photo }
 
     public var id: String { name }
     public let kind: Kind
+    /// Absolute URL on the camera's Wi-Fi HTTP server where the full file can be downloaded.
     public let url: URL
+    /// Absolute URL on the camera's Wi-Fi HTTP server for the item's thumbnail image.
     public let thumbURL: URL
+    /// The file name as stored on the SD card.
     public let name: String
+    /// File size in bytes, when the camera reports it.
     public let fileSize: Int64?
+    /// When the item was recorded, when the camera reports it.
     public let date: Date?
+    /// The recording session this item belongs to. Nil for kinds the camera doesn't group into sessions (e.g. photos).
     public let sessionId: Int?
+    /// The camera's internal video classification. Nil for photos.
     public let videoType: Int?
+    /// GPS latitude at capture time, when the camera has a fix and reports it for this kind.
     public let gpsLatitude: Double?
+    /// GPS longitude at capture time, when the camera has a fix and reports it for this kind.
     public let gpsLongitude: Double?
 
     private enum CodingKeys: String, CodingKey {

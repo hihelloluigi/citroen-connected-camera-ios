@@ -1,7 +1,10 @@
 import Foundation
 
+/// Where and how long to wait when talking to the camera.
 public struct VIRBConfiguration: Sendable {
+    /// The camera's HTTP server address. Defaults to the camera's fixed AP gateway.
     public var baseURL: URL
+    /// How long to wait for a response before treating the camera as unreachable.
     public var requestTimeout: TimeInterval
 
     /// The camera's fixed AP gateway. The literal is constant and valid; guard guarantees no force-unwrap.
@@ -18,11 +21,14 @@ public struct VIRBConfiguration: Sendable {
     }
 }
 
+/// The seam between `VIRBClient` and the network, so tests can substitute a mock transport.
 protocol VIRBTransport: Sendable {
     func post(path: String, body: Data) async throws -> Data
     func makeSession() -> URLSession
 }
 
+/// The production `VIRBTransport`: posts to the camera over `URLSession` and maps
+/// connectivity failures to `VIRBError.cameraUnreachable`, other errors to `VIRBError.transport`.
 struct URLSessionTransport: VIRBTransport {
     let configuration: VIRBConfiguration
     let session: URLSession

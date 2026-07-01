@@ -14,3 +14,9 @@ import Testing
     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
     #expect((json?["files"] as? [String])?.first == "http://x/a.MP4")
 }
+
+@Test func encodesIntField() throws {
+    let data = VIRBCommand.body("saveVideoDuration", ["seconds": .int(20)])
+    let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+    #expect(json?["seconds"] as? Int == 20)
+}

@@ -1,5 +1,6 @@
 import Foundation
 
+/// A typed value for one field of a `VIRBCommand` request body.
 enum VIRBValue: Sendable {
     case string(String)
     case int(Int)

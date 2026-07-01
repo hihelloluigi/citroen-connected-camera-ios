@@ -116,10 +116,14 @@ public actor VIRBClient: VIRBClientProtocol {
         (try JSONSerialization.jsonObject(with: data) as? [String: Any])?["result"] as? Int
     }
 
-    private static func timestamp() -> String {
+    private static let timestampFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.string(from: Date())
+        return formatter
+    }()
+
+    private static func timestamp() -> String {
+        timestampFormatter.string(from: Date())
     }
 }
