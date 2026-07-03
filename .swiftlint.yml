@@ -19,7 +19,7 @@ line_length:
 
 identifier_name:
   min_length: { warning: 2, error: 1 }
-  excluded: ["id", "x", "y", "i", "j"]
+  excluded: ["id", "x", "y", "i", "j", "r", "g", "b"]
 
 disabled_rules:
   - todo
