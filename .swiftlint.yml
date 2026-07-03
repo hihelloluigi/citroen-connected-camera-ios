@@ -2,6 +2,8 @@ reporter: "xcode"
 
 included:
   - Packages/VIRBKit/Sources
+  - Packages/AppCore/Sources
+  - App/App
 
 # force_unwrapping is opt-in; it must be enabled before its severity takes effect.
 opt_in_rules:
