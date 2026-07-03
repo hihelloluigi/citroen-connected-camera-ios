@@ -8,8 +8,10 @@ public enum AppRouter {
         if !input.hasTappedGetStarted { return .welcome }
         if !input.localNetworkResolved { return .localNetworkPermission }
         if !input.locationResolved { return .locationPermission }
-        if !input.isReachable { return .connectWiFi }
+        // A password change kicks clients off the Wi‑Fi; keep routing to Reconnect (rejoin with the new
+        // password) until the caller clears this flag after a successful reconnect — even while unreachable.
         if input.didJustChangePassword { return .reconnect }
+        if !input.isReachable { return .connectWiFi }
         switch input.setupComplete {
         case .none: return .connectWiFi
         case .some(false): return .setPassword
