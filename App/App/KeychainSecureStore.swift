@@ -1,6 +1,7 @@
 import Foundation
 import Security
 import AppCore
+import os
 
 /// Keychain-backed `SecureStore` for small secrets (the generated phone id). App-target only; the
 /// generate-once logic it feeds is unit-tested in AppCore against a fake.
@@ -16,7 +17,15 @@ struct KeychainSecureStore: SecureStore {
             kSecMatchLimit as String: kSecMatchLimitOne
         ]
         var result: CFTypeRef?
-        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess else { return nil }
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        if status == errSecItemNotFound { return nil }
+        guard status == errSecSuccess else {
+            // A real keychain error is not the same as "no value yet" — log it so it isn't mistaken for
+            // a first launch, but still return nil since this protocol is non-throwing.
+            Logger(subsystem: "com.example.citroenconnectedcamera", category: "phone-id")
+                .error("Keychain read failed (status \(status)); treating as missing.")
+            return nil
+        }
         return result as? Data
     }
 
@@ -29,6 +38,8 @@ struct KeychainSecureStore: SecureStore {
         SecItemDelete(base as CFDictionary)
         var attributes = base
         attributes[kSecValueData as String] = data
+        // Device-only: the phone id should never sync via iCloud Keychain or restore onto another device.
+        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
         let status = SecItemAdd(attributes as CFDictionary, nil)
         guard status == errSecSuccess else { throw KeychainError.unexpectedStatus(status) }
     }

@@ -39,6 +39,13 @@ import Testing
     #expect(AppRouter.destination(for: input) == .reconnect)
 }
 
+@Test func afterPasswordChangeWhileKickedOffAsksToReconnect() {
+    let input = RoutingInput(hasTappedGetStarted: true, localNetworkResolved: true,
+                             locationResolved: true, isReachable: false, setupComplete: false,
+                             didJustChangePassword: true)
+    #expect(AppRouter.destination(for: input) == .reconnect)
+}
+
 @Test func firstTimeSetupCompleteGoesToGallery() {
     let input = RoutingInput(hasTappedGetStarted: true, localNetworkResolved: true,
                              locationResolved: true, isReachable: true, setupComplete: true)
