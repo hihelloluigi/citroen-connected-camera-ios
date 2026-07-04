@@ -21,9 +21,9 @@ public struct SecondaryButton: View {
                 .overlay(
                     RoundedRectangle(cornerRadius: AppRadius.md).strokeBorder(AppColor.accent, lineWidth: 1)
                 )
-                .opacity(isEnabled ? 1 : 0.4)
+                .opacity(isEnabled ? 1 : AppOpacity.disabled)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableButtonStyle())
     }
 }
 

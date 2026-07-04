@@ -9,7 +9,6 @@ public struct TelemetryText: View {
     public var body: some View {
         Text(text)
             .font(AppFont.mono)
-            .monospacedDigit()
             .foregroundStyle(AppColor.telemetry)
     }
 }

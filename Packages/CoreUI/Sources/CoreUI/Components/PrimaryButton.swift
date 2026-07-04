@@ -25,9 +25,9 @@ public struct PrimaryButton: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, AppSpacing.md)
             .background(AppColor.accent, in: RoundedRectangle(cornerRadius: AppRadius.md))
-            .opacity(isEnabled ? 1 : 0.4)
+            .opacity(isEnabled ? 1 : AppOpacity.disabled)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableButtonStyle())
         .disabled(isLoading || !isEnabled)
     }
 }

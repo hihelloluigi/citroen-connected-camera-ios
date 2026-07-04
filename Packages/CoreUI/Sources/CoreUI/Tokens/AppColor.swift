@@ -13,7 +13,7 @@ public enum AppColor {
     // Signal
     public static let accent = Color(light: Color(hex: "#C77A0E"), dark: Color(hex: "#F5A524"))
     public static let onAccent = Color(light: Color(hex: "#201400"), dark: Color(hex: "#201400"))
-    public static let telemetry = Color(light: Color(hex: "#0E8FA0"), dark: Color(hex: "#35C4D7"))
+    public static let telemetry = Color(light: Color(hex: "#0B7080"), dark: Color(hex: "#35C4D7"))
     public static let danger = Color(light: Color(hex: "#D93A3F"), dark: Color(hex: "#E5484D"))
     public static let onDanger = Color(light: Color(hex: "#FFFFFF"), dark: Color(hex: "#FFFFFF"))
     // Lines
