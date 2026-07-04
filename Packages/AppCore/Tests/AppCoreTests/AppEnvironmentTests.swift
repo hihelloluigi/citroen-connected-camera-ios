@@ -1,7 +1,12 @@
 import Testing
 @testable import AppCore
 
+@MainActor
 @Test func environmentHoldsInjectedDependencies() {
-    let env = AppEnvironment(camera: MockVIRBClient(), phoneId: "ABC-123")
+    let env = AppEnvironment(
+        camera: MockVIRBClient(), phoneId: "ABC-123",
+        flagsStore: InMemoryFlagsStore(), permissions: MockPermissionsService(),
+        connectivity: ConnectivityMonitor(probe: StubReachabilityProbe()),
+        coordinator: AppCoordinator())
     #expect(env.phoneId == "ABC-123")
 }

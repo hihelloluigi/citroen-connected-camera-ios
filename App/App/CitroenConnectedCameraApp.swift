@@ -3,12 +3,12 @@ import AppCore
 
 @main
 struct CitroenConnectedCameraApp: App {
-    @State private var coordinator = AppCoordinator()
-    private let environment = AppEnvironment.live()
+    @State private var environment = AppEnvironment.live()
 
     var body: some Scene {
         WindowGroup {
-            RootView(coordinator: coordinator, environment: environment)
+            RootView(coordinator: environment.coordinator, environment: environment)
+                .task { await environment.connectivity.refresh() }
         }
     }
 }
