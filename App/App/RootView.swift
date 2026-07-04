@@ -26,7 +26,7 @@ private struct PlaceholderScreen: View {
     var body: some View {
         VStack(spacing: AppSpacing.lg) {
             Image(systemName: "camera.fill")
-                .font(.system(size: 40))
+                .font(.system(size: AppIconSize.large))
                 .foregroundStyle(AppColor.accent)
             Text(title).font(AppFont.title).foregroundStyle(AppColor.textPrimary)
             TelemetryText("READY · 0.0.0")
