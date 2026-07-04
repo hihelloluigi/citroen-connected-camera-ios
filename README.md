@@ -26,5 +26,5 @@ land in later milestones.
 
 ## Status
 
-`VIRBKit` (camera client) and the app shell are in place. Onboarding UI, shared UI components, and
-the gallery are next.
+`VIRBKit` (camera client), the app shell, and `CoreUI` (design system: adaptive light/dark tokens +
+shared components) are in place. Onboarding and the gallery are next.
