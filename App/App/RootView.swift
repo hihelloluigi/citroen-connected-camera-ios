@@ -1,5 +1,6 @@
 import SwiftUI
 import AppCore
+import CoreUI
 
 /// Renders one placeholder screen per routing destination. Real screens replace these in later plans;
 /// this establishes the composition-root → coordinator → view wiring.
@@ -23,11 +24,16 @@ struct RootView: View {
 private struct PlaceholderScreen: View {
     let title: String
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "camera.fill").font(.largeTitle)
-            Text(title).font(.title2).bold()
-            Text("Screen coming soon").foregroundStyle(.secondary)
+        VStack(spacing: AppSpacing.lg) {
+            Image(systemName: "camera.fill")
+                .font(.system(size: 40))
+                .foregroundStyle(AppColor.accent)
+            Text(title).font(AppFont.title).foregroundStyle(AppColor.textPrimary)
+            TelemetryText("READY · 0.0.0")
+            Text("Screen coming soon").font(AppFont.callout).foregroundStyle(AppColor.textSecondary)
         }
-        .padding()
+        .padding(AppSpacing.xl)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(AppColor.background)
     }
 }
