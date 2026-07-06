@@ -2,17 +2,24 @@ import SwiftUI
 import AppCore
 import CoreUI
 
-/// Renders one placeholder screen per routing destination. Real screens replace these in later plans;
-/// this establishes the composition-root → coordinator → view wiring.
+/// Renders the real onboarding screens for the `welcome`/permission destinations, and a placeholder
+/// per remaining routing destination until Plan 5 replaces them.
 struct RootView: View {
     let coordinator: AppCoordinator
     let environment: AppEnvironment
 
+    private var actions: OnboardingActions {
+        OnboardingActions(store: environment.flagsStore, routing: environment.routing)
+    }
+
     var body: some View {
         switch coordinator.destination {
-        case .welcome: PlaceholderScreen(title: "Welcome")
-        case .localNetworkPermission: PlaceholderScreen(title: "Local Network Access")
-        case .locationPermission: PlaceholderScreen(title: "Location Access")
+        case .welcome:
+            WelcomeView(model: WelcomeViewModel(actions: actions))
+        case .localNetworkPermission:
+            LocalNetworkPermissionView(actions: actions)
+        case .locationPermission:
+            LocationPermissionView(model: LocationPermissionViewModel(permissions: environment.permissions, actions: actions))
         case .connectWiFi: PlaceholderScreen(title: "Connect to Camera Wi‑Fi")
         case .setPassword: PlaceholderScreen(title: "Set a New Password")
         case .reconnect: PlaceholderScreen(title: "Reconnect")

@@ -8,7 +8,10 @@ struct CitroenConnectedCameraApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(coordinator: environment.coordinator, environment: environment)
-                .task { await environment.connectivity.refresh() }
+                .task {
+                    await environment.connectivity.refresh()
+                    environment.routing.ingest(environment.connectivity.snapshot)
+                }
         }
     }
 }
