@@ -26,6 +26,7 @@ land in later milestones.
 
 ## Status
 
-`VIRBKit` (camera client), the app shell, `CoreUI` (design system), and the first onboarding step
-(welcome + permissions, with live camera-reachability routing) are in place. The connect / set‑password /
-reconnect screens and the gallery are next.
+`VIRBKit` (camera client), the app shell, `CoreUI` (design system), and the full onboarding flow
+(welcome → permissions → connect → set password → reconnect, with live camera-reachability routing
+and the phone claimed as the camera's active controller) are in place. The gallery — media list,
+detail, multi-select, and downloads — is next.
