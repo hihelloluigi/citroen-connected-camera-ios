@@ -37,6 +37,7 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: App/App/Info.plist
         CODE_SIGNING_ALLOWED: NO
+        CODE_SIGN_ENTITLEMENTS: App/App/CitroenConnectedCamera.entitlements
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
