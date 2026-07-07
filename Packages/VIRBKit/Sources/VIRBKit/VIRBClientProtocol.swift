@@ -6,6 +6,9 @@ public protocol VIRBClientProtocol: Sendable {
     /// Registers this phone with the camera and returns the resulting session.
     func connect() async throws -> CameraSession
 
+    /// Registers this phone as the active controller so the camera accepts commands.
+    func activate() async throws
+
     /// Returns the camera's current operational status.
     func status() async throws -> CameraStatus
 
