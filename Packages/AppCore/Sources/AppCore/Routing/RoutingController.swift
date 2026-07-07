@@ -22,6 +22,7 @@ public final class RoutingController {
     public func update(locationStatus: PermissionStatus) { self.locationStatus = locationStatus; recompute() }
     public func ingest(_ connectivity: ConnectivitySnapshot) { self.connectivity = connectivity; recompute() }
     public func markPasswordChanged() { didJustChangePassword = true; recompute() }
+    public func clearPasswordChanged() { didJustChangePassword = false; recompute() }
 
     private func recompute() {
         coordinator.update(with: RoutingInputAssembler.assemble(

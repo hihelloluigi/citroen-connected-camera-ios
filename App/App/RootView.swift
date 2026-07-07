@@ -9,7 +9,7 @@ struct RootView: View {
     let environment: AppEnvironment
 
     private var actions: OnboardingActions {
-        OnboardingActions(store: environment.flagsStore, routing: environment.routing)
+        OnboardingActions(store: environment.flagsStore, routing: environment.routing, camera: environment.camera)
     }
 
     var body: some View {
