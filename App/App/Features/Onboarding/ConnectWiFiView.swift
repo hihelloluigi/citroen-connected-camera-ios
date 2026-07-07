@@ -16,8 +16,8 @@ struct ConnectWiFiView: View {
             Text(networkLine)
                 .font(AppFont.body).foregroundStyle(AppColor.textSecondary)
                 .multilineTextAlignment(.center)
-            Text("In Settings › Wi‑Fi, join the camera's network using the password " +
-                 "\u{201C}ConnectedCam\u{201D}, then come back here.")
+            Text("In Settings › Wi‑Fi, join the camera's network. A new camera's password is " +
+                 "ConnectedCam; if you've already set your own, use that. Then come back here.")
                 .font(AppFont.body).foregroundStyle(AppColor.textSecondary)
                 .multilineTextAlignment(.center)
             Text("New camera? Hold both buttons for 2 seconds until it beeps to factory reset. " +
