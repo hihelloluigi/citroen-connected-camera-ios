@@ -20,9 +20,9 @@ xcodegen generate          # writes CitroenConnectedCamera.xcodeproj (git-ignore
 open CitroenConnectedCamera.xcodeproj
 ```
 
-Select the **CitroenConnectedCamera** scheme and an iOS 17+ simulator, then Run. The app currently
-launches to placeholder screens driven by the onboarding router; the real onboarding and gallery
-land in later milestones.
+Select the **CitroenConnectedCamera** scheme and an iOS 17+ simulator, then Run. The app launches
+into the onboarding flow (welcome → permissions → connect → set password → reconnect); the gallery
+lands in a later milestone.
 
 ## Status
 

@@ -49,6 +49,21 @@ import VIRBKit
 }
 
 @MainActor
+@Test func applyConnectivityIsIdempotentAcrossRepeatedPolls() async {
+    let store = InMemoryFlagsStore(OnboardingFlags(hasTappedGetStarted: true, localNetworkResolved: true, locationResolved: true))
+    let coordinator = AppCoordinator()
+    let routing = RoutingController(coordinator: coordinator, flags: store.load())
+    let camera = MockVIRBClient()
+    let actions = OnboardingActions(store: store, routing: routing, camera: camera)
+
+    await actions.applyConnectivity(ConnectivitySnapshot(isReachable: true, setupComplete: true))
+    await actions.applyConnectivity(ConnectivitySnapshot(isReachable: true, setupComplete: true))
+
+    #expect(camera.activateCallCount == 1)                // second poll tick must not re-finalize
+    #expect(store.load().hasCompletedOnboarding == true)
+}
+
+@MainActor
 @Test func applyConnectivityRoutesToSetPasswordWhenSetupIncomplete() async {
     let store = InMemoryFlagsStore(OnboardingFlags(hasTappedGetStarted: true, localNetworkResolved: true, locationResolved: true))
     let coordinator = AppCoordinator()
