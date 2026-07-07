@@ -1,4 +1,5 @@
 import Testing
+import VIRBKit
 @testable import AppCore
 
 @MainActor
@@ -6,7 +7,7 @@ import Testing
     let store = InMemoryFlagsStore()
     let coordinator = AppCoordinator()
     let routing = RoutingController(coordinator: coordinator, flags: store.load())
-    let actions = OnboardingActions(store: store, routing: routing)
+    let actions = OnboardingActions(store: store, routing: routing, camera: MockVIRBClient())
 
     actions.markGetStarted()
 
