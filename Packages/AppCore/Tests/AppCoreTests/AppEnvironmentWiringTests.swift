@@ -8,6 +8,7 @@ import Testing
     let env = AppEnvironment(
         camera: MockVIRBClient(), phoneId: "P",
         flagsStore: store, permissions: MockPermissionsService(),
+        wifiInfo: MockWiFiInfoService(),
         connectivity: ConnectivityMonitor(probe: StubReachabilityProbe()),
         coordinator: coordinator)
     // A completed-onboarding user with no camera routes to reconnect at launch.

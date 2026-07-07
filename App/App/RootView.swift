@@ -2,8 +2,8 @@ import SwiftUI
 import AppCore
 import CoreUI
 
-/// Renders the real onboarding screens for the `welcome`/permission destinations, and a placeholder
-/// per remaining routing destination until Plan 5 replaces them.
+/// Renders the real onboarding screens for every destination through `.reconnect`, and a placeholder
+/// for `.gallery` until Plan 6 replaces it.
 struct RootView: View {
     let coordinator: AppCoordinator
     let environment: AppEnvironment
@@ -20,10 +20,15 @@ struct RootView: View {
             LocalNetworkPermissionView(actions: actions)
         case .locationPermission:
             LocationPermissionView(model: LocationPermissionViewModel(permissions: environment.permissions, actions: actions))
-        case .connectWiFi: PlaceholderScreen(title: "Connect to Camera Wi‑Fi")
-        case .setPassword: PlaceholderScreen(title: "Set a New Password")
-        case .reconnect: PlaceholderScreen(title: "Reconnect")
-        case .gallery: PlaceholderScreen(title: "Gallery")
+        case .connectWiFi:
+            ConnectWiFiView(model: ConnectWiFiViewModel(
+                wifiInfo: environment.wifiInfo, connectivity: environment.connectivity, actions: actions))
+        case .setPassword:
+            SetPasswordView(model: SetPasswordViewModel(actions: actions))
+        case .reconnect:
+            ReconnectView(model: ReconnectViewModel(connectivity: environment.connectivity, actions: actions))
+        case .gallery:
+            PlaceholderScreen(title: "Gallery")
         }
     }
 }
