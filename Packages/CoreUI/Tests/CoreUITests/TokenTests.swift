@@ -15,3 +15,7 @@ import Testing
     #expect(AppRadius.sm < AppRadius.md)
     #expect(AppRadius.md < AppRadius.lg)
 }
+
+@Test func gridCellSizeTokenIsPositive() {
+    #expect(AppSize.gridCellMin > 0)
+}

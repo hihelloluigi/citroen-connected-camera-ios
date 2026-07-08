@@ -7,7 +7,7 @@ struct MediaListView: View {
     @Bindable var model: MediaListViewModel
     let loadDevice: () async -> DeviceInfo?
 
-    private let columns = [GridItem(.adaptive(minimum: 100), spacing: AppSpacing.xs)]
+    private let columns = [GridItem(.adaptive(minimum: AppSize.gridCellMin), spacing: AppSpacing.xs)]
 
     var body: some View {
         content
