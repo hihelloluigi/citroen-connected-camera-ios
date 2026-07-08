@@ -17,6 +17,7 @@ struct MediaListView: View {
             .refreshable { await model.refresh() }
             .safeAreaInset(edge: .bottom) { if model.isSelecting { selectionBar } }
             .alert("Couldn't complete that", isPresented: actionErrorBinding) {
+                Button("Open Settings") { AppSettings.open() }
                 Button("OK", role: .cancel) { model.clearActionError() }
             } message: {
                 Text(model.actionError?.message ?? "")
