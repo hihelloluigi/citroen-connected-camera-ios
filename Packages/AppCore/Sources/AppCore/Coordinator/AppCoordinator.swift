@@ -5,15 +5,15 @@ import Observation
 @MainActor
 @Observable
 public final class AppCoordinator {
-    public private(set) var destination: AppDestination
+	public private(set) var destination: AppDestination
 
-    public init(initial: RoutingInput = RoutingInput()) {
-        self.destination = AppRouter.destination(for: initial)
-    }
+	public init(initial: RoutingInput = RoutingInput()) {
+		self.destination = AppRouter.destination(for: initial)
+	}
 
-    public func update(with input: RoutingInput) {
-        let next = AppRouter.destination(for: input)
-        guard next != destination else { return }
-        destination = next
-    }
+	public func update(with input: RoutingInput) {
+		let next = AppRouter.destination(for: input)
+		guard next != destination else { return }
+		destination = next
+	}
 }
