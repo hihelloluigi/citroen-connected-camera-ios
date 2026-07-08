@@ -10,19 +10,21 @@ public final class AppEnvironment {
     public let flagsStore: any OnboardingFlagsStore
     public let permissions: any PermissionsService
     public let wifiInfo: any WiFiInfoService
+    public let galleryService: any GalleryService
     public let connectivity: ConnectivityMonitor
     public let coordinator: AppCoordinator
     public let routing: RoutingController
 
     public init(camera: any VIRBClientProtocol, phoneId: String,
                 flagsStore: any OnboardingFlagsStore, permissions: any PermissionsService,
-                wifiInfo: any WiFiInfoService,
+                wifiInfo: any WiFiInfoService, galleryService: any GalleryService,
                 connectivity: ConnectivityMonitor, coordinator: AppCoordinator) {
         self.camera = camera
         self.phoneId = phoneId
         self.flagsStore = flagsStore
         self.permissions = permissions
         self.wifiInfo = wifiInfo
+        self.galleryService = galleryService
         self.connectivity = connectivity
         self.coordinator = coordinator
         self.routing = RoutingController(coordinator: coordinator, flags: flagsStore.load())
