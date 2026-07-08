@@ -20,6 +20,20 @@ public struct CameraStatus: Sendable, Equatable {
     public let gpsLatitude: Double?
     /// Current GPS longitude, when the camera has a fix.
     public let gpsLongitude: Double?
+
+    public init(activePhoneId: String?, primaryPhoneId: String?, numberOfConnections: Int,
+                saveVideoDuration: Int, needsFormat: Bool, incidentDetected: Bool,
+                faultDescription: String, gpsLatitude: Double?, gpsLongitude: Double?) {
+        self.activePhoneId = activePhoneId
+        self.primaryPhoneId = primaryPhoneId
+        self.numberOfConnections = numberOfConnections
+        self.saveVideoDuration = saveVideoDuration
+        self.needsFormat = needsFormat
+        self.incidentDetected = incidentDetected
+        self.faultDescription = faultDescription
+        self.gpsLatitude = gpsLatitude
+        self.gpsLongitude = gpsLongitude
+    }
 }
 
 /// Raw `periodicUpdate` response.
