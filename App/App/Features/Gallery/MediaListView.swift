@@ -61,7 +61,7 @@ struct MediaListView: View {
     @ViewBuilder private func cell(_ item: MediaItem) -> some View {
         let thumb = MediaThumbnailView(item: item, isSelecting: model.isSelecting,
                                        isSelected: model.selection.contains(item.id),
-                                       progress: model.downloadProgress[item.id])
+                                       isDownloading: model.downloadingIDs.contains(item.id))
         if model.isSelecting {
             Button { model.toggle(item.id) } label: { thumb }.buttonStyle(.plain)
         } else {

@@ -9,7 +9,7 @@ struct MediaThumbnailView: View {
     let item: MediaItem
     let isSelecting: Bool
     let isSelected: Bool
-    var progress: Double?
+    var isDownloading: Bool = false
 
     var body: some View {
         AsyncImage(url: item.thumbURL) { phase in
@@ -43,8 +43,8 @@ struct MediaThumbnailView: View {
             }
         }
         .overlay {
-            if let progress {
-                ProgressView(value: progress)
+            if isDownloading {
+                ProgressView()
                     .progressViewStyle(.circular)
                     .tint(AppColor.accent)
                     .padding(AppSpacing.sm)
@@ -54,6 +54,7 @@ struct MediaThumbnailView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(GalleryAccessibility.label(for: item))
         .accessibilityAddTraits(isSelecting ? (isSelected ? [.isButton, .isSelected] : .isButton) : .isImage)
+        .accessibilityValue(isDownloading ? "Downloading" : "")
     }
 
     private func placeholder(systemImage: String) -> some View {

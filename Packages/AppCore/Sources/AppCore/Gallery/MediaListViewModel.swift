@@ -16,7 +16,7 @@ public final class MediaListViewModel {
     public private(set) var selection: Set<String> = []
     public private(set) var actionError: UserFacingError?
     public private(set) var isDownloading = false
-    public private(set) var downloadProgress: [String: Double] = [:]
+    public private(set) var downloadingIDs: Set<String> = []
 
     public init(service: any GalleryService, photoSaver: any PhotoLibrarySaver) {
         self.service = service
@@ -97,25 +97,24 @@ public final class MediaListViewModel {
         }
     }
 
-    /// Downloads each selected item to a temp file and saves it into the photo library, reporting
-    /// per-item progress. A failure on one item surfaces the error and moves on to the rest. The kit
-    /// currently reports completion only, so progress jumps 0→1 per item until streaming is wired.
+    /// Downloads each selected item to a temp file and saves it into the photo library, marking each item
+    /// as in-flight for the duration of its own download. A failure on one item surfaces the error and
+    /// moves on to the rest. The kit currently reports completion only (no real fractional progress), so
+    /// the marker is a simple in-flight flag rather than a percentage.
     public func downloadSelected() async {
         let targets = items.filter { selection.contains($0.id) }
         guard !targets.isEmpty else { return }
         isDownloading = true
-        downloadProgress = [:]
         for item in targets {
+            downloadingIDs.insert(item.id)
             do {
                 let destination = FileManager.default.temporaryDirectory.appendingPathComponent(item.name)
-                _ = try await service.download(item, to: destination) { fraction in
-                    Task { @MainActor in self.downloadProgress[item.id] = fraction }
-                }
+                _ = try await service.download(item, to: destination, progress: { _ in })
                 try await photoSaver.save(fileAt: destination, kind: item.kind)
-                downloadProgress[item.id] = 1
             } catch {
                 actionError = UserFacingError(error)
             }
+            downloadingIDs.remove(item.id)
         }
         isDownloading = false
         setSelecting(false)

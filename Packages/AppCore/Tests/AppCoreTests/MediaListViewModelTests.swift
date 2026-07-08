@@ -121,6 +121,7 @@ import VIRBKit
     #expect(Set(service.downloadedNames) == ["A.MP4", "B.JPG"])
     #expect(model.isSelecting == false)
     #expect(model.isDownloading == false)
+    #expect(model.downloadingIDs.isEmpty) // in-flight markers cleared once every download settles
 }
 
 @MainActor
@@ -162,4 +163,5 @@ import VIRBKit
 
     #expect(saver.savedNames.isEmpty)                 // nothing saved when the download failed
     #expect(model.actionError == UserFacingError(VIRBError.cameraUnreachable))
+    #expect(model.downloadingIDs.isEmpty)             // marker cleared even on failure
 }
