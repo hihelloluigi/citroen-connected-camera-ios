@@ -27,6 +27,8 @@ struct StatusHeaderView: View {
             .background(AppColor.surface, in: RoundedRectangle(cornerRadius: AppRadius.md))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("Camera status")
+        .accessibilityHint("Shows camera details")
         .task { device = await loadDevice() }
         .sheet(isPresented: $showingDetails) {
             detailsSheet
