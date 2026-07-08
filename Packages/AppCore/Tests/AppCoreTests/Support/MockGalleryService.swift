@@ -38,6 +38,8 @@ final class MockGalleryService: GalleryService, @unchecked Sendable {
     func delete(_ items: [MediaItem]) async throws {
         if let deleteError { throw deleteError }
         deletedBatches.append(items)
+        let ids = Set(items.map(\.id))
+        mediaResult.removeAll { ids.contains($0.id) }
     }
     func download(_ item: MediaItem, to destination: URL,
                   progress: @escaping @Sendable (Double) -> Void) async throws -> URL {
