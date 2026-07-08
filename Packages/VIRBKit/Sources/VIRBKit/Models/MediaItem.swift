@@ -1,7 +1,7 @@
 import Foundation
 
 /// A photo or video stored on the camera's SD card, as returned by `mediaList` or `snapPicture`.
-public struct MediaItem: Sendable, Equatable, Identifiable, Decodable {
+public struct MediaItem: Sendable, Equatable, Hashable, Identifiable, Decodable {
     /// Whether the item is a video or a still photo.
     public enum Kind: String, Sendable, Decodable { case video, photo }
 
@@ -25,6 +25,21 @@ public struct MediaItem: Sendable, Equatable, Identifiable, Decodable {
     public let gpsLatitude: Double?
     /// GPS longitude at capture time, when the camera has a fix and reports it for this kind.
     public let gpsLongitude: Double?
+
+    public init(kind: Kind, url: URL, thumbURL: URL, name: String, fileSize: Int64? = nil,
+                date: Date? = nil, sessionId: Int? = nil, videoType: Int? = nil,
+                gpsLatitude: Double? = nil, gpsLongitude: Double? = nil) {
+        self.kind = kind
+        self.url = url
+        self.thumbURL = thumbURL
+        self.name = name
+        self.fileSize = fileSize
+        self.date = date
+        self.sessionId = sessionId
+        self.videoType = videoType
+        self.gpsLatitude = gpsLatitude
+        self.gpsLongitude = gpsLongitude
+    }
 
     private enum CodingKeys: String, CodingKey {
         case kind = "type", url, thumbURL = "thumbUrl", name, fileSize, date
