@@ -26,7 +26,7 @@ lands in a later milestone.
 
 ## Status
 
-`VIRBKit` (camera client), the app shell, `CoreUI` (design system), and the full onboarding flow
-(welcome → permissions → connect → set password → reconnect, with live camera-reachability routing
-and the phone claimed as the camera's active controller) are in place. The gallery — media list,
-detail, multi-select, and downloads — is next.
+`VIRBKit` (camera client), the app shell, `CoreUI` (design system), the full onboarding flow, and the
+gallery — a date-sectioned media grid with a camera status header, multi-select download and delete, a
+snapshot action, and a detail screen with photo zoom, video playback, save-to-Photos, and share — are
+in place. Polish (error/empty-state refinement, accessibility, README finalization) is the last step.

@@ -1,9 +1,10 @@
 import SwiftUI
 import AppCore
 import CoreUI
+import VIRBKit
 
-/// Renders the real onboarding screens for every destination through `.reconnect`, and a placeholder
-/// for `.gallery` until Plan 6 replaces it.
+/// Renders the real onboarding screens for every destination through `.reconnect`, and the gallery
+/// for `.gallery`.
 struct RootView: View {
     let coordinator: AppCoordinator
     let environment: AppEnvironment
@@ -28,24 +29,23 @@ struct RootView: View {
         case .reconnect:
             ReconnectView(model: ReconnectViewModel(connectivity: environment.connectivity, actions: actions))
         case .gallery:
-            PlaceholderScreen(title: "Gallery")
+            NavigationStack {
+                MediaListView(
+                    model: MediaListViewModel(service: environment.galleryService, photoSaver: environment.photoSaver),
+                    loadDevice: { try? await environment.galleryService.device() }
+                )
+                .navigationDestination(for: MediaItem.self) { item in
+                    MediaDetailView(model: MediaDetailViewModel(
+                        item: item, service: environment.galleryService, photoSaver: environment.photoSaver))
+                }
+            }
+            .task {
+                while !Task.isCancelled {
+                    await environment.connectivity.refresh()
+                    environment.routing.ingest(environment.connectivity.snapshot)
+                    try? await Task.sleep(for: .seconds(5))
+                }
+            }
         }
-    }
-}
-
-private struct PlaceholderScreen: View {
-    let title: String
-    var body: some View {
-        VStack(spacing: AppSpacing.lg) {
-            Image(systemName: "camera.fill")
-                .font(.system(size: AppIconSize.large))
-                .foregroundStyle(AppColor.accent)
-            Text(title).font(AppFont.title).foregroundStyle(AppColor.textPrimary)
-            TelemetryText("READY · 0.0.0")
-            Text("Screen coming soon").font(AppFont.callout).foregroundStyle(AppColor.textSecondary)
-        }
-        .padding(AppSpacing.xl)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AppColor.background)
     }
 }
