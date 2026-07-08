@@ -1,0 +1,29 @@
+# EditorConfig — https://editorconfig.org
+# Keeps indentation consistent across editors: tabs for Swift, spaces for YAML.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Swift sources use tab indentation (displayed at 4 columns, which the wrapped-parameter
+# alignment assumes).
+[*.swift]
+indent_style = tab
+tab_width = 4
+
+# YAML forbids tabs; the project manifests use two-space indentation.
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# JSON reference (openapi.json) — two-space.
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown may use a trailing double-space for hard line breaks.
+[*.{md,markdown}]
+trim_trailing_whitespace = false
