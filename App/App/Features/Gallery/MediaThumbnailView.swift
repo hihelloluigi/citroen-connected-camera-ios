@@ -28,7 +28,7 @@ struct MediaThumbnailView: View {
         .overlay(alignment: .topTrailing) {
             if item.gpsLatitude != nil {
                 Image(systemName: "location.fill")
-                    .font(.caption).foregroundStyle(AppColor.onAccent)
+                    .font(AppFont.caption).foregroundStyle(AppColor.onAccent)
                     .padding(AppSpacing.xxs).background(AppColor.accent, in: Circle())
                     .padding(AppSpacing.xs)
             }
@@ -36,7 +36,7 @@ struct MediaThumbnailView: View {
         .overlay(alignment: .topLeading) {
             if isSelecting {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3).foregroundStyle(isSelected ? AppColor.accent : AppColor.textSecondary)
+                    .font(AppFont.title).foregroundStyle(isSelected ? AppColor.accent : AppColor.textSecondary)
                     .padding(AppSpacing.xs)
             }
         }
