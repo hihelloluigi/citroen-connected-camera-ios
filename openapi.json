@@ -1,0 +1,285 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Citroën ConnectedCAM Local API",
+    "version": "1.0.0",
+    "description": "Reverse-engineered local HTTP API of the Citroën ConnectedCAM (Garmin VIRB-based dashcam).\n\nAll traffic is cleartext HTTP on port 80. Control is a single RPC endpoint `POST /virb` where the action is the `command` field of a JSON body (Content-Type is ignored by the camera). Media files are plain `GET` downloads needing no handshake.\n\n**Session model:** keep ONE persistent keep-alive connection; the camera serves a single *active phone* at a time. Handshake order: `initialConnection` → `activePhoneRequest` → then control commands. `phoneId` is a client-generated UUID reused for the client's lifetime."
+  },
+  "servers": [
+    { "url": "http://192.168.0.1", "description": "Camera WiFi AP gateway" }
+  ],
+  "tags": [
+    { "name": "control", "description": "RPC commands via POST /virb" },
+    { "name": "media", "description": "File downloads via GET" }
+  ],
+  "paths": {
+    "/virb": {
+      "post": {
+        "tags": ["control"],
+        "operationId": "virbCommand",
+        "summary": "Send an RPC command",
+        "description": "Single control endpoint. Choose the command via the request body. Use the example dropdown to pick a specific command.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AnyCommand" },
+              "examples": {
+                "initialConnection": {
+                  "summary": "1. Handshake — register phone, get deviceInfo",
+                  "value": { "command": "initialConnection", "phoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3", "timestamp": "2026/06/27 13:04:55" }
+                },
+                "activePhoneRequest": {
+                  "summary": "2. Become the active (controlling) phone",
+                  "value": { "command": "activePhoneRequest", "phoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3" }
+                },
+                "primaryPhoneRequest": {
+                  "summary": "Become the primary (owner) phone",
+                  "value": { "command": "primaryPhoneRequest", "phoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3" }
+                },
+                "periodicUpdate": {
+                  "summary": "3. Poll status (GPS, flags, who is active/primary)",
+                  "value": { "command": "periodicUpdate", "phoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3" }
+                },
+                "mediaList": {
+                  "summary": "List all photos and videos on the SD card",
+                  "value": { "command": "mediaList" }
+                },
+                "snapPicture": {
+                  "summary": "Take a photo now",
+                  "value": { "command": "snapPicture" }
+                },
+                "deleteFile": {
+                  "summary": "Delete one or more files by URL",
+                  "value": { "command": "deleteFile", "files": ["http://192.168.0.1/media/video/DCIM/VID_NORM/2026_06_27_13h01_v.MP4"] }
+                },
+                "setWifiPassword": {
+                  "summary": "Change the AP WiFi password (disconnects clients)",
+                  "value": { "command": "setWifiPassword", "newPassword": "Test1234", "oldPassword": "ConnectedCam", "phoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3" }
+                },
+                "downloadShareImage": {
+                  "summary": "Get the list of incident photos queued for sharing",
+                  "value": { "command": "downloadShareImage", "phoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3" }
+                },
+                "ackDownloadShareImage": {
+                  "summary": "Acknowledge received share URLs",
+                  "value": { "command": "ackDownloadShareImage", "phoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3", "urlsReceived": "1" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Command result (JSON). `result:1` = success; `result:9` = not active/not ready.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AnyResponse" },
+                "examples": {
+                  "deviceInfo": {
+                    "summary": "initialConnection response",
+                    "value": { "result": 1, "cmdRequestId": 0, "activePhoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3", "setupComplete": 1, "deviceInfo": [{ "wifiSSID": "ConnectedCAM0690", "firmware": 200, "vimVersion": 140, "partNumber": "006-B2465-00", "deviceId": 3939980690 }] }
+                  },
+                  "activePhone": {
+                    "summary": "activePhoneRequest response",
+                    "value": { "result": 1, "cmdRequestId": 12, "activePhoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3" }
+                  },
+                  "status": {
+                    "summary": "periodicUpdate response",
+                    "value": { "result": 1, "cmdRequestId": 7, "gpsLatitude": 45.708865, "gpsLongitude": 9.69659, "gpsSpeed": 0, "activePhoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3", "numPhotosToShare": 0, "lastMediaEventTime": 35784, "incidentDetected": 0, "primaryPhoneId": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3", "numberOfConnections": 1, "saveVideoDuration": 20, "needFormat": 0, "faultDescription": "No Fault" }
+                  },
+                  "mediaList": {
+                    "summary": "mediaList response",
+                    "value": { "media": [ { "type": "video", "url": "http://192.168.0.1/media/video/DCIM/VID_NORM/2026_06_27_11h57_v.MP4", "thumbUrl": "http://192.168.0.1/media/thumb/video/DCIM/VID_NORM/2026_06_27_11h57_v.BMP", "sessionId": 249, "gpsLatitude": 45.708911, "gpsLongitude": 9.696649, "videoType": 0, "validTime": 1, "name": "2026_06_27_11h57_v.MP4", "fileSize": 167772160, "date": 1782554222 }, { "type": "photo", "url": "http://192.168.0.1/media/photo/DCIM/PHOTO/2026_06_27_13h06.JPG", "thumbUrl": "http://192.168.0.1/media/thumb/photo/DCIM/PHOTO/2026_06_27_13h06.BMP", "gpsLatitude": 45.709058, "gpsLongitude": 9.696463, "name": "2026_06_27_13h06.JPG", "fileSize": 2097152, "date": 1782558364 } ] }
+                  },
+                  "snapPicture": {
+                    "summary": "snapPicture response",
+                    "value": { "result": 1, "cmdRequestId": 1, "media": { "type": "photo", "url": "http://192.168.0.1/media/photo/DCIM/PHOTO/2026_06_27_13h06_1.JPG", "thumbUrl": "http://192.168.0.1/media/thumb/photo/DCIM/PHOTO/2026_06_27_13h06_1.JPG", "name": "2026_06_27_13h06_1.JPG" } }
+                  },
+                  "share": {
+                    "summary": "downloadShareImage response",
+                    "value": { "result": 1, "cmdRequestId": 5, "numPhotosToShare": 1, "files": ["http://192.168.0.1/media/photo/DCIM/PHOTO/2026_06_27_13h06.JPG"] }
+                  },
+                  "genericOk": {
+                    "summary": "deleteFile / setWifiPassword / ack response",
+                    "value": { "result": 1, "cmdRequestId": 6 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media/video/DCIM/VID_NORM/{filename}": {
+      "get": {
+        "tags": ["media"],
+        "operationId": "getVideo",
+        "summary": "Download a recorded video (MP4)",
+        "parameters": [ { "name": "filename", "in": "path", "required": true, "schema": { "type": "string" }, "example": "2026_06_27_11h57_v.MP4" } ],
+        "responses": { "200": { "description": "MP4 video", "content": { "video/mp4": { "schema": { "type": "string", "format": "binary" } } } }, "404": { "description": "Not found" } }
+      }
+    },
+    "/media/photo/DCIM/PHOTO/{filename}": {
+      "get": {
+        "tags": ["media"],
+        "operationId": "getPhoto",
+        "summary": "Download a photo (JPEG)",
+        "parameters": [ { "name": "filename", "in": "path", "required": true, "schema": { "type": "string" }, "example": "2026_06_27_13h06.JPG" } ],
+        "responses": { "200": { "description": "JPEG image", "content": { "image/jpeg": { "schema": { "type": "string", "format": "binary" } } } }, "404": { "description": "Not found" } }
+      }
+    },
+    "/media/thumb/video/DCIM/VID_NORM/{filename}": {
+      "get": {
+        "tags": ["media"],
+        "operationId": "getVideoThumb",
+        "summary": "Download a video thumbnail (BMP)",
+        "parameters": [ { "name": "filename", "in": "path", "required": true, "schema": { "type": "string" }, "example": "2026_06_27_11h57_v.BMP" } ],
+        "responses": { "200": { "description": "BMP thumbnail", "content": { "image/bmp": { "schema": { "type": "string", "format": "binary" } } } }, "404": { "description": "Not found" } }
+      }
+    },
+    "/media/thumb/photo/DCIM/PHOTO/{filename}": {
+      "get": {
+        "tags": ["media"],
+        "operationId": "getPhotoThumb",
+        "summary": "Download a photo thumbnail (BMP)",
+        "parameters": [ { "name": "filename", "in": "path", "required": true, "schema": { "type": "string" }, "example": "2026_06_27_13h06.BMP" } ],
+        "responses": { "200": { "description": "BMP thumbnail", "content": { "image/bmp": { "schema": { "type": "string", "format": "binary" } } } }, "404": { "description": "Not found" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PhoneId": { "type": "string", "description": "Client-generated uppercase UUID, reused for the client's lifetime", "example": "0AC33FDC-DDB8-46F3-B190-F51569FF21E3" },
+      "AnyCommand": {
+        "oneOf": [
+          { "$ref": "#/components/schemas/InitialConnection" },
+          { "$ref": "#/components/schemas/PhoneRequest" },
+          { "$ref": "#/components/schemas/PeriodicUpdate" },
+          { "$ref": "#/components/schemas/SimpleCommand" },
+          { "$ref": "#/components/schemas/DeleteFile" },
+          { "$ref": "#/components/schemas/SetWifiPassword" },
+          { "$ref": "#/components/schemas/ShareCommand" },
+          { "$ref": "#/components/schemas/AckShare" }
+        ]
+      },
+      "InitialConnection": {
+        "type": "object",
+        "required": ["command", "phoneId", "timestamp"],
+        "properties": {
+          "command": { "type": "string", "enum": ["initialConnection"] },
+          "phoneId": { "$ref": "#/components/schemas/PhoneId" },
+          "timestamp": { "type": "string", "description": "Local time, format YYYY/MM/DD HH:MM:SS", "example": "2026/06/27 13:04:55" }
+        }
+      },
+      "PhoneRequest": {
+        "type": "object",
+        "required": ["command", "phoneId"],
+        "properties": {
+          "command": { "type": "string", "enum": ["activePhoneRequest", "primaryPhoneRequest"] },
+          "phoneId": { "$ref": "#/components/schemas/PhoneId" }
+        }
+      },
+      "PeriodicUpdate": {
+        "type": "object",
+        "required": ["command", "phoneId"],
+        "properties": {
+          "command": { "type": "string", "enum": ["periodicUpdate"] },
+          "phoneId": { "$ref": "#/components/schemas/PhoneId" }
+        }
+      },
+      "SimpleCommand": {
+        "type": "object",
+        "required": ["command"],
+        "properties": {
+          "command": { "type": "string", "enum": ["mediaList", "snapPicture"] }
+        }
+      },
+      "DeleteFile": {
+        "type": "object",
+        "required": ["command", "files"],
+        "properties": {
+          "command": { "type": "string", "enum": ["deleteFile"] },
+          "files": { "type": "array", "items": { "type": "string", "format": "uri" } }
+        }
+      },
+      "SetWifiPassword": {
+        "type": "object",
+        "required": ["command", "newPassword", "oldPassword", "phoneId"],
+        "properties": {
+          "command": { "type": "string", "enum": ["setWifiPassword"] },
+          "newPassword": { "type": "string" },
+          "oldPassword": { "type": "string" },
+          "phoneId": { "$ref": "#/components/schemas/PhoneId" }
+        }
+      },
+      "ShareCommand": {
+        "type": "object",
+        "required": ["command", "phoneId"],
+        "properties": {
+          "command": { "type": "string", "enum": ["downloadShareImage"] },
+          "phoneId": { "$ref": "#/components/schemas/PhoneId" }
+        }
+      },
+      "AckShare": {
+        "type": "object",
+        "required": ["command", "phoneId", "urlsReceived"],
+        "properties": {
+          "command": { "type": "string", "enum": ["ackDownloadShareImage"] },
+          "phoneId": { "$ref": "#/components/schemas/PhoneId" },
+          "urlsReceived": { "type": "string" }
+        }
+      },
+      "DeviceInfo": {
+        "type": "object",
+        "properties": {
+          "wifiSSID": { "type": "string" },
+          "firmware": { "type": "integer" },
+          "vimVersion": { "type": "integer" },
+          "partNumber": { "type": "string" },
+          "deviceId": { "type": "integer", "format": "int64" }
+        }
+      },
+      "MediaItem": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["video", "photo"] },
+          "url": { "type": "string", "format": "uri" },
+          "thumbUrl": { "type": "string", "format": "uri" },
+          "name": { "type": "string" },
+          "fileSize": { "type": "integer", "format": "int64", "description": "For videos this is a fixed placeholder, not the true size" },
+          "date": { "type": "integer", "format": "int64", "description": "Unix epoch seconds" },
+          "sessionId": { "type": "integer" },
+          "videoType": { "type": "integer", "description": "0 = normal recording" },
+          "validTime": { "type": "integer" },
+          "gpsLatitude": { "type": "number" },
+          "gpsLongitude": { "type": "number" }
+        }
+      },
+      "AnyResponse": {
+        "type": "object",
+        "description": "Union of all response shapes; fields depend on the command (matched via cmdRequestId).",
+        "properties": {
+          "result": { "type": "integer", "description": "1=success, 9=not active/not ready, 11=error, 3=denied" },
+          "cmdRequestId": { "type": "integer", "description": "Fixed opcode per command: 0=initialConnection,1=snapPicture,3=mediaList,5=downloadShareImage,6=deleteFile,7=periodicUpdate,10=setWifiPassword,11=primaryPhoneRequest,12=activePhoneRequest" },
+          "setupComplete": { "type": "integer" },
+          "activePhoneId": { "type": "string" },
+          "primaryPhoneId": { "type": "string" },
+          "numberOfConnections": { "type": "integer" },
+          "numPhotosToShare": { "type": "integer" },
+          "lastMediaEventTime": { "type": "integer" },
+          "incidentDetected": { "type": "integer" },
+          "saveVideoDuration": { "type": "integer", "description": "Clip length in seconds" },
+          "needFormat": { "type": "integer" },
+          "faultDescription": { "type": "string" },
+          "gpsLatitude": { "type": "number" },
+          "gpsLongitude": { "type": "number" },
+          "gpsSpeed": { "type": "number" },
+          "deviceInfo": { "type": "array", "items": { "$ref": "#/components/schemas/DeviceInfo" } },
+          "media": { "oneOf": [ { "$ref": "#/components/schemas/MediaItem" }, { "type": "array", "items": { "$ref": "#/components/schemas/MediaItem" } } ] },
+          "files": { "type": "array", "items": { "type": "string", "format": "uri" } }
+        }
+      }
+    }
+  }
+}
