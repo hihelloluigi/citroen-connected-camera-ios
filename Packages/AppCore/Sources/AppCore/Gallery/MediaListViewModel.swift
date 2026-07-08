@@ -10,6 +10,9 @@ public final class MediaListViewModel {
     private let service: any GalleryService
     public private(set) var state: LoadState<[MediaItem]> = .idle
     public private(set) var status: CameraStatus?
+    public private(set) var isSelecting = false
+    public private(set) var selection: Set<String> = []
+    public private(set) var actionError: UserFacingError?
 
     public init(service: any GalleryService) { self.service = service }
 
@@ -35,6 +38,49 @@ public final class MediaListViewModel {
             state = .loaded(media)
         } catch {
             if items.isEmpty { state = .failed(UserFacingError(error)) }
+        }
+    }
+
+    /// Enters or leaves multi-select mode. Leaving clears any in-progress selection.
+    public func setSelecting(_ on: Bool) {
+        isSelecting = on
+        if !on { selection.removeAll() }
+    }
+
+    /// Toggles membership of `id` in the current selection. A no-op outside select mode.
+    public func toggle(_ id: String) {
+        guard isSelecting else { return }
+        if selection.contains(id) { selection.remove(id) } else { selection.insert(id) }
+    }
+
+    /// Clears the last action error (e.g. once the user has dismissed the alert).
+    public func clearActionError() { actionError = nil }
+
+    /// Triggers the shutter; the new photo animates in at the front of the grid.
+    public func snapshot() async {
+        do {
+            let item = try await service.snapshot()
+            state = .loaded([item] + items)
+        } catch {
+            actionError = UserFacingError(error)
+        }
+    }
+
+    /// Removes the selected items from the grid immediately, then confirms with the camera and reconciles
+    /// by refreshing. If the camera rejects it, the previous grid is restored and the error surfaced.
+    public func deleteSelected() async {
+        let targets = items.filter { selection.contains($0.id) }
+        guard !targets.isEmpty else { return }
+        let previous = items
+        state = .loaded(items.filter { !selection.contains($0.id) })
+        selection.removeAll()
+        isSelecting = false
+        do {
+            try await service.delete(targets)
+            await refresh()
+        } catch {
+            state = .loaded(previous)
+            actionError = UserFacingError(error)
         }
     }
 }
