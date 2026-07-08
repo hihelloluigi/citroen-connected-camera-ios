@@ -61,8 +61,10 @@ private struct GalleryScreen: View {
         }
         .task {
             while !Task.isCancelled {
-                await environment.connectivity.refresh()
-                environment.routing.ingest(environment.connectivity.snapshot)
+                if !listModel.isDownloading {
+                    await environment.connectivity.refresh()
+                    environment.routing.ingest(environment.connectivity.snapshot)
+                }
                 try? await Task.sleep(for: .seconds(5))
             }
         }

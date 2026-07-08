@@ -12,6 +12,7 @@ struct MediaDetailView: View {
     @State private var shareItem: ShareItem?
     @State private var showDeleteConfirm = false
     @State private var zoom: CGFloat = 1
+    @State private var isDeleting = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -54,14 +55,19 @@ struct MediaDetailView: View {
             SecondaryButton("Share") {
                 Task { if let url = await model.prepareShareURL() { shareItem = ShareItem(url: url) } }
             }
-            PrimaryButton("Delete", isLoading: model.isSaving) { showDeleteConfirm = true }
+            PrimaryButton("Delete", isLoading: isDeleting) { showDeleteConfirm = true }
         }
         .padding(AppSpacing.md)
         .background(AppColor.surface)
         .confirmationDialog("Delete this recording? This can't be undone.",
                             isPresented: $showDeleteConfirm, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
-                Task { if await model.delete() { onDelete?(); dismiss() } }
+                Task {
+                    isDeleting = true
+                    let deleted = await model.delete()
+                    isDeleting = false
+                    if deleted { onDelete?(); dismiss() }
+                }
             }
             Button("Cancel", role: .cancel) {}
         }

@@ -59,7 +59,8 @@ struct MediaListView: View {
 
     @ViewBuilder private func cell(_ item: MediaItem) -> some View {
         let thumb = MediaThumbnailView(item: item, isSelecting: model.isSelecting,
-                                       isSelected: model.selection.contains(item.id))
+                                       isSelected: model.selection.contains(item.id),
+                                       progress: model.downloadProgress[item.id])
         if model.isSelecting {
             Button { model.toggle(item.id) } label: { thumb }.buttonStyle(.plain)
         } else {
@@ -81,19 +82,22 @@ struct MediaListView: View {
     private var selectionBar: some View {
         HStack(spacing: AppSpacing.md) {
             SecondaryButton("Download") { Task { await model.downloadSelected() } }
-            PrimaryButton("Delete", isLoading: false) { showDeleteConfirm = true }
+            PrimaryButton("Delete", isLoading: isDeleting) { showDeleteConfirm = true }
         }
         .padding(AppSpacing.md)
         .background(.ultraThinMaterial)
         .disabled(model.selection.isEmpty)
         .confirmationDialog("Delete \(model.selection.count) item(s)? This can't be undone.",
                             isPresented: $showDeleteConfirm, titleVisibility: .visible) {
-            Button("Delete", role: .destructive) { Task { await model.deleteSelected() } }
+            Button("Delete", role: .destructive) {
+                Task { isDeleting = true; await model.deleteSelected(); isDeleting = false }
+            }
             Button("Cancel", role: .cancel) {}
         }
     }
 
     @State private var showDeleteConfirm = false
+    @State private var isDeleting = false
 
     private var actionErrorBinding: Binding<Bool> {
         Binding(get: { model.actionError != nil }, set: { if !$0 { model.clearActionError() } })

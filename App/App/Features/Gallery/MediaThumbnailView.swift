@@ -8,6 +8,7 @@ struct MediaThumbnailView: View {
     let item: MediaItem
     let isSelecting: Bool
     let isSelected: Bool
+    var progress: Double?
 
     var body: some View {
         AsyncImage(url: item.thumbURL) { phase in
@@ -38,6 +39,15 @@ struct MediaThumbnailView: View {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(AppFont.title).foregroundStyle(isSelected ? AppColor.accent : AppColor.textSecondary)
                     .padding(AppSpacing.xs)
+            }
+        }
+        .overlay {
+            if let progress {
+                ProgressView(value: progress)
+                    .progressViewStyle(.circular)
+                    .tint(AppColor.accent)
+                    .padding(AppSpacing.sm)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.sm))
             }
         }
     }
