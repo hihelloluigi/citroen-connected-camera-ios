@@ -12,4 +12,12 @@ public struct DeviceInfo: Sendable, Equatable, Decodable {
     public let partNumber: String
     /// Unique numeric identifier for this camera unit.
     public let deviceId: Int64
+
+    public init(wifiSSID: String, firmware: Int, vimVersion: Int, partNumber: String, deviceId: Int64) {
+        self.wifiSSID = wifiSSID
+        self.firmware = firmware
+        self.vimVersion = vimVersion
+        self.partNumber = partNumber
+        self.deviceId = deviceId
+    }
 }
