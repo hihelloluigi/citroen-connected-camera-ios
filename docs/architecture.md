@@ -54,8 +54,9 @@ implementations (`KeychainSecureStore`, `LiveLocationPermissions`, `LiveWiFiInfo
 `AppEnvironment.live()` is built once, in `CitroenConnectedCameraApp`, and passed down through
 `RootView` — a single composition root, not a DI container. Every dependency it holds
 (`VIRBClientProtocol`, `OnboardingFlagsStore`, `PermissionsService`, `WiFiInfoService`,
-`GalleryService`, `PhotoLibrarySaver`, `ReachabilityProbe`) is a `Sendable` protocol with a live
-implementation in the app target and a mock/stub implementation used only by tests.
+`GalleryService`, `PhotoLibrarySaver`, `ConnectivityMonitor` — itself wrapping a `ReachabilityProbe`)
+is a `Sendable` protocol (or, for `ConnectivityMonitor`, a `@MainActor` wrapper around one) with a
+live implementation in the app target and a mock/stub implementation used only by tests.
 
 Navigation is a pure total function: `AppRouter.destination(for:)` maps a `RoutingInput` to exactly
 one `AppDestination`, with no side effects, and is exhaustively unit-tested against every input
@@ -65,7 +66,15 @@ connectivity snapshot, the just-changed-password flag), assembles them into a `R
 `RoutingInputAssembler`, and feeds `AppCoordinator`. Screens never decide navigation themselves —
 they call into `RoutingController` (via `OnboardingActions`) and let the router react.
 
-View models live entirely in `AppCore`; SwiftUI views in the app target only bind to them.
+View models don't live in one single place: the **gallery** view models (`MediaListViewModel`,
+`MediaDetailViewModel`) live in `AppCore` itself — `@MainActor @Observable`, no `import SwiftUI` —
+and are unit-tested directly against mock services. The **onboarding** view models
+(`App/App/Features/Onboarding/{Welcome,ConnectWiFi,LocationPermission,SetPassword,Reconnect}ViewModel.swift`)
+live in the app target as thin wrappers with no tests of their own; they hold only screen-local
+`@Observable` state and delegate every testable decision to `AppCore` — flag mutation and routing to
+`OnboardingActions`, password validation to `PasswordRules` — so the logic worth testing is tested
+where it lives, in `AppCore`, regardless of which side of the package boundary the view model itself
+sits on.
 
 ## Onboarding flow
 
@@ -139,8 +148,9 @@ Unit-tested, no device required:
 
 - **VIRBKit** — the client and transport against a mocked `URLProtocol` replaying fixtures
   captured from the real camera.
-- **AppCore** — routing (`AppRouter` exhaustively), the coordinator, onboarding logic, and every
-  gallery view model, all driven through mock service/store implementations.
+- **AppCore** — routing (`AppRouter` exhaustively), the coordinator, onboarding logic
+  (`OnboardingActions`, `PasswordRules`), and every gallery view model (`MediaListViewModel`,
+  `MediaDetailViewModel`), all driven through mock service/store implementations.
 - **CoreUI** — token parsing/formatting (e.g. hex color parsing, byte-count formatting).
 
 Build-and-device-verified, not covered by `swift test`:
@@ -148,6 +158,10 @@ Build-and-device-verified, not covered by `swift test`:
 - The live OS/camera wrappers in the app target (`KeychainSecureStore`, `LiveLocationPermissions`,
   `LiveWiFiInfo`, `LiveGalleryService`, `LivePhotoLibrarySaver`, `CameraReachabilityProbe`), since
   they need a real device joined to the camera's Wi-Fi AP.
+- The onboarding view models in the app target (`App/App/Features/Onboarding/`) — there's no
+  app-target test target, so these thin wrappers have no unit tests of their own; their logic is
+  covered indirectly through the `OnboardingActions`/`PasswordRules` tests in `AppCore`, and the
+  screens themselves are build-and-device-verified.
 - VoiceOver behavior and the system Photos-save permission prompt.
 
 Current counts (from `swift test`): **VIRBKit 27**, **AppCore 57**, **CoreUI 8** — 92 tests total.
