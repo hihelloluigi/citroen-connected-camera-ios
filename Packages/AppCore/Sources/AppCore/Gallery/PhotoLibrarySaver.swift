@@ -5,5 +5,5 @@ import VIRBKit
 /// `PHPhotoLibrary` (needs `NSPhotoLibraryAddUsageDescription`); tests use a recording fake. Kept behind
 /// a protocol so the download orchestration is unit-testable without touching Photos.
 public protocol PhotoLibrarySaver: Sendable {
-    func save(fileAt url: URL, kind: MediaItem.Kind) async throws
+	func save(fileAt url: URL, kind: MediaItem.Kind) async throws
 }

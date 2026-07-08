@@ -23,3 +23,6 @@ identifier_name:
 
 disabled_rules:
   - todo
+  # Incompatible with tab indentation: it checks character-column alignment of wrapped
+  # parameters, which tabs can't satisfy (the params still align visually at tab width).
+  - vertical_parameter_alignment
