@@ -25,6 +25,7 @@ extension AppEnvironment {
             flagsStore: UserDefaultsFlagsStore(),
             permissions: LiveLocationPermissions(),
             wifiInfo: LiveWiFiInfo(),
+            galleryService: LiveGalleryService(client: camera),
             connectivity: ConnectivityMonitor(probe: CameraReachabilityProbe(client: camera)),
             coordinator: AppCoordinator())
     }

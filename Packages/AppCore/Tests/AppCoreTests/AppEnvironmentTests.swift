@@ -6,7 +6,7 @@ import Testing
     let env = AppEnvironment(
         camera: MockVIRBClient(), phoneId: "ABC-123",
         flagsStore: InMemoryFlagsStore(), permissions: MockPermissionsService(),
-        wifiInfo: MockWiFiInfoService(),
+        wifiInfo: MockWiFiInfoService(), galleryService: MockGalleryService(),
         connectivity: ConnectivityMonitor(probe: StubReachabilityProbe()),
         coordinator: AppCoordinator())
     #expect(env.phoneId == "ABC-123")
