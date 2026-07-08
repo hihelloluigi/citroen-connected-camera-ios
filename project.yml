@@ -33,6 +33,9 @@ targets:
       base:
         # PRODUCT_BUNDLE_IDENTIFIER comes from Config/App.xcconfig (overridable via Secrets.xcconfig).
         PRODUCT_NAME: CitroenConnectedCamera
+        # iPhone only (family 1): a portrait phone companion app, so the iPad "support all
+        # orientations unless full screen" rule doesn't apply.
+        TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: App/App/Info.plist
         CODE_SIGN_ENTITLEMENTS: App/App/CitroenConnectedCamera.entitlements
