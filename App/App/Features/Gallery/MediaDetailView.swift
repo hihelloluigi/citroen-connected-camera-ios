@@ -6,6 +6,7 @@ import VIRBKit
 
 struct MediaDetailView: View {
     @Bindable var model: MediaDetailViewModel
+    var onDelete: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
 
     @State private var shareItem: ShareItem?
@@ -60,7 +61,7 @@ struct MediaDetailView: View {
         .confirmationDialog("Delete this recording? This can't be undone.",
                             isPresented: $showDeleteConfirm, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
-                Task { if await model.delete() { dismiss() } }
+                Task { if await model.delete() { onDelete?(); dismiss() } }
             }
             Button("Cancel", role: .cancel) {}
         }

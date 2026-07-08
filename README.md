@@ -21,8 +21,9 @@ open CitroenConnectedCamera.xcodeproj
 ```
 
 Select the **CitroenConnectedCamera** scheme and an iOS 17+ simulator, then Run. The app launches
-into the onboarding flow (welcome → permissions → connect → set password → reconnect); the gallery
-lands in a later milestone.
+into the onboarding flow (welcome → permissions → connect → set password → reconnect), then hands off
+to the gallery: browse recordings with a camera status header, multi-select download and delete, and a
+detail screen with playback and save-to-Photos.
 
 ## Status
 
