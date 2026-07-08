@@ -63,6 +63,12 @@ public final class MediaListViewModel {
     /// Clears the last action error (e.g. once the user has dismissed the alert).
     public func clearActionError() { actionError = nil }
 
+    /// Removes an item from the loaded grid locally (e.g. after it was deleted on the detail screen).
+    public func remove(id: String) {
+        guard case .loaded(let items) = state else { return }
+        state = .loaded(items.filter { $0.id != id })
+    }
+
     /// Triggers the shutter; the new photo animates in at the front of the grid.
     public func snapshot() async {
         do {

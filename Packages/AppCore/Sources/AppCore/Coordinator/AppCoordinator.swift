@@ -12,6 +12,8 @@ public final class AppCoordinator {
     }
 
     public func update(with input: RoutingInput) {
-        destination = AppRouter.destination(for: input)
+        let next = AppRouter.destination(for: input)
+        guard next != destination else { return }
+        destination = next
     }
 }

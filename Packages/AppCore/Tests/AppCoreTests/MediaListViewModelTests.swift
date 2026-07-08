@@ -124,6 +124,30 @@ import VIRBKit
 }
 
 @MainActor
+@Test func removeFiltersItemLocallyWithoutANetworkCall() async {
+    let service = MockGalleryService()
+    service.mediaResult = [MediaFactory.item(name: "A.MP4"), MediaFactory.item(name: "B.MP4")]
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
+    await model.load()
+
+    model.remove(id: "A.MP4")
+
+    #expect(model.items.map(\.name) == ["B.MP4"])
+    #expect(service.deletedBatches.isEmpty) // local-only removal, no camera call
+}
+
+@MainActor
+@Test func removeOnNonLoadedModelIsANoOp() async {
+    let service = MockGalleryService()
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
+
+    model.remove(id: "A.MP4") // idle state, before any load
+
+    #expect(model.items.isEmpty)
+    if case .idle = model.state {} else { Issue.record("expected .idle, got \(model.state)") }
+}
+
+@MainActor
 @Test func downloadSelectedSurfacesErrorWhenTheCameraDownloadFails() async {
     let service = MockGalleryService()
     service.mediaResult = [MediaFactory.item(name: "A.MP4")]
