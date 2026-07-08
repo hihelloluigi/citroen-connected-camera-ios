@@ -20,13 +20,18 @@ struct LocationPermissionView: View {
                 .font(AppFont.body).foregroundStyle(AppColor.textSecondary)
                 .multilineTextAlignment(.center)
             Spacer()
-            PrimaryButton("Allow access", isLoading: model.isRequesting) {
-                Task { await model.request() }
+            if model.isDenied {
+                PrimaryButton("Open Settings") { AppSettings.open() }
+            } else {
+                PrimaryButton("Allow access", isLoading: model.isRequesting) {
+                    Task { await model.request() }
+                }
             }
             SecondaryButton("Not now") { model.skip() }
         }
         .padding(AppSpacing.xl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppColor.background)
+        .task { await model.onAppear() }
     }
 }
