@@ -30,23 +30,26 @@ struct MediaDetailView: View {
         .sheet(item: $shareItem) { item in ShareSheet(url: item.url) }
     }
 
-    @ViewBuilder private var viewer: some View {
-        if model.item.kind == .video {
-            VideoPlayer(player: AVPlayer(url: model.item.url))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
-            ScrollView([.horizontal, .vertical]) {
-                AsyncImage(url: model.item.url) { image in
-                    image.resizable().aspectRatio(contentMode: .fit).scaleEffect(zoom)
-                } placeholder: {
-                    ProgressView()
+    private var viewer: some View {
+        Group {
+            if model.item.kind == .video {
+                VideoPlayer(player: AVPlayer(url: model.item.url))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView([.horizontal, .vertical]) {
+                    AsyncImage(url: model.item.url) { image in
+                        image.resizable().aspectRatio(contentMode: .fit).scaleEffect(zoom)
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    .gesture(MagnificationGesture().onChanged { zoom = $0 }.onEnded { _ in
+                        withAnimation { zoom = max(1, min(zoom, 4)) }
+                    })
                 }
-                .gesture(MagnificationGesture().onChanged { zoom = $0 }.onEnded { _ in
-                    withAnimation { zoom = max(1, min(zoom, 4)) }
-                })
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .accessibilityLabel(model.item.kind == .video ? "Video player" : "Photo")
     }
 
     private var actions: some View {

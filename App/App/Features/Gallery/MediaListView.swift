@@ -75,6 +75,7 @@ struct MediaListView: View {
                 Button("Done") { model.setSelecting(false) }
             } else {
                 Button { Task { await model.snapshot() } } label: { Image(systemName: "camera.fill") }
+                    .accessibilityLabel("Take a photo")
                 Button("Select") { model.setSelecting(true) }
             }
         }

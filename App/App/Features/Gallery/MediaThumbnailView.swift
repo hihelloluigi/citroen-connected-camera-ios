@@ -1,4 +1,5 @@
 import SwiftUI
+import AppCore
 import CoreUI
 import VIRBKit
 
@@ -50,6 +51,9 @@ struct MediaThumbnailView: View {
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.sm))
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(GalleryAccessibility.label(for: item))
+        .accessibilityAddTraits(isSelecting ? (isSelected ? [.isButton, .isSelected] : .isButton) : .isImage)
     }
 
     private func placeholder(systemImage: String) -> some View {
