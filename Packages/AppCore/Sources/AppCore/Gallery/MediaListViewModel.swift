@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 import VIRBKit
 
@@ -8,13 +9,19 @@ import VIRBKit
 @Observable
 public final class MediaListViewModel {
     private let service: any GalleryService
+    private let photoSaver: any PhotoLibrarySaver
     public private(set) var state: LoadState<[MediaItem]> = .idle
     public private(set) var status: CameraStatus?
     public private(set) var isSelecting = false
     public private(set) var selection: Set<String> = []
     public private(set) var actionError: UserFacingError?
+    public private(set) var isDownloading = false
+    public private(set) var downloadProgress: [String: Double] = [:]
 
-    public init(service: any GalleryService) { self.service = service }
+    public init(service: any GalleryService, photoSaver: any PhotoLibrarySaver) {
+        self.service = service
+        self.photoSaver = photoSaver
+    }
 
     /// The currently-loaded items, or empty when idle/loading/failed.
     public var items: [MediaItem] {
@@ -82,5 +89,29 @@ public final class MediaListViewModel {
             state = .loaded(previous)
             actionError = UserFacingError(error)
         }
+    }
+
+    /// Downloads each selected item to a temp file and saves it into the photo library, reporting
+    /// per-item progress. A failure on one item surfaces the error and moves on to the rest. The kit
+    /// currently reports completion only, so progress jumps 0→1 per item until streaming is wired.
+    public func downloadSelected() async {
+        let targets = items.filter { selection.contains($0.id) }
+        guard !targets.isEmpty else { return }
+        isDownloading = true
+        downloadProgress = [:]
+        for item in targets {
+            do {
+                let destination = FileManager.default.temporaryDirectory.appendingPathComponent(item.name)
+                _ = try await service.download(item, to: destination) { fraction in
+                    Task { @MainActor in self.downloadProgress[item.id] = fraction }
+                }
+                try await photoSaver.save(fileAt: destination, kind: item.kind)
+                downloadProgress[item.id] = 1
+            } catch {
+                actionError = UserFacingError(error)
+            }
+        }
+        isDownloading = false
+        setSelecting(false)
     }
 }

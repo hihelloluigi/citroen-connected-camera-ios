@@ -26,6 +26,7 @@ extension AppEnvironment {
             permissions: LiveLocationPermissions(),
             wifiInfo: LiveWiFiInfo(),
             galleryService: LiveGalleryService(client: camera),
+            photoSaver: LivePhotoLibrarySaver(),
             connectivity: ConnectivityMonitor(probe: CameraReachabilityProbe(client: camera)),
             coordinator: AppCoordinator())
     }

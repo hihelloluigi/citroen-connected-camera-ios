@@ -6,7 +6,7 @@ import VIRBKit
 @Test func loadPopulatesItemsAndStatus() async {
     let service = MockGalleryService()
     service.mediaResult = [MediaFactory.item(name: "A.MP4"), MediaFactory.item(name: "B.JPG", kind: .photo)]
-    let model = MediaListViewModel(service: service)
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
     #expect(model.items.isEmpty)
 
     await model.load()
@@ -20,7 +20,7 @@ import VIRBKit
 @Test func loadFailureSurfacesUserFacingError() async {
     let service = MockGalleryService()
     service.mediaError = VIRBError.cameraUnreachable
-    let model = MediaListViewModel(service: service)
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
 
     await model.load()
 
@@ -32,7 +32,7 @@ import VIRBKit
 @Test func refreshAfterLoadedKeepsItemsWhenItFails() async {
     let service = MockGalleryService()
     service.mediaResult = [MediaFactory.item(name: "A.MP4")]
-    let model = MediaListViewModel(service: service)
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
     await model.load()
 
     service.mediaError = VIRBError.cameraUnreachable
@@ -45,7 +45,7 @@ import VIRBKit
 @Test func toggleTracksSelection() async {
     let service = MockGalleryService()
     service.mediaResult = [MediaFactory.item(name: "A.MP4"), MediaFactory.item(name: "B.MP4")]
-    let model = MediaListViewModel(service: service)
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
     await model.load()
 
     model.setSelecting(true)
@@ -63,7 +63,7 @@ import VIRBKit
     let service = MockGalleryService()
     service.mediaResult = [MediaFactory.item(name: "A.MP4")]
     service.snapshotResult = MediaFactory.item(name: "NEW.JPG", kind: .photo)
-    let model = MediaListViewModel(service: service)
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
     await model.load()
 
     await model.snapshot()
@@ -75,7 +75,7 @@ import VIRBKit
 @Test func deleteSelectedRemovesOptimisticallyOnSuccess() async {
     let service = MockGalleryService()
     service.mediaResult = [MediaFactory.item(name: "A.MP4"), MediaFactory.item(name: "B.MP4")]
-    let model = MediaListViewModel(service: service)
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
     await model.load()
     model.setSelecting(true)
     model.toggle("A.MP4")
@@ -93,7 +93,7 @@ import VIRBKit
     let service = MockGalleryService()
     service.mediaResult = [MediaFactory.item(name: "A.MP4"), MediaFactory.item(name: "B.MP4")]
     service.deleteError = VIRBError.notActivePhone
-    let model = MediaListViewModel(service: service)
+    let model = MediaListViewModel(service: service, photoSaver: MockPhotoLibrarySaver())
     await model.load()
     model.setSelecting(true)
     model.toggle("A.MP4")
@@ -102,4 +102,40 @@ import VIRBKit
 
     #expect(model.items.map(\.name) == ["A.MP4", "B.MP4"]) // restored
     #expect(model.actionError == UserFacingError(VIRBError.notActivePhone))
+}
+
+@MainActor
+@Test func downloadSelectedSavesEachSelectedItemToPhotos() async {
+    let service = MockGalleryService()
+    service.mediaResult = [MediaFactory.item(name: "A.MP4"), MediaFactory.item(name: "B.JPG", kind: .photo)]
+    let saver = MockPhotoLibrarySaver()
+    let model = MediaListViewModel(service: service, photoSaver: saver)
+    await model.load()
+    model.setSelecting(true)
+    model.toggle("A.MP4")
+    model.toggle("B.JPG")
+
+    await model.downloadSelected()
+
+    #expect(Set(saver.savedNames) == ["A.MP4", "B.JPG"])
+    #expect(Set(service.downloadedNames) == ["A.MP4", "B.JPG"])
+    #expect(model.isSelecting == false)
+    #expect(model.isDownloading == false)
+}
+
+@MainActor
+@Test func downloadSelectedSurfacesErrorWhenTheCameraDownloadFails() async {
+    let service = MockGalleryService()
+    service.mediaResult = [MediaFactory.item(name: "A.MP4")]
+    service.downloadError = VIRBError.cameraUnreachable
+    let saver = MockPhotoLibrarySaver()
+    let model = MediaListViewModel(service: service, photoSaver: saver)
+    await model.load()
+    model.setSelecting(true)
+    model.toggle("A.MP4")
+
+    await model.downloadSelected()
+
+    #expect(saver.savedNames.isEmpty)                 // nothing saved when the download failed
+    #expect(model.actionError == UserFacingError(VIRBError.cameraUnreachable))
 }

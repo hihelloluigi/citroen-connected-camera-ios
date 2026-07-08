@@ -11,6 +11,7 @@ public final class AppEnvironment {
     public let permissions: any PermissionsService
     public let wifiInfo: any WiFiInfoService
     public let galleryService: any GalleryService
+    public let photoSaver: any PhotoLibrarySaver
     public let connectivity: ConnectivityMonitor
     public let coordinator: AppCoordinator
     public let routing: RoutingController
@@ -18,6 +19,7 @@ public final class AppEnvironment {
     public init(camera: any VIRBClientProtocol, phoneId: String,
                 flagsStore: any OnboardingFlagsStore, permissions: any PermissionsService,
                 wifiInfo: any WiFiInfoService, galleryService: any GalleryService,
+                photoSaver: any PhotoLibrarySaver,
                 connectivity: ConnectivityMonitor, coordinator: AppCoordinator) {
         self.camera = camera
         self.phoneId = phoneId
@@ -25,6 +27,7 @@ public final class AppEnvironment {
         self.permissions = permissions
         self.wifiInfo = wifiInfo
         self.galleryService = galleryService
+        self.photoSaver = photoSaver
         self.connectivity = connectivity
         self.coordinator = coordinator
         self.routing = RoutingController(coordinator: coordinator, flags: flagsStore.load())
