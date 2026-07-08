@@ -2,6 +2,9 @@
 IPHONEOS_DEPLOYMENT_TARGET = 17.0
 SWIFT_VERSION = 6.0
 
+// User-facing app name (Info.plist CFBundleDisplayName reads this via $(APP_DISPLAY_NAME)).
+APP_DISPLAY_NAME = C-CAM
+
 // Default bundle identifier. For device signing, copy Config/Secrets.example.xcconfig to
 // Config/Secrets.xcconfig (git-ignored) and set DEVELOPMENT_TEAM + PRODUCT_BUNDLE_IDENTIFIER there;
 // the include below lets those values override these defaults.
