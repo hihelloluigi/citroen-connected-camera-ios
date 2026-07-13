@@ -45,7 +45,7 @@ are plain, unit-testable state holders that any SwiftUI (or other) view can bind
 `AppCoordinator.destination` to pick a screen), the composition root's live half
 (`AppEnvironment+Live.swift`, which builds `AppEnvironment.live()`), the live service
 implementations (`KeychainSecureStore`, `LiveLocationPermissions`, `LiveWiFiInfo`,
-`LiveGalleryService`, `LivePhotoLibrarySaver`, `CameraReachabilityProbe`), the feature views under
+`LiveGalleryService`, `LivePhotoLibrarySaver`), the feature views under
 `App/App/Features/Onboarding` and `App/App/Features/Gallery`, and `Info.plist` /
 `CitroenConnectedCamera.entitlements`.
 
@@ -156,8 +156,9 @@ Unit-tested, no device required:
 Build-and-device-verified, not covered by `swift test`:
 
 - The live OS/camera wrappers in the app target (`KeychainSecureStore`, `LiveLocationPermissions`,
-  `LiveWiFiInfo`, `LiveGalleryService`, `LivePhotoLibrarySaver`, `CameraReachabilityProbe`), since
-  they need a real device joined to the camera's Wi-Fi AP.
+  `LiveWiFiInfo`, `LiveGalleryService`, `LivePhotoLibrarySaver`), since they need a real device
+  joined to the camera's Wi-Fi AP. Camera reachability itself (`CameraSessionProbe`) lives in
+  AppCore and is unit-tested there.
 - The onboarding view models in the app target (`App/App/Features/Onboarding/`) — there's no
   app-target test target, so these thin wrappers have no unit tests of their own; their logic is
   covered indirectly through the `OnboardingActions`/`PasswordRules` tests in `AppCore`, and the

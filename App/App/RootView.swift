@@ -35,7 +35,7 @@ struct RootView: View {
 }
 
 /// Hosts the gallery. Owns `MediaListViewModel` in `@State` so it survives `RootView.body`
-/// re-executions (the connectivity poll below reassigns `AppCoordinator.destination` every 5s, which
+/// re-executions (the connectivity poll below reassigns `AppCoordinator.destination` every 3s, which
 /// `@Observable` reports as a change even when the value is unchanged) — otherwise a fresh, unloaded
 /// view model would be allocated every poll and the grid would spin forever.
 private struct GalleryScreen: View {
@@ -65,7 +65,9 @@ private struct GalleryScreen: View {
 					await environment.connectivity.refresh()
 					environment.routing.ingest(environment.connectivity.snapshot)
 				}
-				try? await Task.sleep(for: .seconds(5))
+				// 3s matches the original app's periodicUpdate cadence; the camera's session
+				// timeout is unknown, so the observed heartbeat rate is the only known-good one.
+				try? await Task.sleep(for: .seconds(3))
 			}
 		}
 	}
