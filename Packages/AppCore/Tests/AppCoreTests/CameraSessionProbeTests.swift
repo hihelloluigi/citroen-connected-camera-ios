@@ -43,3 +43,26 @@ import VIRBKit
 	#expect(snapshot == ConnectivitySnapshot(isReachable: false, setupComplete: nil))
 	#expect(client.sessionCommands == ["initialConnection"])
 }
+
+@Test func heartbeatAnsweredWithErrorRehandshakesInPlace() async {
+	let client = MockVIRBClient()
+	client.connectResult = .success(.stub(setupComplete: true))
+	let probe = CameraSessionProbe(client: client)
+	_ = await probe.probe()
+	client.statusResult = .failure(VIRBError.notActivePhone)
+	let second = await probe.probe()
+	#expect(client.sessionCommands == ["initialConnection", "periodicUpdate", "initialConnection"])
+	#expect(second == ConnectivitySnapshot(isReachable: true, setupComplete: true))
+}
+
+@Test func heartbeatAnsweredWithErrorButFallThroughHandshakeFailsReportsUnreachable() async {
+	let client = MockVIRBClient()
+	client.connectResult = .success(.stub(setupComplete: true))
+	let probe = CameraSessionProbe(client: client)
+	_ = await probe.probe()
+	client.statusResult = .failure(VIRBError.notActivePhone)
+	client.connectResult = .failure(VIRBError.cameraUnreachable)
+	let second = await probe.probe()
+	#expect(client.sessionCommands == ["initialConnection", "periodicUpdate", "initialConnection"])
+	#expect(second == ConnectivitySnapshot(isReachable: false, setupComplete: nil))
+}
