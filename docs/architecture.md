@@ -165,7 +165,7 @@ Build-and-device-verified, not covered by `swift test`:
   screens themselves are build-and-device-verified.
 - VoiceOver behavior and the system Photos-save permission prompt.
 
-Current counts (from `swift test`): **VIRBKit 27**, **AppCore 57**, **CoreUI 8** — 92 tests total.
+Current counts (from `swift test`): **VIRBKit 27**, **AppCore 63**, **CoreUI 8** — 98 tests total.
 
 ## Further reading
 
