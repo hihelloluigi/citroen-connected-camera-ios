@@ -54,10 +54,12 @@ Content-Length: <n>
       → result:9 + deviceInfo  while setupComplete:0  (camera not finished first-time setup)
       → result:1 + deviceInfo + activePhoneId   once setupComplete:1
 3. POST activePhoneRequest {phoneId}    → become the ACTIVE phone (result:1, activePhoneId == your phoneId)
-4. POST periodicUpdate {phoneId}        → poll status ~1/sec (GPS, flags, who is active/primary)
+4. POST periodicUpdate {phoneId}        → keep-alive heartbeat every 3 s (GPS, flags, who is active/primary)
 5. Now control + media commands work: mediaList, snapPicture, deleteFile, ...
 ```
 
+- The official app sends `initialConnection` once when it opens, then keeps the session alive with
+  a `periodicUpdate` heartbeat every **3 s**; when the heartbeat fails it re-runs the handshake.
 - `phoneId` is a client-generated UUID (uppercase, e.g. `0AC33FDC-DDB8-46F3-B190-F51569FF21E3`).
   Generate once and reuse for the lifetime of the client.
 - **primaryPhoneId** = first phone to pair (owner). **activePhoneId** = phone currently in control.
@@ -69,7 +71,7 @@ Content-Length: <n>
 |---|---|
 | `1`  | Success |
 | `9`  | Not ready / not the active phone / setup incomplete |
-| `11` | Error (seen on an unidentified `cmdRequestId:4` command) |
+| `11` | Error (observed as the `deleteFile` failure response, echoed with `cmdRequestId:4`) |
 | `3`  | Request denied (seen on phone-request commands before `initialConnection`) |
 
 ## `cmdRequestId` is a fixed per-command opcode (NOT a counter)
@@ -87,7 +89,8 @@ The response echoes a fixed id per command — use it to match async responses o
 | 10 | setWifiPassword |
 | 11 | primaryPhoneRequest |
 | 12 | activePhoneRequest |
-| 4  | (unidentified — returned result:11) |
+| 4  | deleteFile (error response — success echoes 6) |
+| 14 | setSaveVideoDuration |
 
 ## Commands (observed)
 
@@ -114,7 +117,7 @@ Response (set up):
 → {"result":1,"cmdRequestId":11,...}
 ```
 
-### periodicUpdate  (status poll)
+### periodicUpdate  (status poll / keep-alive — the official app sends it every 3 s)
 ```json
 {"command":"periodicUpdate","phoneId":"<UUID>"}
 → {"result":1,"cmdRequestId":7,"gpsLatitude":45.7089,"gpsLongitude":9.6965,"gpsSpeed":0,
@@ -144,6 +147,8 @@ Response (set up):
 {"command":"deleteFile","files":["http://192.168.0.1/media/video/DCIM/VID_NORM/2026_06_27_13h01_v.MP4"]}
 → {"result":1,"cmdRequestId":6}
 ```
+On failure the camera answers `{"result":11,"cmdRequestId":4}` instead — observed on 2026-07-13
+when deleting a file that likely belonged to the still-active recording session.
 
 ### setWifiPassword
 ```json
@@ -151,6 +156,14 @@ Response (set up):
 → {"result":1,"cmdRequestId":10}
 ```
 > Changing this disconnects all WiFi clients; they must reconnect with the new password.
+
+### setSaveVideoDuration
+```json
+{"command":"setSaveVideoDuration","phoneId":"<UUID>","length":"30"}
+→ {"result":1,"cmdRequestId":14}
+```
+> `length` is the saved-clip length in seconds, sent as a JSON *string*. Read the current value
+> back from `periodicUpdate`'s `saveVideoDuration` field.
 
 ### downloadShareImage / ackDownloadShareImage  (incident-photo sharing flow)
 ```json
@@ -178,6 +191,8 @@ Response (set up):
 - `date` is a Unix epoch (seconds).
 - `fileSize` for videos is a fixed/placeholder value (160 MB) in the listing, not the true byte size.
 - `videoType` 0 = normal recording (`VID_NORM`); incident/locked clips likely use a different folder/type.
+- `validTime` 1 = the camera had a time/GPS fix for the clip; `validTime:0` entries carry no GPS
+  fields and their `date` is unreliable (seen on the first clip after power-on).
 
 ## Media download (no handshake required)
 
@@ -196,8 +211,7 @@ libavformat client (`User-Agent: Lavf/56.36.100`), i.e. ffmpeg-based playback.
 - **Live preview**: no `livePreview`/RTSP/MJPEG seen — live view was not exercised in this capture.
   Re-capture while opening live view to learn the stream command + URL (likely a progressive MP4 over
   HTTP given the Lavf client).
-- Settings beyond `saveVideoDuration` (e.g. `updateFeature`/`setVideoDuration`, format SD = `formatUnit`).
-- The `cmdRequestId:4 / result:11` command.
+- Remaining settings commands (e.g. `updateFeature`, format SD = `formatUnit`).
 - Incident/locked-video folder naming.
 
 ## How this was captured (repeatable)
