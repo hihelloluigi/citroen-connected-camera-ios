@@ -8,6 +8,12 @@ public struct CameraSession: Sendable, Equatable {
 	public let activePhoneId: String?
 	/// The connected camera's hardware/firmware identity.
 	public let device: DeviceInfo
+
+	public init(isSetupComplete: Bool, activePhoneId: String?, device: DeviceInfo) {
+		self.isSetupComplete = isSetupComplete
+		self.activePhoneId = activePhoneId
+		self.device = device
+	}
 }
 
 /// Raw `initialConnection` response.
