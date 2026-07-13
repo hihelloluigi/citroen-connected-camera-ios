@@ -75,9 +75,9 @@ cd Packages/CoreUI  && swift test
 
 These cover the VIRBKit camera client/transport (against mocked `URLProtocol` fixtures), AppCore's
 routing/onboarding/gallery logic, and CoreUI's design tokens. The live OS/camera wrappers in the
-app target (keychain, location permissions, Wi-Fi info, gallery service, photo library saving,
-camera reachability) have no unit tests — they're verified by build success and manual testing on
-a physical device instead. See the [architecture doc's testing section](architecture.md) for
+app target (keychain, location permissions, Wi-Fi info, gallery service, photo library saving)
+have no unit tests — they're verified by build success and manual testing on a physical device
+instead. See the [architecture doc's testing section](architecture.md) for
 details.
 
 ## Building & linting
