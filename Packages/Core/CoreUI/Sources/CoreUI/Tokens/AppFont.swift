@@ -1,21 +1,10 @@
-//
-//  AppFont.swift
-//  CoreUI
-//
-
 import SwiftUI
 
-/// The app's type roles. UI uses the system face; telemetry (coords, timestamps, file sizes) uses a
-/// monospaced face with tabular figures — the identity's signature treatment.
+/// The app's type roles. UI uses the system face; telemetry uses monospaced with tabular figures.
 ///
-/// Every role is built from a `Font.TextStyle`, not a fixed point size, so all of it scales with the
-/// user's Dynamic Type setting. `Font.system(size:)` — what these used to be — renders at one size
-/// forever and leaves anyone who has raised their text size reading 13pt captions.
-///
-/// The style each role maps to was chosen to preserve the size it already rendered at, which is why
-/// the mapping is not always the obvious one: `callout` is a `.subheadline` because that is the
-/// 15pt style, and `caption` is a `.footnote` because that is the 13pt one. The names describe this
-/// design system's roles; the styles supply Apple's metrics for them.
+/// Each role maps to the `Font.TextStyle` that renders at the size it names, which is why the
+/// mapping is not always the obvious one — `callout` is a `.subheadline` (15pt), `caption` a
+/// `.footnote` (13pt).
 public enum AppFont {
 	/// 34pt bold — the welcome screen's headline, and nothing else.
 	public static let displayLarge = Font.system(.largeTitle, design: .default, weight: .bold)
@@ -29,8 +18,7 @@ public enum AppFont {
 	public static let callout = Font.system(.subheadline, design: .default, weight: .regular)
 	/// 13pt — labels and badges.
 	public static let caption = Font.system(.footnote, design: .default, weight: .regular)
-	/// Monospaced, for telemetry. The one role whose base size moved — 14pt to 15pt — because there
-	/// is no 14pt system text style to hang it on, and inventing one with `.custom` would give up
-	/// the platform's own scaling curve to save a point.
+	/// 15pt monospaced, for telemetry. The one role whose size moved (from 14pt) — there is no 14pt
+	/// system text style.
 	public static let mono = Font.system(.subheadline, design: .monospaced, weight: .medium)
 }

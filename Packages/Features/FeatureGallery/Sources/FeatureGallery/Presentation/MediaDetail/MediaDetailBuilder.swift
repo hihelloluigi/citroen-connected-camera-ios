@@ -1,8 +1,3 @@
-//
-//  MediaDetailBuilder.swift
-//  FeatureGallery
-//
-
 import SwiftUI
 
 /// Assembles one media item's detail screen.

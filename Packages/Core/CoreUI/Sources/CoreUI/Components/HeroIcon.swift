@@ -1,16 +1,9 @@
-//
-//  HeroIcon.swift
-//  CoreUI
-//
-
 import SwiftUI
 
 /// The large SF Symbol that heads an onboarding screen or an empty state.
 ///
-/// It exists to own one `@ScaledMetric`. A symbol sized with `.font(.system(size:))` does not scale
-/// with Dynamic Type — the text beside it grows and the glyph stays put, which looks like a layout
-/// bug rather than a setting. `@ScaledMetric` needs a `View` to live in, so centralising it here is
-/// what keeps the six call sites from each declaring their own copy and drifting apart.
+/// Exists to own one `@ScaledMetric`: a symbol sized with `.font(.system(size:))` does not scale
+/// with Dynamic Type, and `@ScaledMetric` needs a `View` to live in.
 public struct HeroIcon: View {
 	@ScaledMetric(relativeTo: .largeTitle) private var size: CGFloat = AppIconSize.large
 	private let systemName: String

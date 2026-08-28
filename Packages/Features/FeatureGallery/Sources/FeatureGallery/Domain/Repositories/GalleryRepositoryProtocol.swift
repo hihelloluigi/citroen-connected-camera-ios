@@ -1,13 +1,7 @@
-//
-//  GalleryRepositoryProtocol.swift
-//  FeatureGallery
-//
-
 import Foundation
 
-/// The gallery's single seam over the camera. Everything above this line speaks in entities; the
-/// implementation in `Data/` is the only place that knows a `MediaItemDTO` exists. ViewModels
-/// depend on this protocol, so they unit-test against a fake without touching the network.
+/// The gallery's single seam over the camera. Everything above this line speaks in entities; only
+/// the implementation in `Data/` knows a DTO exists.
 public protocol GalleryRepositoryProtocol: Sendable {
 	/// All media currently on the camera's SD card.
 	func media() async throws -> [MediaEntity]

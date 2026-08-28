@@ -1,19 +1,10 @@
-//
-//  GalleryRepository.swift
-//  FeatureGallery
-//
-
 import CoreCamera
 import Foundation
 
-/// The live `GalleryRepositoryProtocol`, backed by the camera client.
+/// The live `GalleryRepositoryProtocol`, and the only type in the feature that sees a DTO.
 ///
-/// This is the only type in the feature that sees a `MediaItemDTO`. Every method maps the wire
-/// shape to an entity on the way out, and back to the minimal DTO the client needs on the way in —
-/// `delete` and `download` both address an item by its `url`, so a reconstructed DTO carrying the
-/// url, name and kind is enough and no DTO has to be cached between calls.
-///
-/// Verified on device; the simulator has no camera to answer.
+/// `delete` and `download` address an item by its `url`, so they reconstruct a minimal DTO from the
+/// entity rather than caching one between calls.
 public struct GalleryRepository: GalleryRepositoryProtocol {
 	private let client: any VIRBClientProtocol
 

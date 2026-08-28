@@ -1,8 +1,3 @@
-//
-//  UITestApp.swift
-//  CitroenConnectedCameraUITests
-//
-
 import XCTest
 
 /// Launches the app with a scripted camera.

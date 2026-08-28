@@ -1,8 +1,3 @@
-//
-//  Badge.swift
-//  CoreUI
-//
-
 import SwiftUI
 
 /// A small pill label with an optional SF Symbol — e.g. a VIDEO/PHOTO tag on a gallery cell, or a

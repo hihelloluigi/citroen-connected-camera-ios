@@ -1,8 +1,3 @@
-//
-//  ScriptedVIRBClient.swift
-//  CoreCamera
-//
-
 import Foundation
 
 /// A `VIRBClientProtocol` that answers from a script instead of a camera.

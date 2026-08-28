@@ -1,8 +1,3 @@
-//
-//  RootCoordinatorTests.swift
-//  CitroenConnectedCameraTests
-//
-
 import FeatureOnboarding
 import Testing
 @testable import CitroenConnectedCamera

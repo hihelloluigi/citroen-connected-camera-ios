@@ -1,8 +1,3 @@
-//
-//  GalleryStrings.swift
-//  CoreLocalization
-//
-
 import Foundation
 
 /// Copy for the media grid, the status header and the detail screen.

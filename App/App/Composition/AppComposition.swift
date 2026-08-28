@@ -1,8 +1,3 @@
-//
-//  AppComposition.swift
-//  CitroenConnectedCamera
-//
-
 import CoreCamera
 import CoreConnectivity
 import CoreDomain

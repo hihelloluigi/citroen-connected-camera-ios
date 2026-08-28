@@ -1,8 +1,3 @@
-//
-//  WelcomeBuilder.swift
-//  FeatureOnboarding
-//
-
 import SwiftUI
 
 /// Assembles the welcome screen.

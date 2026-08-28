@@ -1,8 +1,3 @@
-//
-//  FakeGalleryRepository.swift
-//  CitroenConnectedCameraTests
-//
-
 import Foundation
 import FeatureGallery
 

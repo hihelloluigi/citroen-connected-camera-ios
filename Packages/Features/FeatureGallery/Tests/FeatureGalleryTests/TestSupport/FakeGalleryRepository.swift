@@ -1,8 +1,3 @@
-//
-//  FakeGalleryRepository.swift
-//  FeatureGalleryTests
-//
-
 import Foundation
 @testable import FeatureGallery
 

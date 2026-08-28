@@ -1,8 +1,3 @@
-//
-//  PhotoLibrarySaver.swift
-//  FeatureGallery
-//
-
 import Foundation
 import Photos
 

@@ -1,8 +1,3 @@
-//
-//  UserFacingError.swift
-//  CoreDomain
-//
-
 import CoreCamera
 
 /// A camera failure reduced to the one fact a screen needs: which kind it was.

@@ -1,8 +1,3 @@
-//
-//  SmokeTests.swift
-//  CitroenConnectedCameraUITests
-//
-
 import CoreUI
 import XCTest
 

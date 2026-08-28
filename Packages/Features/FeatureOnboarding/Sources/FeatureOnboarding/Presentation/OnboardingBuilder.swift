@@ -1,8 +1,3 @@
-//
-//  OnboardingBuilder.swift
-//  FeatureOnboarding
-//
-
 import CoreCamera
 import CoreConnectivity
 import CoreDomain
@@ -33,12 +28,8 @@ public struct OnboardingDependencies {
 
 /// The feature's entry point: builds whichever onboarding screen `step` names.
 ///
-/// Known variance — this feature has no `Coordinator/` folder, unlike `FeatureGallery`. Onboarding
-/// is a linear, root-replacing flow with no stack: its whole navigation state is one
-/// `OnboardingStep`, which `ResolveOnboardingStepUseCase` derives from facts the app shell already
-/// holds. A coordinator here would own a single value that the shell's `RootCoordinator` would have
-/// to mirror anyway, so the step machine lives in Domain and the shell routes it. The gallery keeps
-/// its own coordinator because it has a real stack to push onto.
+/// Known variance — this feature has no `Coordinator/`, because its whole navigation state is one
+/// `OnboardingStep` the shell already routes. See the module README.
 public enum OnboardingBuilder {
 	@MainActor
 	public static func build(step: OnboardingStep,

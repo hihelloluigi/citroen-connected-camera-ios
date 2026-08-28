@@ -1,8 +1,3 @@
-//
-//  PasswordRules.swift
-//  CoreDomain
-//
-
 /// Why a proposed camera password was rejected before any network call.
 ///
 /// A case rather than a sentence, for the same reason as `UserFacingError`: the rule is domain

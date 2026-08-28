@@ -1,16 +1,9 @@
-//
-//  GalleryBuilder.swift
-//  FeatureGallery
-//
-
 import SwiftUI
 
-/// The feature's entry point: assembles the gallery flow — coordinator, navigation stack, grid, and
-/// the detail screen it pushes — and hands the app shell back a single `View`.
+/// The feature's entry point: assembles the gallery flow and hands the app shell back one `View`.
 ///
-/// `onPoll` is the seam that keeps the camera session alive without the feature knowing anything
-/// about app-level routing: the flow calls it on a timer, and the app shell decides what a refreshed
-/// connectivity snapshot means for the root destination.
+/// `onPoll` keeps the camera session alive without the feature knowing about app-level routing —
+/// the flow calls it on a timer, the shell decides what the result means.
 public enum GalleryBuilder {
 	@MainActor
 	public static func build(repository: any GalleryRepositoryProtocol,

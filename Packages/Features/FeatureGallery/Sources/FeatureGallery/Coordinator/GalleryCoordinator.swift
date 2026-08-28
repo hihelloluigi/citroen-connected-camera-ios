@@ -1,8 +1,3 @@
-//
-//  GalleryCoordinator.swift
-//  FeatureGallery
-//
-
 import CoreNavigation
 import Observation
 

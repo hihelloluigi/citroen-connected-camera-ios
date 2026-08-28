@@ -1,8 +1,3 @@
-//
-//  UserFacingErrorTests.swift
-//  CoreDomainTests
-//
-
 import CoreCamera
 import Testing
 @testable import CoreDomain

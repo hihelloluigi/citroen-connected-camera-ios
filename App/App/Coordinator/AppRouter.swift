@@ -1,15 +1,8 @@
-//
-//  AppRouter.swift
-//  CitroenConnectedCamera
-//
-
 import FeatureOnboarding
 
-/// Maps the app's live routing input to a root destination.
-///
-/// The decision this makes is deliberately thin — onboarding or gallery. Which onboarding step is
-/// `ResolveOnboardingStepUseCase`'s call to make, and a `nil` from it is what means "the flow is
-/// done"; keeping that machine inside the feature is why this router is four lines.
+/// Maps the app's live routing input to a root destination — onboarding or gallery. Which
+/// onboarding step is `ResolveOnboardingStepUseCase`'s call, and a `nil` from it means the flow is
+/// done.
 
 enum AppRouter {
 	static func destination(for input: OnboardingRoutingInput,

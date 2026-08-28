@@ -1,8 +1,3 @@
-//
-//  UserFacingError+Localization.swift
-//  CoreLocalization
-//
-
 import CoreDomain
 
 public extension UserFacingError {

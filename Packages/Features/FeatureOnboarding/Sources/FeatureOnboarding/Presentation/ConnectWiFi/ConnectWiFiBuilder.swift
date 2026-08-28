@@ -1,8 +1,3 @@
-//
-//  ConnectWiFiBuilder.swift
-//  FeatureOnboarding
-//
-
 import CoreConnectivity
 import SwiftUI
 

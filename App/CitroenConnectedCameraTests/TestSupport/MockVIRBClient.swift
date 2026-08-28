@@ -1,8 +1,3 @@
-//
-//  MockVIRBClient.swift
-//  CitroenConnectedCameraTests
-//
-
 import CoreCamera
 import Foundation
 

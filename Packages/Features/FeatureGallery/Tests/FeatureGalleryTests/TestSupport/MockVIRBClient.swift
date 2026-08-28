@@ -1,8 +1,3 @@
-//
-//  MockVIRBClient.swift
-//  FeatureGalleryTests
-//
-
 import CoreCamera
 import Foundation
 

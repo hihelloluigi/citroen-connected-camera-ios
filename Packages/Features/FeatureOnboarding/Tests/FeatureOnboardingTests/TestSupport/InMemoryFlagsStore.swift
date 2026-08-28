@@ -1,8 +1,3 @@
-//
-//  InMemoryFlagsStore.swift
-//  FeatureOnboardingTests
-//
-
 import CoreDomain
 
 @testable import FeatureOnboarding

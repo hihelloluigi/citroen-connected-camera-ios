@@ -1,8 +1,3 @@
-//
-//  AdvanceOnboardingUseCase.swift
-//  FeatureOnboarding
-//
-
 import CoreCamera
 import CoreConnectivity
 import CoreDomain

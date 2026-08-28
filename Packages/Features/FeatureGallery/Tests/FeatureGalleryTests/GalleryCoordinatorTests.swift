@@ -1,8 +1,3 @@
-//
-//  GalleryCoordinatorTests.swift
-//  FeatureGalleryTests
-//
-
 import Testing
 @testable import FeatureGallery
 

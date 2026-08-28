@@ -1,8 +1,3 @@
-//
-//  MediaEntity.swift
-//  FeatureGallery
-//
-
 import Foundation
 
 /// One photo or video on the camera's SD card, in the shape the gallery actually uses.

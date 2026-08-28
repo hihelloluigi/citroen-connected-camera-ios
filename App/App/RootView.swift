@@ -1,8 +1,3 @@
-//
-//  RootView.swift
-//  CitroenConnectedCamera
-//
-
 import CoreConnectivity
 import FeatureGallery
 import FeatureOnboarding

@@ -1,8 +1,3 @@
-//
-//  OnboardingStrings.swift
-//  CoreLocalization
-//
-
 import Foundation
 
 /// Copy for the six onboarding screens.

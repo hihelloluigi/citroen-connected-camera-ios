@@ -1,8 +1,3 @@
-//
-//  ReconnectBuilder.swift
-//  FeatureOnboarding
-//
-
 import CoreConnectivity
 import SwiftUI
 

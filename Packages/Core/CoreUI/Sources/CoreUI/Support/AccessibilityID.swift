@@ -1,8 +1,3 @@
-//
-//  AccessibilityID.swift
-//  CoreUI
-//
-
 /// The identifiers UI tests address the app by.
 ///
 /// They live here, shared between the features that set them and the test bundle that reads them,

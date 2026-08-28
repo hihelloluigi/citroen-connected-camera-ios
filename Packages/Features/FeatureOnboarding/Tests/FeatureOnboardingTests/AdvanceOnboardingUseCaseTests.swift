@@ -1,8 +1,3 @@
-//
-//  AdvanceOnboardingUseCaseTests.swift
-//  FeatureOnboardingTests
-//
-
 import CoreCamera
 import CoreConnectivity
 import CoreDomain

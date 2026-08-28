@@ -1,8 +1,3 @@
-//
-//  LocalNetworkPermissionBuilder.swift
-//  FeatureOnboarding
-//
-
 import SwiftUI
 
 /// Assembles the Local Network explainer. The screen has no ViewModel: iOS exposes no way to query

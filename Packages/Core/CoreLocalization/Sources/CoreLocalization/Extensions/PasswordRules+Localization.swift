@@ -1,8 +1,3 @@
-//
-//  PasswordRules+Localization.swift
-//  CoreLocalization
-//
-
 import CoreDomain
 
 public extension PasswordRuleViolation {

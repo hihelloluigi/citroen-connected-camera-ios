@@ -1,8 +1,3 @@
-//
-//  CitroenConnectedCameraApp.swift
-//  CitroenConnectedCamera
-//
-
 import CoreConnectivity
 import SwiftUI
 

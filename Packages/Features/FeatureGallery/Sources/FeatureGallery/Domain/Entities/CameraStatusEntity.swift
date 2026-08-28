@@ -1,8 +1,3 @@
-//
-//  CameraStatusEntity.swift
-//  FeatureGallery
-//
-
 /// What the status strip above the grid needs to know about the camera.
 ///
 /// `CameraStatusDTO` carries eleven fields; the header renders two. The other nine — connection

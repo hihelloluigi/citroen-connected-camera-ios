@@ -1,8 +1,3 @@
-//
-//  MediaListBuilder.swift
-//  FeatureGallery
-//
-
 import SwiftUI
 
 /// Assembles the media grid: its ViewModel, the device-details loader the status header needs, and

@@ -1,8 +1,3 @@
-//
-//  CameraErrorStrings.swift
-//  CoreLocalization
-//
-
 import Foundation
 
 /// One human-voiced line per camera failure.

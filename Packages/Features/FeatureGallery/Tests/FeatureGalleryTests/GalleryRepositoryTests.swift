@@ -1,8 +1,3 @@
-//
-//  GalleryRepositoryTests.swift
-//  FeatureGalleryTests
-//
-
 import CoreCamera
 import Foundation
 import Testing

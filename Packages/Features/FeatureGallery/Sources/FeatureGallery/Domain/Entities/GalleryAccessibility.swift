@@ -1,8 +1,3 @@
-//
-//  GalleryAccessibility.swift
-//  FeatureGallery
-//
-
 import CoreLocalization
 
 public enum GalleryAccessibility {

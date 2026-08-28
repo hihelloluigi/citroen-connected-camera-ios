@@ -1,8 +1,3 @@
-//
-//  PasswordRulesTests.swift
-//  CoreDomainTests
-//
-
 import Testing
 @testable import CoreDomain
 

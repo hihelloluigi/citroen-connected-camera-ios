@@ -1,8 +1,3 @@
-//
-//  RoutingController.swift
-//  CitroenConnectedCamera
-//
-
 import CoreConnectivity
 import CoreDomain
 import FeatureOnboarding

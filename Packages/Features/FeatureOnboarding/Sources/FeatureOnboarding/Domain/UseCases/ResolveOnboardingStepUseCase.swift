@@ -1,8 +1,3 @@
-//
-//  ResolveOnboardingStepUseCase.swift
-//  FeatureOnboarding
-//
-
 /// Everything the flow needs to decide which onboarding screen to show. The values are resolved
 /// facts — permission decisions, reachability, camera setup state; how they are derived from the OS
 /// and the camera is the app shell's job, not this machine's.

@@ -1,8 +1,3 @@
-//
-//  RoutingControllerTests.swift
-//  CitroenConnectedCameraTests
-//
-
 import CoreConnectivity
 import CoreDomain
 import FeatureOnboarding

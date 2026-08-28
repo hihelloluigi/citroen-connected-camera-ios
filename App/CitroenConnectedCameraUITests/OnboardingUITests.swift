@@ -1,8 +1,3 @@
-//
-//  OnboardingUITests.swift
-//  CitroenConnectedCameraUITests
-//
-
 import CoreUI
 import XCTest
 

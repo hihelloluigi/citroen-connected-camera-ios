@@ -1,8 +1,3 @@
-//
-//  LocalizationCatalogTests.swift
-//  CoreLocalizationTests
-//
-
 import Foundation
 import Testing
 @testable import CoreLocalization

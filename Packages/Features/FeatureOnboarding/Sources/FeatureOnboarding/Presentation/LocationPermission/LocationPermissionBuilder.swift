@@ -1,8 +1,3 @@
-//
-//  LocationPermissionBuilder.swift
-//  FeatureOnboarding
-//
-
 import CoreDomain
 import SwiftUI
 

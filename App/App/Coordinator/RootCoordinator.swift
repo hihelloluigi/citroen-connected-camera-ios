@@ -1,8 +1,3 @@
-//
-//  RootCoordinator.swift
-//  CitroenConnectedCamera
-//
-
 import CoreNavigation
 import FeatureOnboarding
 import Observation

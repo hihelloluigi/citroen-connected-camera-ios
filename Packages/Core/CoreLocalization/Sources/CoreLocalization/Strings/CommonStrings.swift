@@ -1,8 +1,3 @@
-//
-//  CommonStrings.swift
-//  CoreLocalization
-//
-
 import Foundation
 
 /// Strings used by more than one feature.

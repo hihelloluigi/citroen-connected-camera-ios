@@ -1,8 +1,3 @@
-//
-//  SetPasswordBuilder.swift
-//  FeatureOnboarding
-//
-
 import SwiftUI
 
 /// Assembles the change-the-camera-password screen.
