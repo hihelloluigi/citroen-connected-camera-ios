@@ -28,6 +28,7 @@ fileGroups:
   - .editorconfig
   - Mintfile
   - Configurations
+  - TestPlans
   - scripts
   - docs
   - README.md
@@ -45,12 +46,20 @@ settings:
     SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY: YES
 
 packages:
-  VIRBKit:
-    path: Packages/VIRBKit
-  AppCore:
-    path: Packages/AppCore
-  CoreUI:
-    path: Packages/CoreUI
+  CoreCamera: { path: Packages/Core/CoreCamera, group: Packages/Core }
+  CoreConnectivity: { path: Packages/Core/CoreConnectivity, group: Packages/Core }
+  CoreDomain: { path: Packages/Core/CoreDomain, group: Packages/Core }
+  CoreNavigation: { path: Packages/Core/CoreNavigation, group: Packages/Core }
+  CoreStorage: { path: Packages/Core/CoreStorage, group: Packages/Core }
+  CoreUI: { path: Packages/Core/CoreUI, group: Packages/Core }
+  FeatureGallery: { path: Packages/Features/FeatureGallery, group: Packages/Features }
+  FeatureOnboarding: { path: Packages/Features/FeatureOnboarding, group: Packages/Features }
+  # Pinned exactly, not by range: .swiftlint.yml sets warning_threshold: 1, so a new rule in a
+  # SwiftLint release turns a green build red with no code change. Every Package.swift pins the
+  # same version.
+  SwiftLintPlugins:
+    url: https://github.com/SimplyDanny/SwiftLintPlugins
+    exactVersion: 0.65.0
 
 # XcodeGen's per-product-type default for TARGETED_DEVICE_FAMILY overrides a project-level
 # value, whereas a target template applies at target level and wins.
@@ -76,9 +85,14 @@ targets:
       - path: App/App
       - path: App/Resources
     dependencies:
-      - package: VIRBKit
-      - package: AppCore
+      - package: CoreCamera
+      - package: CoreConnectivity
+      - package: CoreDomain
+      - package: CoreNavigation
+      - package: CoreStorage
       - package: CoreUI
+      - package: FeatureGallery
+      - package: FeatureOnboarding
     settings:
       base:
         # PRODUCT_BUNDLE_IDENTIFIER, APP_DISPLAY_NAME and DEVELOPMENT_TEAM all come from
@@ -92,6 +106,30 @@ targets:
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
 
+  # The app-shell unit tests. Everything else is a package test target, reached through the test
+  # plan rather than declared here — only code that lives in the app module needs this bundle.
+  CitroenConnectedCameraTests:
+    type: bundle.unit-test
+    templates: [iOSTarget]
+    sources:
+      - path: App/CitroenConnectedCameraTests
+    dependencies:
+      - target: CitroenConnectedCamera
+      # Member import visibility means the types these tests name have to be imported directly,
+      # even though the app target already links them — and the test doubles under TestSupport/
+      # reach further still (CoreCamera for the scripted client, FeatureGallery for the repository
+      # fake), so those get linked here too.
+      - package: CoreCamera
+      - package: CoreConnectivity
+      - package: CoreDomain
+      - package: FeatureGallery
+      - package: FeatureOnboarding
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: me.luigiaiello.ccam.tests
+        TEST_TARGET_NAME: CitroenConnectedCamera
+
 schemes:
   # Each scheme's build pre-action regenerates Configurations/Secrets.xcconfig for its own
   # environment before Xcode evaluates build settings, so switching schemes never builds
@@ -101,13 +139,18 @@ schemes:
   # ($SRCROOT) to the script, and /bin/bash is required by its arrays and [[ ]].
   Development:
     build:
-      targets: { CitroenConnectedCamera: all }
+      targets: { CitroenConnectedCamera: all, CitroenConnectedCameraTests: [test] }
       preActions:
         - name: Generate Secrets
           script: ENV_NAME=development "$SRCROOT/scripts/generate_secrets.sh" >> /tmp/ccam_secrets.log 2>&1
           settingsTarget: CitroenConnectedCamera
           shell: /bin/bash
     run: { config: Development }
+    test:
+      config: Development
+      testPlans:
+        - path: TestPlans/CitroenConnectedCamera.xctestplan
+          defaultPlan: true
 
   Staging:
     build:

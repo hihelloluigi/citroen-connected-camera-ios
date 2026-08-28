@@ -1,16 +1,21 @@
+//
+//  CitroenConnectedCameraApp.swift
+//  CitroenConnectedCamera
+//
+
+import CoreConnectivity
 import SwiftUI
-import AppCore
 
 @main
 struct CitroenConnectedCameraApp: App {
-	@State private var environment = AppEnvironment.live()
+	@State private var composition = AppComposition.live()
 
 	var body: some Scene {
 		WindowGroup {
-			RootView(coordinator: environment.coordinator, environment: environment)
+			RootView(coordinator: composition.coordinator, composition: composition)
 				.task {
-					await environment.connectivity.refresh()
-					environment.routing.ingest(environment.connectivity.snapshot)
+					await composition.connectivity.refresh()
+					composition.routing.ingest(composition.connectivity.snapshot)
 				}
 		}
 	}
