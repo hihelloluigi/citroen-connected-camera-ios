@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -10,16 +11,16 @@ struct WelcomeView: View {
 			Image(systemName: "camera.fill")
 				.font(.system(size: AppIconSize.large))
 				.foregroundStyle(AppColor.accentEmphasis)
-			Text("Your dashcam, on your phone")
+			Text(OnboardingStrings.welcomeTitle)
 				.font(AppFont.displayLarge)
 				.foregroundStyle(AppColor.textPrimary)
 				.multilineTextAlignment(.center)
-			Text("Browse, download, and manage recordings from your Citroën ConnectedCAM over its own Wi‑Fi.")
+			Text(OnboardingStrings.welcomeBody)
 				.font(AppFont.body)
 				.foregroundStyle(AppColor.textSecondary)
 				.multilineTextAlignment(.center)
 			Spacer()
-			PrimaryButton("Get started") { model.getStarted() }
+			PrimaryButton(OnboardingStrings.getStarted) { model.getStarted() }
 		}
 		.padding(AppSpacing.xl)
 		.frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -15,9 +16,9 @@ struct StatusHeaderView: View {
 			showingDetails = true
 		} label: {
 			HStack(spacing: AppSpacing.md) {
-				chip(status.needsFormat ? "SD needs formatting" : "SD ready",
+				chip(status.needsFormat ? GalleryStrings.statusSDNeedsFormat : GalleryStrings.statusSDReady,
 					 systemImage: status.needsFormat ? "exclamationmark.triangle.fill" : "sdcard.fill")
-				chip(status.hasGPSFix ? "GPS fix" : "No GPS",
+				chip(status.hasGPSFix ? GalleryStrings.statusGPSFix : GalleryStrings.statusNoGPS,
 					 systemImage: "location.fill")
 				Spacer()
 				Image(systemName: "info.circle").foregroundStyle(AppColor.textSecondary)
@@ -26,8 +27,8 @@ struct StatusHeaderView: View {
 			.background(AppColor.surface, in: RoundedRectangle(cornerRadius: AppRadius.md))
 		}
 		.buttonStyle(.plain)
-		.accessibilityLabel("Camera status")
-		.accessibilityHint("Shows camera details")
+		.accessibilityLabel(GalleryStrings.statusAccessibilityLabel)
+		.accessibilityHint(GalleryStrings.statusAccessibilityHint)
 		.task { device = await loadDevice() }
 		.sheet(isPresented: $showingDetails) {
 			detailsSheet
@@ -41,13 +42,13 @@ struct StatusHeaderView: View {
 
 	private var detailsSheet: some View {
 		VStack(alignment: .leading, spacing: AppSpacing.md) {
-			Text("Camera details").font(AppFont.title).foregroundStyle(AppColor.textPrimary)
+			Text(GalleryStrings.cameraDetails).font(AppFont.title).foregroundStyle(AppColor.textPrimary)
 			if let device {
-				row("Firmware", "\(device.firmware)")
-				row("Part number", device.partNumber)
-				row("Device ID", "\(device.deviceId)")
+				row(GalleryStrings.firmware, "\(device.firmware)")
+				row(GalleryStrings.partNumber, device.partNumber)
+				row(GalleryStrings.deviceID, "\(device.deviceId)")
 			} else {
-				Text("Reading camera details…").font(AppFont.body).foregroundStyle(AppColor.textSecondary)
+				Text(GalleryStrings.readingDetails).font(AppFont.body).foregroundStyle(AppColor.textSecondary)
 			}
 			Spacer()
 		}

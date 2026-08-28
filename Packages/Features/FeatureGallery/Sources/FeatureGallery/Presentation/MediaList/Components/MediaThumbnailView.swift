@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -21,7 +22,7 @@ struct MediaThumbnailView: View {
 		.aspectRatio(1, contentMode: .fill)
 		.clipShape(RoundedRectangle(cornerRadius: AppRadius.sm))
 		.overlay(alignment: .bottomLeading) {
-			Badge(item.kind == .video ? "Video" : "Photo",
+			Badge(item.kind == .video ? GalleryStrings.video : GalleryStrings.photo,
 				  systemImage: item.kind == .video ? "video.fill" : "photo.fill")
 				.padding(AppSpacing.xs)
 		}
@@ -52,7 +53,7 @@ struct MediaThumbnailView: View {
 		.accessibilityElement(children: .ignore)
 		.accessibilityLabel(GalleryAccessibility.label(for: item))
 		.accessibilityAddTraits(isSelecting ? (isSelected ? [.isButton, .isSelected] : .isButton) : .isImage)
-		.accessibilityValue(isDownloading ? "Downloading" : "")
+		.accessibilityValue(isDownloading ? GalleryStrings.downloading : "")
 	}
 
 	private func placeholder(systemImage: String) -> some View {

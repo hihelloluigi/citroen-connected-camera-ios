@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -10,24 +11,21 @@ struct LocationPermissionView: View {
 			Image(systemName: "location")
 				.font(.system(size: AppIconSize.large))
 				.foregroundStyle(AppColor.accentEmphasis)
-			Text("Allow Location access")
+			Text(OnboardingStrings.locationTitle)
 				.font(AppFont.title).foregroundStyle(AppColor.textPrimary)
 				.multilineTextAlignment(.center)
-			Text(
-				"Location lets the app show which Wi‑Fi network you're on, so it can confirm you're connected to the camera. "
-					+ "You can skip this — the app still works without it."
-			)
+			Text(OnboardingStrings.locationBody)
 				.font(AppFont.body).foregroundStyle(AppColor.textSecondary)
 				.multilineTextAlignment(.center)
 			Spacer()
 			if model.isDenied {
-				PrimaryButton("Open Settings") { AppSettings.open() }
+				PrimaryButton(CommonStrings.openSettings) { AppSettings.open() }
 			} else {
-				PrimaryButton("Allow access", isLoading: model.isRequesting) {
+				PrimaryButton(OnboardingStrings.locationAllow, isLoading: model.isRequesting) {
 					Task { await model.request() }
 				}
 			}
-			SecondaryButton("Not now") { model.skip() }
+			SecondaryButton(CommonStrings.notNow) { model.skip() }
 		}
 		.padding(AppSpacing.xl)
 		.frame(maxWidth: .infinity, maxHeight: .infinity)

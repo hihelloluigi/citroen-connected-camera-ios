@@ -1,4 +1,5 @@
 import AVKit
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -20,8 +21,8 @@ struct MediaDetailView: View {
 		.background(AppColor.background)
 		.navigationTitle(model.item.name)
 		.navigationBarTitleDisplayMode(.inline)
-		.alert("Couldn't complete that", isPresented: actionErrorBinding) {
-			Button("OK", role: .cancel) { model.clearActionError() }
+		.alert(CommonStrings.actionFailedTitle, isPresented: actionErrorBinding) {
+			Button(CommonStrings.ok, role: .cancel) { model.clearActionError() }
 		} message: {
 			Text(model.actionError?.message ?? "")
 		}
@@ -47,22 +48,22 @@ struct MediaDetailView: View {
 				.frame(maxWidth: .infinity, maxHeight: .infinity)
 			}
 		}
-		.accessibilityLabel(model.item.kind == .video ? "Video player" : "Photo")
+		.accessibilityLabel(model.item.kind == .video ? GalleryStrings.videoPlayer : GalleryStrings.photo)
 	}
 
 	private var actions: some View {
 		HStack(spacing: AppSpacing.md) {
-			SecondaryButton(model.didSaveToPhotos ? "Saved" : "Save") { Task { await model.saveToPhotos() } }
-			SecondaryButton("Share") {
+			SecondaryButton(model.didSaveToPhotos ? CommonStrings.saved : CommonStrings.save) { Task { await model.saveToPhotos() } }
+			SecondaryButton(CommonStrings.share) {
 				Task { if let url = await model.prepareShareURL() { shareItem = ShareItem(url: url) } }
 			}
-			PrimaryButton("Delete", isLoading: isDeleting) { showDeleteConfirm = true }
+			PrimaryButton(CommonStrings.delete, isLoading: isDeleting) { showDeleteConfirm = true }
 		}
 		.padding(AppSpacing.md)
 		.background(AppColor.surface)
-		.confirmationDialog("Delete this recording? This can't be undone.",
+		.confirmationDialog(GalleryStrings.deleteOneConfirm,
 							isPresented: $showDeleteConfirm, titleVisibility: .visible) {
-			Button("Delete", role: .destructive) {
+			Button(CommonStrings.delete, role: .destructive) {
 				Task {
 					isDeleting = true
 					let deleted = await model.delete()
@@ -70,7 +71,7 @@ struct MediaDetailView: View {
 					if deleted { onDelete?(); dismiss() }
 				}
 			}
-			Button("Cancel", role: .cancel) {}
+			Button(CommonStrings.cancel, role: .cancel) {}
 		}
 	}
 

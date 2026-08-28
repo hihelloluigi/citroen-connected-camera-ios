@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -7,25 +8,25 @@ struct SetPasswordView: View {
 	var body: some View {
 		VStack(spacing: AppSpacing.lg) {
 			Spacer()
-			Text("Set a new camera password")
+			Text(OnboardingStrings.setPasswordTitle)
 				.font(AppFont.title).foregroundStyle(AppColor.textPrimary)
 				.multilineTextAlignment(.center)
-			Text("Choose a new Wi‑Fi password for the camera. You'll reconnect with it in a moment.")
+			Text(OnboardingStrings.setPasswordBody)
 				.font(AppFont.body).foregroundStyle(AppColor.textSecondary)
 				.multilineTextAlignment(.center)
-			LabeledField("New password", text: $model.newPassword,
-						 placeholder: "At least 8 characters", isSecure: true,
+			LabeledField(OnboardingStrings.newPassword, text: $model.newPassword,
+						 placeholder: OnboardingStrings.newPasswordPlaceholder, isSecure: true,
 						 error: model.validationError)
-			LabeledField("Confirm password", text: $model.confirmPassword, isSecure: true)
+			LabeledField(OnboardingStrings.confirmPassword, text: $model.confirmPassword, isSecure: true)
 			if model.showCurrentPasswordField {
-				LabeledField("Current password", text: $model.currentPassword, isSecure: true)
+				LabeledField(OnboardingStrings.currentPassword, text: $model.currentPassword, isSecure: true)
 			}
 			if let submissionError = model.submissionError {
 				Text(submissionError).font(AppFont.callout).foregroundStyle(AppColor.danger)
 					.multilineTextAlignment(.center)
 			}
 			Spacer()
-			PrimaryButton("Set password", isLoading: model.isSubmitting) {
+			PrimaryButton(OnboardingStrings.setPasswordAction, isLoading: model.isSubmitting) {
 				Task { await model.submit() }
 			}
 		}

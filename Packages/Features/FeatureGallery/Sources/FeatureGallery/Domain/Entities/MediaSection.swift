@@ -1,3 +1,4 @@
+import CoreLocalization
 import Foundation
 
 /// A day's worth of media, titled for display ("Today", "Yesterday", a date, or "Undated").
@@ -32,15 +33,15 @@ public enum MediaGrouping {
 									items: sortedItems)
 			}
 		if !undated.isEmpty {
-			sections.append(MediaSection(id: "undated", title: "Undated", items: undated))
+			sections.append(MediaSection(id: "undated", title: GalleryStrings.sectionUndated, items: undated))
 		}
 		return sections
 	}
 
 	private static func title(for day: Date, calendar: Calendar, now: Date) -> String {
-		if calendar.isDate(day, inSameDayAs: now) { return "Today" }
+		if calendar.isDate(day, inSameDayAs: now) { return GalleryStrings.sectionToday }
 		if let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: now)),
-		   calendar.isDate(day, inSameDayAs: yesterday) { return "Yesterday" }
+		   calendar.isDate(day, inSameDayAs: yesterday) { return GalleryStrings.sectionYesterday }
 		let formatter = DateFormatter()
 		formatter.calendar = calendar
 		formatter.dateStyle = .medium

@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -10,10 +11,9 @@ struct LocalNetworkPermissionView: View {
 	var body: some View {
 		OnboardingExplainer(
 			systemImage: "wifi",
-			title: "Allow Local Network access",
-			message: "The app talks to your camera directly over its Wi‑Fi. "
-				+ "iOS will ask for Local Network access the first time it connects — please allow it.",
-			primaryTitle: "Continue",
+			title: OnboardingStrings.localNetworkTitle,
+			message: OnboardingStrings.localNetworkBody,
+			primaryTitle: CommonStrings.continue,
 			primaryAction: { actions.markLocalNetworkResolved() }
 		)
 	}

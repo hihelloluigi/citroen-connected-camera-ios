@@ -7,7 +7,8 @@ final class ConnectWiFiViewModel {
 	private let wifiInfo: any WiFiInfoService
 	private let connectivity: ConnectivityMonitor
 	private let actions: any AdvanceOnboardingUseCaseProtocol
-	/// The joined network name, or `nil` when Location is denied (degrade to "Camera detected").
+	/// The joined network name, or `nil` when Location is denied — the view then degrades to a
+	/// reachability-only line rather than showing a blank network name.
 	private(set) var ssid: String?
 
 	init(wifiInfo: any WiFiInfoService, connectivity: ConnectivityMonitor, actions: any AdvanceOnboardingUseCaseProtocol) {

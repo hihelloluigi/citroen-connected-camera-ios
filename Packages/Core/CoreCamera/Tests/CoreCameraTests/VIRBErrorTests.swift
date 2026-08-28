@@ -8,6 +8,8 @@ import Testing
 	#expect(VIRBError.map(result: 11) == .unexpected(result: 11))
 }
 
-@Test func errorsHaveUserMessages() {
-	#expect(!VIRBError.cameraUnreachable.userMessage.isEmpty)
+@Test func transportAndDecodingCarryTheirUnderlyingDetail() {
+	// The associated strings are diagnostics, not copy — CoreLocalization words these for the user.
+	#expect(VIRBError.transport("timed out") == .transport("timed out"))
+	#expect(VIRBError.decoding("missing deviceInfo") != .decoding("other"))
 }

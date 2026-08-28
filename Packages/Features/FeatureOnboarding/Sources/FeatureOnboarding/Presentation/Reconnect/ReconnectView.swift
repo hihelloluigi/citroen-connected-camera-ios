@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -10,15 +11,14 @@ struct ReconnectView: View {
 			Image(systemName: "arrow.triangle.2.circlepath")
 				.font(.system(size: AppIconSize.large))
 				.foregroundStyle(AppColor.accentEmphasis)
-			Text("Reconnect to the camera")
+			Text(OnboardingStrings.reconnectTitle)
 				.font(AppFont.title).foregroundStyle(AppColor.textPrimary)
 				.multilineTextAlignment(.center)
-			Text("The camera restarted its Wi‑Fi with the new password. In Settings › Wi‑Fi, rejoin the " +
-				 "camera's network using the password you just set.")
+			Text(OnboardingStrings.reconnectBody)
 				.font(AppFont.body).foregroundStyle(AppColor.textSecondary)
 				.multilineTextAlignment(.center)
 			ProgressView().tint(AppColor.accentEmphasis)
-			Text("Waiting for the camera…")
+			Text(OnboardingStrings.waitingForCamera)
 				.font(AppFont.callout).foregroundStyle(AppColor.textSecondary)
 			Spacer()
 		}

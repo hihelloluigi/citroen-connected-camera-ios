@@ -1,5 +1,6 @@
 import CoreCamera
 import CoreDomain
+import CoreLocalization
 import Observation
 
 @MainActor
@@ -22,7 +23,7 @@ final class SetPasswordViewModel {
 	/// the current-password field; on success routing moves to Reconnect (no local navigation here).
 	func submit() async {
 		submissionError = nil
-		validationError = PasswordRules.validate(new: newPassword, confirm: confirmPassword)
+		validationError = PasswordRules.validate(new: newPassword, confirm: confirmPassword)?.message
 		guard validationError == nil else { return }
 
 		isSubmitting = true
@@ -31,10 +32,9 @@ final class SetPasswordViewModel {
 			try await actions.changePassword(current: currentPassword, new: newPassword)
 		} catch VIRBError.passwordRejected {
 			showCurrentPasswordField = true
-			submissionError = "That current password wasn't accepted. " +
-				"Enter the camera's current password and try again."
+			submissionError = OnboardingStrings.passwordRejected
 		} catch {
-			submissionError = "Couldn't reach the camera. Check you're on its Wi‑Fi and try again."
+			submissionError = OnboardingStrings.cameraUnreachable
 		}
 	}
 }

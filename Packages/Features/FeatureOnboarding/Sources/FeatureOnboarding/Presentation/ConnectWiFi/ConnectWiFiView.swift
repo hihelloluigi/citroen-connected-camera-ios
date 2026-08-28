@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -10,22 +11,20 @@ struct ConnectWiFiView: View {
 			Image(systemName: "wifi.router")
 				.font(.system(size: AppIconSize.large))
 				.foregroundStyle(AppColor.accentEmphasis)
-			Text("Connect to the camera's Wi‑Fi")
+			Text(OnboardingStrings.connectTitle)
 				.font(AppFont.title).foregroundStyle(AppColor.textPrimary)
 				.multilineTextAlignment(.center)
 			Text(networkLine)
 				.font(AppFont.body).foregroundStyle(AppColor.textSecondary)
 				.multilineTextAlignment(.center)
-			Text("In Settings › Wi‑Fi, join the camera's network. A new camera's password is " +
-				 "ConnectedCam; if you've already set your own, use that. Then come back here.")
+			Text(OnboardingStrings.connectBody)
 				.font(AppFont.body).foregroundStyle(AppColor.textSecondary)
 				.multilineTextAlignment(.center)
-			Text("New camera? Hold both buttons for 2 seconds until it beeps to factory reset. " +
-				 "This erases all recordings on the camera.")
+			Text(OnboardingStrings.connectResetHint)
 				.font(AppFont.callout).foregroundStyle(AppColor.textSecondary)
 				.multilineTextAlignment(.center)
 			ProgressView().tint(AppColor.accentEmphasis)
-			Text("Waiting for the camera…")
+			Text(OnboardingStrings.waitingForCamera)
 				.font(AppFont.callout).foregroundStyle(AppColor.textSecondary)
 			Spacer()
 		}
@@ -36,7 +35,7 @@ struct ConnectWiFiView: View {
 	}
 
 	private var networkLine: String {
-		if let ssid = model.ssid { return "You're on \(ssid). Join the camera's network (ConnectedCAM…) if you haven't." }
-		return "Join the camera's network — it's named ConnectedCAM followed by four digits."
+		if let ssid = model.ssid { return OnboardingStrings.connectOnNetwork(ssid: ssid) }
+		return OnboardingStrings.connectJoinPrompt
 	}
 }

@@ -1,8 +1,13 @@
-/// Builds the VoiceOver label for a media cell: the kind, plus a note when the item is geotagged. Pure,
-/// so the spoken description is unit-tested and the view just applies it.
+//
+//  GalleryAccessibility.swift
+//  FeatureGallery
+//
+
+import CoreLocalization
+
 public enum GalleryAccessibility {
 	public static func label(for item: MediaEntity) -> String {
-		let kind = item.kind == .video ? "Video" : "Photo"
-		return item.gpsLatitude != nil ? "\(kind), geotagged" : kind
+		let kind = item.kind == .video ? GalleryStrings.video : GalleryStrings.photo
+		return item.gpsLatitude != nil ? GalleryStrings.geotagged(kind: kind) : kind
 	}
 }

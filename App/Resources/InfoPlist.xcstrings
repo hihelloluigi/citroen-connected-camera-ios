@@ -1,0 +1,93 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSLocalNetworkUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This app talks to your camera over your local Wi‑Fi network."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'app comunica con la telecamera tramite la rete Wi‑Fi locale."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta app se comunica con tu cámara a través de la red Wi‑Fi local."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette app communique avec votre caméra via le réseau Wi‑Fi local."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location access lets the app show which Wi‑Fi network you're on so it can confirm you're connected to the camera."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'accesso alla posizione permette all'app di mostrare a quale rete Wi‑Fi sei connesso, per confermare il collegamento alla telecamera."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El acceso a la ubicación permite que la app muestre a qué red Wi‑Fi estás conectado para confirmar la conexión con la cámara."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'accès à la localisation permet à l'app d'afficher le réseau Wi‑Fi auquel vous êtes connecté afin de confirmer la liaison avec la caméra."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryAddUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow saving downloaded photos and videos from your camera to your photo library."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consenti di salvare nella tua libreria foto e video scaricati dalla telecamera."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permite guardar en tu fototeca las fotos y vídeos descargados de la cámara."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autorise l'enregistrement dans votre photothèque des photos et vidéos téléchargées depuis la caméra."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

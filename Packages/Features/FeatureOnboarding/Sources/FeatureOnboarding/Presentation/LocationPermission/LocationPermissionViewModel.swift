@@ -1,4 +1,5 @@
 import CoreDomain
+import CoreLocalization
 import Observation
 
 @MainActor

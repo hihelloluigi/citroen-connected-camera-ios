@@ -17,6 +17,7 @@ let package = Package(
 		// Internal dependencies
 		.package(name: "CoreCamera", path: "../../Core/CoreCamera"),
 		.package(name: "CoreDomain", path: "../../Core/CoreDomain"),
+		.package(name: "CoreLocalization", path: "../../Core/CoreLocalization"),
 		.package(name: "CoreNavigation", path: "../../Core/CoreNavigation"),
 		.package(name: "CoreUI", path: "../../Core/CoreUI"),
 		.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.65.0")
@@ -27,6 +28,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "CoreCamera", package: "CoreCamera"),
 				.product(name: "CoreDomain", package: "CoreDomain"),
+				.product(name: "CoreLocalization", package: "CoreLocalization"),
 				.product(name: "CoreNavigation", package: "CoreNavigation"),
 				.product(name: "CoreUI", package: "CoreUI")
 			],

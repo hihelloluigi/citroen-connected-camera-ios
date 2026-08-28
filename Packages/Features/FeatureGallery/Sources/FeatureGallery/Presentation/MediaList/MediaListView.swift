@@ -1,3 +1,4 @@
+import CoreLocalization
 import CoreUI
 import SwiftUI
 
@@ -9,14 +10,14 @@ struct MediaListView: View {
 
 	var body: some View {
 		content
-			.navigationTitle("Recordings")
+			.navigationTitle(GalleryStrings.title)
 			.toolbar { toolbarContent }
 			.task { await model.load() }
 			.refreshable { await model.refresh() }
 			.safeAreaInset(edge: .bottom) { if model.isSelecting { selectionBar } }
-			.alert("Couldn't complete that", isPresented: actionErrorBinding) {
-				Button("Open Settings") { AppSettings.open() }
-				Button("OK", role: .cancel) { model.clearActionError() }
+			.alert(CommonStrings.actionFailedTitle, isPresented: actionErrorBinding) {
+				Button(CommonStrings.openSettings) { AppSettings.open() }
+				Button(CommonStrings.ok, role: .cancel) { model.clearActionError() }
 			} message: {
 				Text(model.actionError?.message ?? "")
 			}
@@ -29,8 +30,8 @@ struct MediaListView: View {
 		case .failed(let error):
 			ErrorStateView(error.message) { Task { await model.load() } }
 		case .loaded(let items) where items.isEmpty:
-			EmptyStateView("No recordings yet",
-						   message: "Recordings from your camera show up here. Tap the shutter to take a photo.",
+			EmptyStateView(GalleryStrings.emptyTitle,
+						   message: GalleryStrings.emptyBody,
 						   systemImage: "camera")
 		case .loaded:
 			grid
@@ -70,29 +71,29 @@ struct MediaListView: View {
 	@ToolbarContentBuilder private var toolbarContent: some ToolbarContent {
 		ToolbarItemGroup(placement: .primaryAction) {
 			if model.isSelecting {
-				Button("Done") { model.setSelecting(false) }
+				Button(CommonStrings.done) { model.setSelecting(false) }
 			} else {
 				Button { Task { await model.snapshot() } } label: { Image(systemName: "camera.fill") }
-					.accessibilityLabel("Take a photo")
-				Button("Select") { model.setSelecting(true) }
+					.accessibilityLabel(GalleryStrings.takePhoto)
+				Button(CommonStrings.select) { model.setSelecting(true) }
 			}
 		}
 	}
 
 	private var selectionBar: some View {
 		HStack(spacing: AppSpacing.md) {
-			SecondaryButton("Download") { Task { await model.downloadSelected() } }
-			PrimaryButton("Delete", isLoading: isDeleting) { showDeleteConfirm = true }
+			SecondaryButton(CommonStrings.download) { Task { await model.downloadSelected() } }
+			PrimaryButton(CommonStrings.delete, isLoading: isDeleting) { showDeleteConfirm = true }
 		}
 		.padding(AppSpacing.md)
 		.background(.ultraThinMaterial)
 		.disabled(model.selection.isEmpty)
-		.confirmationDialog("Delete \(model.selection.count) item(s)? This can't be undone.",
+		.confirmationDialog(GalleryStrings.deleteConfirm(count: model.selection.count),
 							isPresented: $showDeleteConfirm, titleVisibility: .visible) {
-			Button("Delete", role: .destructive) {
+			Button(CommonStrings.delete, role: .destructive) {
 				Task { isDeleting = true; await model.deleteSelected(); isDeleting = false }
 			}
-			Button("Cancel", role: .cancel) {}
+			Button(CommonStrings.cancel, role: .cancel) {}
 		}
 	}
 

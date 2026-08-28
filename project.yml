@@ -49,6 +49,7 @@ packages:
   CoreCamera: { path: Packages/Core/CoreCamera, group: Packages/Core }
   CoreConnectivity: { path: Packages/Core/CoreConnectivity, group: Packages/Core }
   CoreDomain: { path: Packages/Core/CoreDomain, group: Packages/Core }
+  CoreLocalization: { path: Packages/Core/CoreLocalization, group: Packages/Core }
   CoreNavigation: { path: Packages/Core/CoreNavigation, group: Packages/Core }
   CoreStorage: { path: Packages/Core/CoreStorage, group: Packages/Core }
   CoreUI: { path: Packages/Core/CoreUI, group: Packages/Core }
@@ -88,6 +89,7 @@ targets:
       - package: CoreCamera
       - package: CoreConnectivity
       - package: CoreDomain
+      - package: CoreLocalization
       - package: CoreNavigation
       - package: CoreStorage
       - package: CoreUI
