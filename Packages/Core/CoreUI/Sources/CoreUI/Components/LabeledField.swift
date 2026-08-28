@@ -9,8 +9,13 @@ public struct LabeledField: View {
 	private let error: String?
 	@Binding private var text: String
 
-	public init(_ label: String, text: Binding<String>, placeholder: String = "",
-				isSecure: Bool = false, error: String? = nil) {
+	public init(
+		_ label: String,
+		text: Binding<String>,
+		placeholder: String = "",
+		isSecure: Bool = false,
+		error: String? = nil
+	) {
 		self.label = label
 		self._text = text
 		self.placeholder = placeholder

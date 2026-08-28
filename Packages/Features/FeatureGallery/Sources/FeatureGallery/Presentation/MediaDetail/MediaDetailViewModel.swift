@@ -14,8 +14,11 @@ public final class MediaDetailViewModel {
 	public private(set) var didSaveToPhotos = false
 	public private(set) var actionError: UserFacingError?
 
-	public init(item: MediaEntity, repository: any GalleryRepositoryProtocol,
-				photoSaver: any PhotoLibrarySaverProtocol) {
+	public init(
+		item: MediaEntity,
+		repository: any GalleryRepositoryProtocol,
+		photoSaver: any PhotoLibrarySaverProtocol
+	) {
 		self.item = item
 		self.repository = repository
 		self.photoSaver = photoSaver

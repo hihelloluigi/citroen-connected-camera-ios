@@ -45,8 +45,12 @@ extension XCUIElement {
     /// Waits for the element, failing the test with a useful message rather than a bare
     /// "element does not exist" when it never appears.
 	@discardableResult
-	func awaitExistence(_ description: String, timeout: TimeInterval = 10,
-						file: StaticString = #filePath, line: UInt = #line) -> Bool {
+	func awaitExistence(
+		_ description: String,
+		timeout: TimeInterval = 10,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) -> Bool {
 		let appeared = waitForExistence(timeout: timeout)
 		XCTAssertTrue(appeared, "\(description) never appeared within \(Int(timeout))s",
 					  file: file, line: line)

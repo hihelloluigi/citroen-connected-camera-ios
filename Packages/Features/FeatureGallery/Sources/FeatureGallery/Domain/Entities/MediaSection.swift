@@ -18,8 +18,11 @@ public struct MediaSection: Equatable, Identifiable, Sendable {
 /// camera didn't date collect into a trailing "Undated" section. Pure and deterministic given
 /// `calendar`/`now`, so the view can group without the view model needing a clock.
 public enum MediaGrouping {
-	public static func sections(from items: [MediaEntity], calendar: Calendar = .current,
-								now: Date = Date()) -> [MediaSection] {
+	public static func sections(
+		from items: [MediaEntity],
+		calendar: Calendar = .current,
+		now: Date = Date()
+	) -> [MediaSection] {
 		let dated = items.compactMap { item in item.date.map { (item, $0) } }
 		let undated = items.filter { $0.date == nil }
 

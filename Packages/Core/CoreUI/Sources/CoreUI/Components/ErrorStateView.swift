@@ -8,8 +8,12 @@ public struct ErrorStateView: View {
 	private let retryTitle: String
 	private let retry: (() -> Void)?
 
-	public init(_ message: String, systemImage: String = "exclamationmark.triangle",
-				retryTitle: String = "Try again", retry: (() -> Void)? = nil) {
+	public init(
+		_ message: String,
+		systemImage: String = "exclamationmark.triangle",
+		retryTitle: String = "Try again",
+		retry: (() -> Void)? = nil
+	) {
 		self.message = message
 		self.systemImage = systemImage
 		self.retryTitle = retryTitle

@@ -18,7 +18,7 @@ public enum VIRBError: Error, Equatable, Sendable {
 	case unexpected(result: Int)
 
 	/// Maps a camera `result` code to an error, or `nil` on success (1).
-	static func map(result: Int) -> VIRBError? {
+	static func map(result: Int) -> Self? {
 		switch result {
 		case 1: return nil
 		case 3: return .denied

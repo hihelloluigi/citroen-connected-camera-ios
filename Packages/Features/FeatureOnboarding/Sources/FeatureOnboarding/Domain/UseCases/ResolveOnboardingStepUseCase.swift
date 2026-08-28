@@ -18,10 +18,15 @@ public struct OnboardingRoutingInput: Equatable, Sendable {
 	/// clients off the Wi-Fi when the password changes).
 	public var didJustChangePassword: Bool
 
-	public init(hasCompletedOnboarding: Bool = false, hasTappedGetStarted: Bool = false,
-				localNetworkResolved: Bool = false, locationResolved: Bool = false,
-				isReachable: Bool = false, setupComplete: Bool? = nil,
-				didJustChangePassword: Bool = false) {
+	public init(
+		hasCompletedOnboarding: Bool = false,
+		hasTappedGetStarted: Bool = false,
+		localNetworkResolved: Bool = false,
+		locationResolved: Bool = false,
+		isReachable: Bool = false,
+		setupComplete: Bool? = nil,
+		didJustChangePassword: Bool = false
+	) {
 		self.hasCompletedOnboarding = hasCompletedOnboarding
 		self.hasTappedGetStarted = hasTappedGetStarted
 		self.localNetworkResolved = localNetworkResolved

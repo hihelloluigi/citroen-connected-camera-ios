@@ -6,8 +6,12 @@ public struct OnboardingFlags: Sendable, Equatable {
 	public var locationResolved: Bool
 	public var hasCompletedOnboarding: Bool
 
-	public init(hasTappedGetStarted: Bool = false, localNetworkResolved: Bool = false,
-				locationResolved: Bool = false, hasCompletedOnboarding: Bool = false) {
+	public init(
+		hasTappedGetStarted: Bool = false,
+		localNetworkResolved: Bool = false,
+		locationResolved: Bool = false,
+		hasCompletedOnboarding: Bool = false
+	) {
 		self.hasTappedGetStarted = hasTappedGetStarted
 		self.localNetworkResolved = localNetworkResolved
 		self.locationResolved = locationResolved

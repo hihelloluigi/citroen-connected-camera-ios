@@ -19,7 +19,7 @@ public extension Color {
 	/// Builds a color from a 6-digit hex literal. Falls back to loud magenta on a malformed literal
 	/// so the mistake is visible in previews — token strings are constants covered by `ColorHexTests`.
 	init(hex: String) {
-		if let rgb = Color.rgb(hex: hex) {
+		if let rgb = Self.rgb(hex: hex) {
 			self.init(red: rgb.r, green: rgb.g, blue: rgb.b)
 		} else {
 			self.init(red: 1, green: 0, blue: 1)

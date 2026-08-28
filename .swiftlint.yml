@@ -1,9 +1,10 @@
 reporter: "xcode"
 
-# Any single violation — warning or error — fails the build. SwiftLint reads a threshold of 0
-# as "always error", which is why this is 1 and not 0. `mint run swiftlint lint --strict` is
-# the standalone gate that fails on exactly what the build-tool plugin would have failed on.
+# Any new warning fails the build. 1 and not 0 — SwiftLint reads 0 as "always error".
 warning_threshold: 1
+
+# A stale path in `included:` should fail, not lint nothing and report success.
+allow_zero_lintable_files: false
 
 included:
   - App
@@ -11,33 +12,164 @@ included:
 
 excluded:
   - "**/.build"
+  - "**/.swiftpm"
+  - "**/DerivedData"
 
-# force_unwrapping is opt-in; it must be enabled before its severity takes effect.
-opt_in_rules:
-  - force_unwrapping
+# =========================================
+# SIZE & COMPLEXITY
+# =========================================
 
-force_unwrapping: error
-force_try: error
+# SwiftUI Views and ViewModels grow without anyone deciding they should.
+type_body_length:
+  - 300 # warning
+  - 600 # error
 
+# 60 fits a `body` with one modifier per line. Past 100 it's a screen, not a function.
+function_body_length:
+  - 60 # warning
+  - 100 # error
+
+# Past 4, pass a struct.
+function_parameter_count:
+  - 4 # warning
+  - 6 # error
+
+cyclomatic_complexity:
+  - 10 # warning
+  - 13 # error
+
+# Applies to code only: URLs and comments are exempt below.
 line_length:
   warning: 160
-  error: 220
+  error: 200
+  ignores_urls: true
+  ignores_comments: true
 
+trailing_whitespace:
+  ignores_empty_lines: true
+  ignores_comments: true
+  severity: warning
+
+trailing_newline:
+  severity: warning
+
+opening_brace:
+  severity: warning
+
+colon:
+  severity: warning
+  flexible_right_spacing: true
+  apply_to_dictionaries: false # aligned dictionary literals read better
+
+# =========================================
+# NAMING
+# =========================================
+
+# The exclusions are the names that read better short: maths and colour components.
 identifier_name:
-  min_length: { warning: 2, error: 1 }
-  excluded: ["id", "x", "y", "i", "j", "r", "g", "b"]
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 60
+    error: 60
+  excluded: ["id", "x", "y", "dx", "dy", "i", "j", "rgb", "r", "g", "b", "a", "t", "w", "h"]
+  allowed_symbols: ["_"]
+  validates_start_with_lowercase: warning
+  unallowed_symbols_severity: error
 
+type_name:
+  min_length:
+    warning: 2
+    error: 0
+  max_length:
+    warning: 60
+    error: 1000
+  allowed_symbols: ["_", "ID", "DTO"]
+  validates_start_with_lowercase: warning
+  validate_protocols: true
+
+# =========================================
+# SAFETY — errors, not warnings
+# =========================================
+
+force_unwrapping:
+  severity: error
+
+force_try:
+  severity: error
+
+multiline_parameters:
+  severity: error
+
+# =========================================
+# DISABLED
+# =========================================
+# Default-on rules only. Disabling an opt-in rule is a no-op.
 disabled_rules:
+  - unused_closure_parameter # `_ in` everywhere costs more than it catches
+  - closure_parameter_position
+  - multiple_closures_with_trailing_closure
+  - for_where
+  - nesting # nested enums for namespacing are deliberate here (AccessibilityID)
+  - comment_spacing
+  - inclusive_language
   - todo
   # Incompatible with tab indentation: it checks character-column alignment of wrapped
-  # parameters, which tabs can't satisfy (the params still align visually at tab width).
+  # parameters, which tabs can't satisfy.
   - vertical_parameter_alignment
 
-# These encode in a regex what docs/architecture.md states in prose. A documented rule is advice;
-# a lint rule is a build failure. None of them was enforceable before the Core/Features tiering
-# existed, which is why they arrive with it rather than before it.
+# =========================================
+# OPT-IN
+# =========================================
+# Each verified at zero violations before enabling. warning_threshold is 1, so a rule
+# that already fires breaks the build on the next pull.
+opt_in_rules:
+  # configured in detail above
+  - force_unwrapping
+  - multiline_parameters
+
+  # correctness
+  - unhandled_throwing_task # a Task that swallows its own throw
+  - unowned_variable_capture
+  - private_swiftui_state # non-private @State misstates ownership
+  - empty_count
+  - empty_string
+  - redundant_nil_coalescing
+  - optional_enum_case_matching
+  - fatal_error_message # a bare fatalError() tells the crash log nothing
+  - discouraged_none_name # a case named `none` is ambiguous with Optional.none
+
+  # collections — also the O(n) vs O(1) mistakes
+  - first_where
+  - last_where
+  - contains_over_first_not_nil
+  - sorted_first_last
+  - flatmap_over_map_reduce
+  - joined_default_parameter
+
+  # style
+  - vertical_whitespace
+  - explicit_init
+  - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+  - legacy_multiple
+  - static_operator
+  - prefer_self_in_static_references
+
+# =========================================
+# ANALYZER — needs `swiftlint analyze` and a compiler log, not `lint`
+# =========================================
+analyzer_rules:
+  - unused_import
+  - unused_declaration
+
+# =========================================
+# CUSTOM — layer boundaries
+# =========================================
+# These encode in a regex what docs/ARCHITECTURE.md states in prose. A documented rule
+# is advice; a lint rule is a build failure.
 custom_rules:
-  # print() survives review, ships, and then nobody can filter it in Console.
   no_print:
     name: "print() instead of os.Logger"
     regex: '(?<!\w)print\('
@@ -69,9 +201,8 @@ custom_rules:
   no_system_framework_in_features:
     name: "System capability framework in a Feature"
     included: ".*/Packages/Features/.*/Sources/.*\\.swift"
-    # Photos is the sanctioned exception: FeatureGallery's own Data/ layer wraps PHPhotoLibrary
-    # behind PhotoLibrarySaverProtocol, and it is the only consumer, so promoting it to Core would
-    # buy nothing.
+    # Photos is the sanctioned exception: FeatureGallery's own Data/ layer wraps
+    # PHPhotoLibrary behind PhotoLibrarySaverProtocol and is its only consumer.
     regex: '^import (CoreLocation|NetworkExtension|Security)'
     message: "Depend on the CoreDomain/CoreConnectivity/CoreStorage protocol instead of importing the system framework directly — that protocol is what the feature's tests fake."
     severity: error

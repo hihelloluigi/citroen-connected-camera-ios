@@ -27,8 +27,16 @@ public struct MediaEntity: Sendable, Equatable, Hashable, Identifiable {
 	/// GPS longitude at capture time, when the camera had a fix.
 	public let gpsLongitude: Double?
 
-	public init(kind: Kind, url: URL, thumbURL: URL, name: String, fileSize: Int64? = nil,
-				date: Date? = nil, gpsLatitude: Double? = nil, gpsLongitude: Double? = nil) {
+	public init(
+		kind: Kind,
+		url: URL,
+		thumbURL: URL,
+		name: String,
+		fileSize: Int64? = nil,
+		date: Date? = nil,
+		gpsLatitude: Double? = nil,
+		gpsLongitude: Double? = nil
+	) {
 		self.kind = kind
 		self.url = url
 		self.thumbURL = thumbURL

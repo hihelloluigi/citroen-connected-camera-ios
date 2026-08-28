@@ -23,8 +23,8 @@ struct ConnectResponse: Decodable {
 	let activePhoneId: String?
 	let deviceInfo: [DeviceInfoDTO]
 
-	static func decode(from data: Data) throws -> ConnectResponse {
-		try JSONDecoder.virb.decode(ConnectResponse.self, from: data)
+	static func decode(from data: Data) throws -> Self {
+		try JSONDecoder.virb.decode(Self.self, from: data)
 	}
 
 	func session() throws -> CameraSessionDTO {

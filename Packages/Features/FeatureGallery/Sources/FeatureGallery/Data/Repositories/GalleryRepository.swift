@@ -34,8 +34,11 @@ public struct GalleryRepository: GalleryRepositoryProtocol {
 		try await client.delete(items.map(Self.dto(from:)))
 	}
 
-	public func download(_ item: MediaEntity, to destination: URL,
-						 progress: @escaping @Sendable (Double) -> Void) async throws -> URL {
+	public func download(
+		_ item: MediaEntity,
+		to destination: URL,
+		progress: @escaping @Sendable (Double) -> Void
+	) async throws -> URL {
 		try await client.download(Self.dto(from: item), to: destination, progress: progress)
 	}
 

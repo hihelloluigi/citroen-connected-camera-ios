@@ -15,7 +15,7 @@ public struct VIRBConfiguration: Sendable {
 		return url
 	}()
 
-	public init(baseURL: URL = VIRBConfiguration.defaultBaseURL, requestTimeout: TimeInterval = 8) {
+	public init(baseURL: URL = Self.defaultBaseURL, requestTimeout: TimeInterval = 8) {
 		self.baseURL = baseURL
 		self.requestTimeout = requestTimeout
 	}

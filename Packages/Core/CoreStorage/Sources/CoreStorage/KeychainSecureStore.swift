@@ -1,13 +1,14 @@
+import CoreLogging
 import Foundation
 import Security
-import os
 
 /// Keychain-backed `SecureStore` for small secrets (the generated phone id). The generate-once
 /// logic it feeds is unit-tested against an in-memory fake in CoreStorageTests.
 public struct KeychainSecureStore: SecureStore {
 	/// Scoped to the running bundle id, so the Development, Staging and Production installs
 	/// each keep their own phone id instead of sharing one Keychain item.
-	private let service = Bundle.main.bundleIdentifier ?? "me.luigiaiello.ccam"
+	private let service = AppLogger.subsystem
+	private let logger = AppLogger(category: "phone-id")
 
 	public init() {}
 
@@ -25,8 +26,7 @@ public struct KeychainSecureStore: SecureStore {
 		guard status == errSecSuccess else {
 			// A real keychain error is not the same as "no value yet" — log it so it isn't mistaken for
 			// a first launch, but still return nil since this protocol is non-throwing.
-			Logger(subsystem: service, category: "phone-id")
-				.error("Keychain read failed (status \(status)); treating as missing.")
+			logger.error("Keychain read failed (status \(status)); treating as missing.")
 			return nil
 		}
 		return result as? Data

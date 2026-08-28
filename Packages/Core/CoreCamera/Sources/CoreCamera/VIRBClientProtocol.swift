@@ -25,8 +25,11 @@ public protocol VIRBClientProtocol: Sendable {
 	func setWiFiPassword(current: String, new: String) async throws
 
 	/// Downloads a media item to the given local URL, reporting progress via the optional closure.
-	func download(_ item: MediaItemDTO, to destination: URL,
-				  progress: (@Sendable (Double) -> Void)?) async throws -> URL
+	func download(
+		_ item: MediaItemDTO,
+		to destination: URL,
+		progress: (@Sendable (Double) -> Void)?
+	) async throws -> URL
 
 	/// Returns `true` if the camera is reachable at its current base URL.
 	func isReachable() async -> Bool

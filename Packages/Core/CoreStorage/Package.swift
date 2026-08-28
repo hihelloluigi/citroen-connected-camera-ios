@@ -17,13 +17,15 @@ let package = Package(
 	dependencies: [
 		// Internal dependencies
 		.package(name: "CoreDomain", path: "../../Core/CoreDomain"),
+		.package(name: "CoreLogging", path: "../../Core/CoreLogging"),
 		.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.65.0")
 	],
 	targets: [
 		.target(
 			name: "CoreStorage",
 			dependencies: [
-				.product(name: "CoreDomain", package: "CoreDomain")
+				.product(name: "CoreDomain", package: "CoreDomain"),
+				.product(name: "CoreLogging", package: "CoreLogging")
 			],
 			path: "Sources/CoreStorage",
 			plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]

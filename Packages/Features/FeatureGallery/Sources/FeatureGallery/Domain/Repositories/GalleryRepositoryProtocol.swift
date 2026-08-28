@@ -14,6 +14,9 @@ public protocol GalleryRepositoryProtocol: Sendable {
 	/// Deletes the given items from the SD card.
 	func delete(_ items: [MediaEntity]) async throws
 	/// Downloads an item to `destination`, reporting progress in `0...1`, and returns the local URL.
-	func download(_ item: MediaEntity, to destination: URL,
-				  progress: @escaping @Sendable (Double) -> Void) async throws -> URL
+	func download(
+		_ item: MediaEntity,
+		to destination: URL,
+		progress: @escaping @Sendable (Double) -> Void
+	) async throws -> URL
 }

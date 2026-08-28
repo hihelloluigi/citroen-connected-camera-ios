@@ -7,8 +7,11 @@ public struct PhoneIdStore: Sendable {
 	private let key: String
 	private let makeId: @Sendable () -> String
 
-	public init(store: any SecureStore, key: String = "camera.phoneId",
-				makeId: @escaping @Sendable () -> String = { UUID().uuidString }) {
+	public init(
+		store: any SecureStore,
+		key: String = "camera.phoneId",
+		makeId: @escaping @Sendable () -> String = { UUID().uuidString }
+	) {
 		self.store = store
 		self.key = key
 		self.makeId = makeId

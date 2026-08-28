@@ -21,9 +21,17 @@ public struct CameraStatusDTO: Sendable, Equatable {
 	/// Current GPS longitude, when the camera has a fix.
 	public let gpsLongitude: Double?
 
-	public init(activePhoneId: String?, primaryPhoneId: String?, numberOfConnections: Int,
-				saveVideoDuration: Int, needsFormat: Bool, incidentDetected: Bool,
-				faultDescription: String, gpsLatitude: Double?, gpsLongitude: Double?) {
+	public init(
+		activePhoneId: String?,
+		primaryPhoneId: String?,
+		numberOfConnections: Int,
+		saveVideoDuration: Int,
+		needsFormat: Bool,
+		incidentDetected: Bool,
+		faultDescription: String,
+		gpsLatitude: Double?,
+		gpsLongitude: Double?
+	) {
 		self.activePhoneId = activePhoneId
 		self.primaryPhoneId = primaryPhoneId
 		self.numberOfConnections = numberOfConnections
@@ -49,8 +57,8 @@ struct StatusResponse: Decodable {
 	let gpsLatitude: Double?
 	let gpsLongitude: Double?
 
-	static func decode(from data: Data) throws -> StatusResponse {
-		try JSONDecoder.virb.decode(StatusResponse.self, from: data)
+	static func decode(from data: Data) throws -> Self {
+		try JSONDecoder.virb.decode(Self.self, from: data)
 	}
 
 	func status() -> CameraStatusDTO {

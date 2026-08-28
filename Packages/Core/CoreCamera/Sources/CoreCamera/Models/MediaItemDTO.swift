@@ -26,9 +26,18 @@ public struct MediaItemDTO: Sendable, Equatable, Hashable, Identifiable, Decodab
 	/// GPS longitude at capture time, when the camera has a fix and reports it for this kind.
 	public let gpsLongitude: Double?
 
-	public init(kind: Kind, url: URL, thumbURL: URL, name: String, fileSize: Int64? = nil,
-				date: Date? = nil, sessionId: Int? = nil, videoType: Int? = nil,
-				gpsLatitude: Double? = nil, gpsLongitude: Double? = nil) {
+	public init(
+		kind: Kind,
+		url: URL,
+		thumbURL: URL,
+		name: String,
+		fileSize: Int64? = nil,
+		date: Date? = nil,
+		sessionId: Int? = nil,
+		videoType: Int? = nil,
+		gpsLatitude: Double? = nil,
+		gpsLongitude: Double? = nil
+	) {
 		self.kind = kind
 		self.url = url
 		self.thumbURL = thumbURL

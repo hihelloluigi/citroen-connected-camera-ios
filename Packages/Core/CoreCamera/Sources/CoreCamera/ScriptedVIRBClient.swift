@@ -64,8 +64,11 @@ public struct ScriptedVIRBClient: VIRBClientProtocol {
 		guard current == "ConnectedCam" else { throw VIRBError.passwordRejected }
 	}
 
-	public func download(_ item: MediaItemDTO, to destination: URL,
-						 progress: (@Sendable (Double) -> Void)?) async throws -> URL {
+	public func download(
+		_ item: MediaItemDTO,
+		to destination: URL,
+		progress: (@Sendable (Double) -> Void)?
+	) async throws -> URL {
 		progress?(1)
 		return destination
 	}
@@ -83,9 +86,14 @@ public struct ScriptedVIRBClient: VIRBClientProtocol {
 			 latitude: 45.464200, longitude: 9.189600)
 	]
 
-	private static func item(name: String, kind: MediaItemDTO.Kind, minutesAgo: Int,
-							 size: Int64 = 1_000_000, latitude: Double? = nil,
-							 longitude: Double? = nil) -> MediaItemDTO {
+	private static func item(
+		name: String,
+		kind: MediaItemDTO.Kind,
+		minutesAgo: Int,
+		size: Int64 = 1_000_000,
+		latitude: Double? = nil,
+		longitude: Double? = nil
+	) -> MediaItemDTO {
 		MediaItemDTO(
 			kind: kind,
 			url: cameraURL("/DCIM/\(name)"),

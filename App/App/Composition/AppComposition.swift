@@ -1,11 +1,11 @@
 import CoreCamera
 import CoreConnectivity
 import CoreDomain
+import CoreLogging
 import CoreStorage
 import FeatureGallery
 import FeatureOnboarding
 import Foundation
-import os
 
 /// The app's composition root: every dependency built once, in one place, and handed to the
 /// builders that need it.
@@ -80,8 +80,8 @@ final class AppComposition {
 		do {
 			phoneId = try PhoneIdStore(store: store).currentPhoneId()
 		} catch {
-			Logger(subsystem: Bundle.main.bundleIdentifier ?? "me.luigiaiello.ccam", category: "phone-id")
-				.error("Keychain unavailable for phone id; using a non-persisted fallback: \(error.localizedDescription, privacy: .public)")
+			AppLogger(category: "phone-id")
+				.error("Keychain unavailable for phone id; using a non-persisted fallback: \(error.localizedDescription)")
 			phoneId = UUID().uuidString
 		}
 
