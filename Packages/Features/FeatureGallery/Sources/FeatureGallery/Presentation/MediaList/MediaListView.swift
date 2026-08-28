@@ -86,7 +86,7 @@ struct MediaListView: View {
 	}
 
 	private var selectionBar: some View {
-		HStack(spacing: AppSpacing.md) {
+		AdaptiveStack(alignment: .center, spacing: AppSpacing.md) {
 			SecondaryButton(CommonStrings.download) { Task { await model.downloadSelected() } }
 			PrimaryButton(CommonStrings.delete, isLoading: isDeleting) { showDeleteConfirm = true }
 		}

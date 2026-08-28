@@ -52,7 +52,7 @@ struct MediaDetailView: View {
 	}
 
 	private var actions: some View {
-		HStack(spacing: AppSpacing.md) {
+		AdaptiveStack(alignment: .center, spacing: AppSpacing.md) {
 			SecondaryButton(model.didSaveToPhotos ? CommonStrings.saved : CommonStrings.save) { Task { await model.saveToPhotos() } }
 			SecondaryButton(CommonStrings.share) {
 				Task { if let url = await model.prepareShareURL() { shareItem = ShareItem(url: url) } }

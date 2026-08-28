@@ -2,6 +2,30 @@
 
 Accepted tradeoffs and deferred work, newest first. The log of "why is this half-done?"
 
+## 2026-08-29 — The gallery at accessibility sizes, and a bug it surfaced
+
+Scaling the type and making the onboarding screens scroll did not carry the gallery. Walking it at
+AX5 found four separate breakages, all of the same shape: a row of items that fits at 17pt and
+hyphenates at 53pt. The status chips rendered as "SD rea/dy" and "GP/S/fix", the selection bar's
+Download button as "Down-load" beside a Delete button of a different height, the detail screen's
+three actions as "Save / Shar/e / Dele/te", and the thumbnail badges as "V…".
+
+`AdaptiveStack` is the shared answer: horizontal at normal sizes, vertical at accessibility ones.
+It branches on `dynamicTypeSize.isAccessibilitySize` rather than using `ViewThatFits`, because the
+buttons it wraps are `maxWidth: .infinity`-greedy — they accept any width offered, so a horizontal
+layout always reports that it fits and `ViewThatFits` never falls through. The badge takes a
+different fix: over a 100pt grid cell there is no width to give it, so at accessibility sizes it
+drops its text and keeps its symbol, which the cell's accessibility label already spells out.
+
+**The bug:** the camera-details sheet showed "Reading camera details…" forever. The device load was
+a `.task` on `StatusHeaderView`, and the gallery's 3s connectivity poll reassigns `model.status`,
+which rebuilds the header and resets its `@State device` to nil — the poll raced the load and won,
+every time. The load now lives on the sheet, which is the only thing that reads it. This was
+present before Dynamic Type and had nothing to do with it; walking the screen slowly is what found
+it.
+
+**Still not covered:** VoiceOver navigation order, which is a different audit from text size.
+
 ## 2026-08-28 — App Review cannot test this app
 
 The app does nothing without a physical ConnectedCAM on its own Wi-Fi, which a reviewer will not
@@ -45,8 +69,8 @@ content still fills the screen and the `Spacer()`s still distribute, and the scr
 once the content genuinely outgrows the viewport. `HeroIcon` does the same job for the large SF
 Symbols, which `@ScaledMetric` has to scale because `.font(.system(size:))` will not.
 
-**Still not covered:** the gallery grid and detail screen at accessibility sizes. The grid is
-already a `ScrollView` so it should behave, but it has not been walked at AX5.
+The gallery was walked at AX5 afterwards and needed four more fixes — the assumption that "the grid
+is already a `ScrollView` so it should behave" was wrong. See the entry below.
 
 ## 2026-08-28 — Three build configurations, not six
 
