@@ -33,6 +33,9 @@ disabled_rules:
   # parameters, which tabs can't satisfy (the params still align visually at tab width).
   - vertical_parameter_alignment
 
+# These encode in a regex what docs/architecture.md states in prose. A documented rule is advice;
+# a lint rule is a build failure. None of them was enforceable before the Core/Features tiering
+# existed, which is why they arrive with it rather than before it.
 custom_rules:
   # print() survives review, ships, and then nobody can filter it in Console.
   no_print:
@@ -41,3 +44,34 @@ custom_rules:
     match_kinds: [identifier]
     message: "Use os.Logger rather than print()."
     severity: warning
+
+  no_feature_to_feature_import:
+    name: "Feature importing a sibling feature"
+    included: ".*/Packages/Features/.*/Sources/.*\\.swift"
+    regex: '^import Feature'
+    message: "A feature must not import a sibling feature. Route through the app shell's RootCoordinator, which is what AppDestination exists for."
+    severity: error
+
+  no_core_importing_feature:
+    name: "Core module importing a feature"
+    included: ".*/Packages/Core/.*/Sources/.*\\.swift"
+    regex: '^import Feature'
+    message: "Core must not depend on Features — the dependency runs one way. If a Core module needs something a feature has, the shape it needs is a protocol in CoreDomain that the feature conforms to."
+    severity: error
+
+  no_live_implementation_in_app_target:
+    name: "Live* implementation in the app target"
+    included: ".*/App/App/.*\\.swift"
+    regex: '^(public |internal |private |fileprivate )?(final )?(class|struct|actor) Live'
+    message: "Live* implementations belong in a module, not the app target. AppComposition names them; it does not define them."
+    severity: error
+
+  no_system_framework_in_features:
+    name: "System capability framework in a Feature"
+    included: ".*/Packages/Features/.*/Sources/.*\\.swift"
+    # Photos is the sanctioned exception: FeatureGallery's own Data/ layer wraps PHPhotoLibrary
+    # behind PhotoLibrarySaverProtocol, and it is the only consumer, so promoting it to Core would
+    # buy nothing.
+    regex: '^import (CoreLocation|NetworkExtension|Security)'
+    message: "Depend on the CoreDomain/CoreConnectivity/CoreStorage protocol instead of importing the system framework directly — that protocol is what the feature's tests fake."
+    severity: error
