@@ -21,22 +21,12 @@ configFiles:
   Staging: Configurations/Staging/Staging.xcconfig
   Production: Configurations/Production/Production.xcconfig
 
-# Not target members — just the files worth editing without leaving Xcode.
+# Not target members — just files worth editing without leaving Xcode.
 fileGroups:
   - project.yml
   - .swiftlint.yml
-  - .editorconfig
-  - .github
-  - Mintfile
   - Configurations
   - TestPlans
-  - scripts
-  - docs
-  - README.md
-  - CLAUDE.md
-  - AGENTS.md
-  - API_ANALYSIS.md
-  - openapi.json
 
 settings:
   base:
@@ -50,14 +40,18 @@ settings:
 
 packages:
   CoreCamera: { path: Packages/Core/CoreCamera, group: Packages/Core }
-  CoreConnectivity: { path: Packages/Core/CoreConnectivity, group: Packages/Core }
+  CoreConnectivity:
+    { path: Packages/Core/CoreConnectivity, group: Packages/Core }
   CoreDomain: { path: Packages/Core/CoreDomain, group: Packages/Core }
-  CoreLocalization: { path: Packages/Core/CoreLocalization, group: Packages/Core }
+  CoreLocalization:
+    { path: Packages/Core/CoreLocalization, group: Packages/Core }
   CoreNavigation: { path: Packages/Core/CoreNavigation, group: Packages/Core }
   CoreStorage: { path: Packages/Core/CoreStorage, group: Packages/Core }
   CoreUI: { path: Packages/Core/CoreUI, group: Packages/Core }
-  FeatureGallery: { path: Packages/Features/FeatureGallery, group: Packages/Features }
-  FeatureOnboarding: { path: Packages/Features/FeatureOnboarding, group: Packages/Features }
+  FeatureGallery:
+    { path: Packages/Features/FeatureGallery, group: Packages/Features }
+  FeatureOnboarding:
+    { path: Packages/Features/FeatureOnboarding, group: Packages/Features }
   # Pinned exactly, not by range: .swiftlint.yml sets warning_threshold: 1, so a new rule in a
   # SwiftLint release turns a green build red with no code change. Every Package.swift pins the
   # same version.
@@ -161,7 +155,12 @@ schemes:
   # ($SRCROOT) to the script, and /bin/bash is required by its arrays and [[ ]].
   Development:
     build:
-      targets: { CitroenConnectedCamera: all, CitroenConnectedCameraTests: [test], CitroenConnectedCameraUITests: [test] }
+      targets:
+        {
+          CitroenConnectedCamera: all,
+          CitroenConnectedCameraTests: [test],
+          CitroenConnectedCameraUITests: [test],
+        }
       preActions:
         - name: Generate Secrets
           script: ENV_NAME=development "$SRCROOT/scripts/generate_secrets.sh" >> /tmp/ccam_secrets.log 2>&1
