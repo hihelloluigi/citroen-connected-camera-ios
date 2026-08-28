@@ -1,24 +1,24 @@
-# macOS
-.DS_Store
+docs/superpowers/
+.superpowers/
 
-# Xcode
-xcuserdata/
-DerivedData/
-*.xcuserstate
-build/
+# Secrets pipeline (see scripts/generate_secrets.sh)
+Configurations/Secrets.xcconfig
+envs/.env.*
+!envs/.env.example
 
-# XcodeGen output (generated; never committed)
+# Xcode / build artifacts — the project is generated from project.yml by XcodeGen and is
+# never committed or hand-edited.
 *.xcodeproj
+DerivedData/
+build/
+TestResults.xcresult
+xcuserdata/
+*.xcuserstate
+.DS_Store
 
 # Swift Package Manager
 .build/
 .swiftpm/
 
-# Secrets / signing — never committed
-Config/Secrets.xcconfig
-
-# AI / planning working dirs — never committed
-docs/superpowers/
-.superpowers/
-.claude/
-.codex/
+# Editors
+.vscode/

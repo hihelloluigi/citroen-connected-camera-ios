@@ -70,6 +70,7 @@ Content-Length: <n>
 | `result` | Meaning |
 |---|---|
 | `1`  | Success |
+| `5`  | Nothing to do (seen on `downloadShareImage` when no photos are queued to share) |
 | `9`  | Not ready / not the active phone / setup incomplete |
 | `11` | Error (observed as the `deleteFile` failure response, echoed with `cmdRequestId:4`) |
 | `3`  | Request denied (seen on phone-request commands before `initialConnection`) |
@@ -82,6 +83,7 @@ The response echoes a fixed id per command — use it to match async responses o
 |---|---|
 | 0  | initialConnection |
 | 1  | snapPicture |
+| 2  | mediaDirList |
 | 3  | mediaList |
 | 5  | downloadShareImage |
 | 6  | deleteFile |
@@ -132,6 +134,23 @@ Response (set up):
 {"command":"mediaList"}
 → {"media":[ <MediaItem>, ... ]}
 ```
+Only ever returns `VID_NORM` videos and `PHOTO` stills — clips in `VID_SAVE` and `INCIDENT`
+(see `mediaDirList`) are **not** listed here. Whether those folders can be enumerated another way
+is still open.
+
+### mediaDirList
+```json
+{"command":"mediaDirList","phoneId":"<UUID>"}
+→ {"mediaDirs":[
+   {"type":"mediadirectory","path":"D:/DCIM/VID_NORM/","date":1152875494},
+   {"type":"mediadirectory","path":"D:/DCIM/VID_SAVE/","date":1152875494},
+   {"type":"mediadirectory","path":"D:/DCIM/INCIDENT/","date":1152875494},
+   {"type":"mediadirectory","path":"D:/DCIM/PHOTO/","date":1152875494}],
+   "result":1,"cmdRequestId":2}
+```
+The four on-camera media folders. `VID_NORM` = continuous recordings, `VID_SAVE` = manually
+saved/protected clips, `INCIDENT` = crash-triggered clips, `PHOTO` = stills. The `date` is a fixed
+placeholder (2006), not meaningful. The official app doesn't send this command; found by probing.
 
 ### snapPicture  (take a photo now)
 ```json
@@ -190,7 +209,8 @@ when deleting a file that likely belonged to the still-active recording session.
 ```
 - `date` is a Unix epoch (seconds).
 - `fileSize` for videos is a fixed/placeholder value (160 MB) in the listing, not the true byte size.
-- `videoType` 0 = normal recording (`VID_NORM`); incident/locked clips likely use a different folder/type.
+- `videoType` 0 = normal recording (`VID_NORM`). Saved and incident clips live in the `VID_SAVE`
+  and `INCIDENT` folders (confirmed via `mediaDirList`) but do not appear in `mediaList` output.
 - `validTime` 1 = the camera had a time/GPS fix for the clip; `validTime:0` entries carry no GPS
   fields and their `date` is unreliable (seen on the first clip after power-on).
 
@@ -202,17 +222,87 @@ when deleting a file that likely belonged to the still-active recording session.
 | Photo | `/media/photo/DCIM/PHOTO/<name>.JPG` | `image/jpeg` |
 | Video thumb | `/media/thumb/video/DCIM/VID_NORM/<name>.BMP` | `image/bmp` |
 | Photo thumb | `/media/thumb/photo/DCIM/PHOTO/<name>.BMP` | `image/bmp` |
+| GPS track | `/media/gpx/DCIM/VID_NORM/<video-base>.GPX` | (GPX/XML) |
+
+The **`/media/gpx/` route exists** (returns `200`, where invented routes like `/media/fit/`,
+`/media/data/`, `/media/lowres/` return `404`): the camera generates a GPX track per clip from its
+embedded GPS. Confirmed empty (`0 bytes`) for a `validTime:0` clip (no GPS fix); a `validTime:1`
+clip is expected to return a real track — re-verify on one. No handshake needed (plain file GET).
+No low-res proxy is served (`VID_LOW`, `/media/lowres/`, `_low` naming all `404`).
 
 Videos are served with `Accept-Ranges`-style progressive download; the app fetches them with a
 libavformat client (`User-Agent: Lavf/56.36.100`), i.e. ffmpeg-based playback.
 
-## Still unknown / TODO (needs another capture)
+## Command probing (the empty-response oracle)
 
-- **Live preview**: no `livePreview`/RTSP/MJPEG seen — live view was not exercised in this capture.
-  Re-capture while opening live view to learn the stream command + URL (likely a progressive MP4 over
-  HTTP given the Lavf client).
-- Remaining settings commands (e.g. `updateFeature`, format SD = `formatUnit`).
-- Incident/locked-video folder naming.
+This firmware answers an **unknown command with `HTTP 200` and a 0-byte body**, and a recognized
+command with a JSON body. That makes command discovery easy: POST a candidate name and treat any
+non-empty response as a supported command. Used to map the surviving command set below
+(2026-07-13, firmware 200 / vimVersion 140, part 006-B2465-00).
+
+**Confirmed present:** `initialConnection`, `activePhoneRequest`, `primaryPhoneRequest`,
+`periodicUpdate`, `mediaList`, `mediaDirList`, `snapPicture`, `deleteFile`, `setSaveVideoDuration`,
+`setWifiPassword`, `downloadShareImage` / `ackDownloadShareImage`.
+
+**Probed and ABSENT** (documented Garmin VIRB commands PSA stripped — all return empty):
+`livePreview`, `features`, `sensors`, `commandList`, `deviceInfo` (as a standalone command — its
+data only ships inside `initialConnection`), `status` (this firmware uses `periodicUpdate` instead),
+`getErrorLogUrl`, `found`. There is **no live-preview / streaming command and no features/sensors
+settings subsystem** on this firmware.
+
+## Network surface (2026-07-13 scan)
+
+- **Only TCP 80 is open** on `192.168.0.1`. No RTSP (554), RTMP (1935), telnet, SSH, or FTP —
+  so live video streaming is not possible even outside the command layer.
+- The HTTP server exposes only `/virb` (the command endpoint) and `/media/...` (file/thumb
+  download). Every other path (`/`, `/media/`, `/status`, `/cgi-bin/`, …) returns 404; there is no
+  directory listing or web UI.
+
+## App binary analysis (the official app is a rebranded Garmin VIRB app)
+
+Static analysis of the official Android APK (`com.psa.citroen.connectedcam`, v1.5.1, 2017) shows the
+ConnectedCAM app is Garmin's **VIRB Mobile** app reskinned: UI classes live under
+`com.garmin.android.apps.virb.*` with Citroën event wrappers, and the entire camera protocol client
+is a shared C++ core (`core/shared/libs/camera/`, files `CameraAdapter.cpp`, `MediaListController.cpp`,
+`MediaItem.cpp`, `PeriodicStatus.cpp`, …) compiled into `lib/armeabi-v7a/libcamera.so`. JSON is built
+with `libjsoncpp`, HTTP via `libcpprest`, video via bundled FFmpeg (`libav*` → the `Lavf` user-agent).
+
+**Full command vocabulary the app knows** (from `libcamera.so` `CameraAdapter_t` methods — a superset
+of what this firmware implements; see the probe results above for what actually answers):
+`initialConnection`, `activePhoneRequest`, `primaryPhoneRequest`, `foundCamera`, `periodicUpdate`,
+`mediaList`, `mediaDirList`, `snapPicture`, `deleteFile`, `clearAllMedia`, `startRecording`,
+`stopRecording`, `stopStillRecording`, `setSaveVideoDuration`, `updateFeature`, `getFeatures`,
+`getStatus`, `livePreview`, `stopStream`, `locateCamera`, `formatUnit`, `setWifiPassword`,
+`checkWifiPassword`, `downloadShareImage` / `ackDownloadShareImage`, `videoStitch`.
+
+**Live preview mechanism** (present in the app, absent from this firmware): `livePreview` is sent with
+`streamType:"rtp"`; the camera returns a URL (`CameraAdapter_t::LivePreviewUrl`), and the app plays it
+as an **RTP / H.264** stream decoded through FFmpeg (`video::AndroidRTPVideoDecodingStrategy`). The app
+guards it with `unsupported_live_preview_while_recording`. On this camera the command returns empty
+(stripped from the firmware), and no RTP/RTSP port is open — so live view is not achievable here.
+
+**Fields the app's models carry** (some unused by this firmware — worth probing whether it populates
+them for saved/incident clips): per-clip `fitURL` and `gpxUrl` (downloadable **GPS track** in FIT/GPX
+form), `lowResVideoPath` (low-res proxy for fast preview), and richer `periodicUpdate` telemetry
+`gpsSpeed` / `gpsAccuracy` / `gpsLastTime`. Also `friendlyName` (camera naming), `otaUploadUrl`
+(firmware push — do not touch), and a share-list flow (`getShareList`, `numPhotosToShare`) that is the
+likely path to incident clips.
+
+## Still unknown / TODO
+
+- **Can `VID_SAVE` / `INCIDENT` clips be listed?** `mediaDirList` proves the folders exist, but
+  `mediaList` omits them. Next: create a saved clip via the official app, then re-run `mediaList`
+  and check whether it appears (and in which folder), or capture the app while it views a saved /
+  incident clip to learn the listing mechanism.
+- `formatUnit` (format SD) and `updateFeature` were **not** tested — deliberately excluded from
+  probing as destructive/stateful. Their presence on this firmware is unknown.
+- **GPS export via `/media/gpx/`** — confirmed the route exists; still need one fetch against a
+  `validTime:1` clip to capture a real GPX body and its schema, and to check whether `VID_SAVE` /
+  `INCIDENT` clips expose GPX too. This is the most promising net-new feature (per-clip route maps).
+- Probe results (2026-07-13): `locateCamera`, `getShareList`, `foundCamera` → **absent** (empty);
+  `downloadShareImage` → **present** (idle `result:5`); low-res proxy → **absent** (404).
+- `startRecording` / `stopRecording` remain untested — they change camera state, so left for a
+  deliberate, careful check rather than blind probing.
 
 ## How this was captured (repeatable)
 

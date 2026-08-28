@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      The app collects nothing. Everything it reads is on the camera's SD card or on the
+      device, there is no backend, no analytics and no third-party SDK, so both tracking
+      keys are false and the collected-data list is empty.
+    -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+
+    <!--
+      Required-reason APIs. Only UserDefaults qualifies: the app moves and deletes files in
+      its own temporary directory during a download, but FileManager's move/remove are not
+      required-reason APIs, and nothing reads a file timestamp or queries disk space. Add an
+      entry here the moment that stops being true.
+    -->
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <dict>
+            <!--
+              UserDefaultsFlagsStore persists the onboarding flags so a returning user does
+              not repeat the flow. CA92.1: access limited to this app's own container.
+            -->
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>CA92.1</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

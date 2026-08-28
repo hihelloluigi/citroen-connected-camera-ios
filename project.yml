@@ -1,46 +1,197 @@
 name: CitroenConnectedCamera
 
 options:
+  createIntermediateGroups: true
   deploymentTarget:
     iOS: "17.0"
-  createIntermediateGroups: true
+  minimumXcodeGenVersion: "2.45.4"
+  defaultConfig: Development
+
+# Three environments rather than beam's six {Debug,Release} x {Dev,Staging,Prod}: this app has
+# no backend to point at — the camera is the only server and it is identical on every unit — so
+# a config only ever varies the bundle id, the display name and the signing team. Matches
+# pieno-ios's shape.
+configs:
+  Development: debug
+  Staging: release
+  Production: release
 
 configFiles:
-  Debug: Config/App.xcconfig
-  Release: Config/App.xcconfig
+  Development: Configurations/Development/Development.xcconfig
+  Staging: Configurations/Staging/Staging.xcconfig
+  Production: Configurations/Production/Production.xcconfig
+
+# Not target members — just the files worth editing without leaving Xcode.
+fileGroups:
+  - project.yml
+  - .swiftlint.yml
+  - .editorconfig
+  - .github
+  - Mintfile
+  - Configurations
+  - TestPlans
+  - scripts
+  - docs
+  - README.md
+  - CLAUDE.md
+  - AGENTS.md
+  - API_ANALYSIS.md
+  - openapi.json
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: YES
+    CODE_SIGN_STYLE: Automatic
+    DEAD_CODE_STRIPPING: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY: YES
 
 packages:
-  VIRBKit:
-    path: Packages/VIRBKit
-  AppCore:
-    path: Packages/AppCore
-  CoreUI:
-    path: Packages/CoreUI
+  CoreCamera: { path: Packages/Core/CoreCamera, group: Packages/Core }
+  CoreConnectivity: { path: Packages/Core/CoreConnectivity, group: Packages/Core }
+  CoreDomain: { path: Packages/Core/CoreDomain, group: Packages/Core }
+  CoreLocalization: { path: Packages/Core/CoreLocalization, group: Packages/Core }
+  CoreNavigation: { path: Packages/Core/CoreNavigation, group: Packages/Core }
+  CoreStorage: { path: Packages/Core/CoreStorage, group: Packages/Core }
+  CoreUI: { path: Packages/Core/CoreUI, group: Packages/Core }
+  FeatureGallery: { path: Packages/Features/FeatureGallery, group: Packages/Features }
+  FeatureOnboarding: { path: Packages/Features/FeatureOnboarding, group: Packages/Features }
+  # Pinned exactly, not by range: .swiftlint.yml sets warning_threshold: 1, so a new rule in a
+  # SwiftLint release turns a green build red with no code change. Every Package.swift pins the
+  # same version.
+  SwiftLintPlugins:
+    url: https://github.com/SimplyDanny/SwiftLintPlugins
+    exactVersion: 0.65.0
+
+# XcodeGen's per-product-type default for TARGETED_DEVICE_FAMILY overrides a project-level
+# value, whereas a target template applies at target level and wins.
+targetTemplates:
+  iOSTarget:
+    platform: iOS
+    settings:
+      base:
+        SDKROOT: auto
+        SUPPORTED_PLATFORMS: iphoneos iphonesimulator
+        SUPPORTS_MACCATALYST: NO
+        # iPhone only (family 1): a portrait phone companion app, so the iPad "support all
+        # orientations unless full screen" rule doesn't apply.
+        TARGETED_DEVICE_FAMILY: "1"
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+        PRODUCT_NAME: "$(TARGET_NAME)"
 
 targets:
   CitroenConnectedCamera:
     type: application
-    platform: iOS
-    deploymentTarget: "17.0"
+    templates: [iOSTarget]
     sources:
       - path: App/App
       - path: App/Resources
     dependencies:
-      - package: VIRBKit
-      - package: AppCore
+      - package: CoreCamera
+      - package: CoreConnectivity
+      - package: CoreDomain
+      - package: CoreLocalization
+      - package: CoreNavigation
+      - package: CoreStorage
+      - package: CoreUI
+      - package: FeatureGallery
+      - package: FeatureOnboarding
+    settings:
+      base:
+        # PRODUCT_BUNDLE_IDENTIFIER, APP_DISPLAY_NAME and DEVELOPMENT_TEAM all come from
+        # Configurations/<Environment>/<Environment>.xcconfig.
+        PRODUCT_NAME: CitroenConnectedCamera
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Configurations/Info.plist
+        CODE_SIGN_ENTITLEMENTS: App/App/CitroenConnectedCamera.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+
+  # The app-shell unit tests. Everything else is a package test target, reached through the test
+  # plan rather than declared here — only code that lives in the app module needs this bundle.
+  CitroenConnectedCameraTests:
+    type: bundle.unit-test
+    templates: [iOSTarget]
+    sources:
+      - path: App/CitroenConnectedCameraTests
+    dependencies:
+      - target: CitroenConnectedCamera
+      # Member import visibility means the types these tests name have to be imported directly,
+      # even though the app target already links them — and the test doubles under TestSupport/
+      # reach further still (CoreCamera for the scripted client, FeatureGallery for the repository
+      # fake), so those get linked here too.
+      - package: CoreCamera
+      - package: CoreConnectivity
+      - package: CoreDomain
+      - package: FeatureGallery
+      - package: FeatureOnboarding
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: me.luigiaiello.ccam.tests
+        TEST_TARGET_NAME: CitroenConnectedCamera
+
+  # The UI suite drives the real app against ScriptedVIRBClient. It links CoreUI only for
+  # AccessibilityID — a test that matched on visible text would break the moment it ran in one of
+  # the other three locales.
+  CitroenConnectedCameraUITests:
+    type: bundle.ui-testing
+    templates: [iOSTarget]
+    sources:
+      - path: App/CitroenConnectedCameraUITests
+    dependencies:
+      - target: CitroenConnectedCamera
       - package: CoreUI
     settings:
       base:
-        # PRODUCT_BUNDLE_IDENTIFIER comes from Config/App.xcconfig (overridable via Secrets.xcconfig).
-        PRODUCT_NAME: CitroenConnectedCamera
-        # iPhone only (family 1): a portrait phone companion app, so the iPad "support all
-        # orientations unless full screen" rule doesn't apply.
-        TARGETED_DEVICE_FAMILY: "1"
-        GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: App/App/Info.plist
-        CODE_SIGN_ENTITLEMENTS: App/App/CitroenConnectedCamera.entitlements
-        MARKETING_VERSION: "0.1.0"
-        CURRENT_PROJECT_VERSION: "1"
-        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: me.luigiaiello.ccam.uitests
+        TEST_TARGET_NAME: CitroenConnectedCamera
+
+schemes:
+  # Each scheme's build pre-action regenerates Configurations/Secrets.xcconfig for its own
+  # environment before Xcode evaluates build settings, so switching schemes never builds
+  # against a stale environment. Pre-action output is invisible in the build log, hence the
+  # /tmp/ccam_secrets.log redirect — that file is the first thing to check when a build
+  # behaves as if a setting never resolved. `settingsTarget` hands the target's build settings
+  # ($SRCROOT) to the script, and /bin/bash is required by its arrays and [[ ]].
+  Development:
+    build:
+      targets: { CitroenConnectedCamera: all, CitroenConnectedCameraTests: [test], CitroenConnectedCameraUITests: [test] }
+      preActions:
+        - name: Generate Secrets
+          script: ENV_NAME=development "$SRCROOT/scripts/generate_secrets.sh" >> /tmp/ccam_secrets.log 2>&1
+          settingsTarget: CitroenConnectedCamera
+          shell: /bin/bash
+    run: { config: Development }
+    test:
+      config: Development
+      testPlans:
+        - path: TestPlans/CitroenConnectedCamera.xctestplan
+          defaultPlan: true
+
+  Staging:
+    build:
+      targets: { CitroenConnectedCamera: all }
+      preActions:
+        - name: Generate Secrets
+          script: ENV_NAME=staging "$SRCROOT/scripts/generate_secrets.sh" >> /tmp/ccam_secrets.log 2>&1
+          settingsTarget: CitroenConnectedCamera
+          shell: /bin/bash
+    run: { config: Staging }
+    archive: { config: Staging }
+
+  Production:
+    build:
+      targets: { CitroenConnectedCamera: all }
+      preActions:
+        - name: Generate Secrets
+          script: ENV_NAME=production "$SRCROOT/scripts/generate_secrets.sh" >> /tmp/ccam_secrets.log 2>&1
+          settingsTarget: CitroenConnectedCamera
+          shell: /bin/bash
+    run: { config: Production }
+    archive: { config: Production }

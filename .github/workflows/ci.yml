@@ -1,0 +1,118 @@
+# CI — Build & Test
+#
+# Runs on pushes to main, pull requests targeting main, and manual dispatch. Day-to-day work
+# happens on plan branches without burning runner time; main is the gate.
+#
+# Cost: this repository is public, so GitHub-hosted standard runners — macOS included — are free
+# with no minute allowance consumed. Only *larger* runners are billed, and this workflow uses none.
+#
+# No secrets are required. envs/.env.<environment> only ever carries CCAM_TEAM_ID, which is needed
+# for device signing and nothing else; Configurations/App.xcconfig picks Secrets.xcconfig up through
+# an optional `#include?`, and every step below passes CODE_SIGNING_ALLOWED=NO. A fresh clone builds
+# and tests without any of it — see docs/SECRETS.md.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SCHEME: Development
+  PROJECT: CitroenConnectedCamera.xcodeproj
+  TEST_PLAN: CitroenConnectedCamera
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: macos-26
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── Tooling ─────────────────────────────────────────────────────────────────────────
+      # Mint, not `brew install xcodegen`: the Mintfile is what pins XcodeGen 2.45.4 and
+      # SwiftLint 0.65.0, and a bare brew install would resolve whatever is current and quietly
+      # generate a different project than a developer's machine does.
+      - name: Install Mint
+        run: brew install mint
+
+      - name: Cache Mint packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.mint
+          key: mint-${{ runner.os }}-${{ hashFiles('Mintfile') }}
+          restore-keys: mint-${{ runner.os }}-
+
+      - name: Bootstrap pinned tools
+        run: mint bootstrap
+
+      # ── SPM cache ───────────────────────────────────────────────────────────────────────
+      - name: Cache SPM packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      # ── Generate the project ────────────────────────────────────────────────────────────
+      # .xcodeproj is git-ignored and generated from project.yml; see .gitignore.
+      - name: Generate Xcode project
+        run: mint run xcodegen generate
+
+      # ── Lint ────────────────────────────────────────────────────────────────────────────
+      # The SwiftLint build-tool plugin already fails the build on any violation, but running the
+      # standalone gate first turns a lint-only regression into a 30-second failure instead of a
+      # ten-minute one.
+      - name: SwiftLint
+        run: mint run swiftlint lint --strict --config .swiftlint.yml
+
+      # ── Pick a simulator ────────────────────────────────────────────────────────────────
+      # Resolved at runtime rather than pinned to a device name and OS: the runner image rolls
+      # forward on its own schedule, and a pinned "iPhone 17 Pro, OS=26.5" turns an image update
+      # into a red build with nothing to fix in this repository.
+      - name: Resolve a simulator
+        id: sim
+        run: |
+          set -euo pipefail
+          UDID=$(xcrun simctl list devices available --json \
+            | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];print(next(x['udid'] for rt in sorted(d,reverse=True) for x in d[rt] if x['name'].startswith('iPhone')))")
+          echo "Using simulator $UDID"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+
+      # ── Build & test ────────────────────────────────────────────────────────────────────
+      # One `test` invocation runs the whole plan: every package test target, the app-shell unit
+      # bundle, and the UI suite. The UI tests need no camera and no backend — ScriptedVIRBClient
+      # answers for one under -uiTestMode — so unlike most iOS UI suites there is nothing here to
+      # skip in CI.
+      - name: Build & test
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -testPlan "$TEST_PLAN" \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults.xcresult
+          retention-days: 7

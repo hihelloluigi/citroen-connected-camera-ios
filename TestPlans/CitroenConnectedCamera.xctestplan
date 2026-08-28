@@ -1,0 +1,89 @@
+{
+  "configurations": [
+    {
+      "id": "9E1F2A34-5B6C-4D7E-8F90-A1B2C3D4E5F6",
+      "name": "Configuration 1",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {
+    "targetForVariableExpansion": {
+      "containerPath": "container:CitroenConnectedCamera.xcodeproj",
+      "identifier": "CitroenConnectedCamera",
+      "name": "CitroenConnectedCamera"
+    }
+  },
+  "testTargets": [
+    {
+      "target": {
+        "containerPath": "container:CitroenConnectedCamera.xcodeproj",
+        "identifier": "CitroenConnectedCameraTests",
+        "name": "CitroenConnectedCameraTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:CitroenConnectedCamera.xcodeproj",
+        "identifier": "CitroenConnectedCameraUITests",
+        "name": "CitroenConnectedCameraUITests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Core/CoreCamera",
+        "identifier": "CoreCameraTests",
+        "name": "CoreCameraTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Core/CoreConnectivity",
+        "identifier": "CoreConnectivityTests",
+        "name": "CoreConnectivityTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Core/CoreDomain",
+        "identifier": "CoreDomainTests",
+        "name": "CoreDomainTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Core/CoreLocalization",
+        "identifier": "CoreLocalizationTests",
+        "name": "CoreLocalizationTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Core/CoreStorage",
+        "identifier": "CoreStorageTests",
+        "name": "CoreStorageTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Core/CoreUI",
+        "identifier": "CoreUITests",
+        "name": "CoreUITests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Features/FeatureGallery",
+        "identifier": "FeatureGalleryTests",
+        "name": "FeatureGalleryTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Features/FeatureOnboarding",
+        "identifier": "FeatureOnboardingTests",
+        "name": "FeatureOnboardingTests"
+      }
+    }
+  ],
+  "version": 1
+}
