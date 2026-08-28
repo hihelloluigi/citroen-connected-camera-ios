@@ -19,3 +19,6 @@ xcuserdata/
 # Swift Package Manager
 .build/
 .swiftpm/
+
+# Editors
+.vscode/
