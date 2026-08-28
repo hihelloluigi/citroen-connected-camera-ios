@@ -132,6 +132,23 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: me.luigiaiello.ccam.tests
         TEST_TARGET_NAME: CitroenConnectedCamera
 
+  # The UI suite drives the real app against ScriptedVIRBClient. It links CoreUI only for
+  # AccessibilityID — a test that matched on visible text would break the moment it ran in one of
+  # the other three locales.
+  CitroenConnectedCameraUITests:
+    type: bundle.ui-testing
+    templates: [iOSTarget]
+    sources:
+      - path: App/CitroenConnectedCameraUITests
+    dependencies:
+      - target: CitroenConnectedCamera
+      - package: CoreUI
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: me.luigiaiello.ccam.uitests
+        TEST_TARGET_NAME: CitroenConnectedCamera
+
 schemes:
   # Each scheme's build pre-action regenerates Configurations/Secrets.xcconfig for its own
   # environment before Xcode evaluates build settings, so switching schemes never builds
@@ -141,7 +158,7 @@ schemes:
   # ($SRCROOT) to the script, and /bin/bash is required by its arrays and [[ ]].
   Development:
     build:
-      targets: { CitroenConnectedCamera: all, CitroenConnectedCameraTests: [test] }
+      targets: { CitroenConnectedCamera: all, CitroenConnectedCameraTests: [test], CitroenConnectedCameraUITests: [test] }
       preActions:
         - name: Generate Secrets
           script: ENV_NAME=development "$SRCROOT/scripts/generate_secrets.sh" >> /tmp/ccam_secrets.log 2>&1
