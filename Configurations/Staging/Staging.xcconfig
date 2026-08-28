@@ -1,0 +1,17 @@
+//
+//  Staging.xcconfig
+//  CitroenConnectedCamera
+//
+//  There is no staging backend to point at — the camera is the only server this app talks to,
+//  and it is the same on every unit. Staging exists so a TestFlight build carries its own
+//  bundle id and display name and can sit on a device beside a Development build, not because
+//  it resolves different services.
+//
+
+#include "../App.xcconfig"
+
+ENVIRONMENT = Staging
+APP_DISPLAY_NAME = C-CAM Beta
+PRODUCT_BUNDLE_IDENTIFIER = me.luigiaiello.ccam.staging
+
+#include? "../Secrets.xcconfig"

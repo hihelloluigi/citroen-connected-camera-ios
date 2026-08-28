@@ -1,0 +1,12 @@
+//
+//  Production.xcconfig
+//  CitroenConnectedCamera
+//
+
+#include "../App.xcconfig"
+
+ENVIRONMENT = Production
+APP_DISPLAY_NAME = C-CAM
+PRODUCT_BUNDLE_IDENTIFIER = me.luigiaiello.ccam
+
+#include? "../Secrets.xcconfig"
