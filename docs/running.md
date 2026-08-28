@@ -70,7 +70,7 @@ flags. This is the same mechanism the UI suite uses — see [TESTS.md](TESTS.md)
 ## Permissions and entitlements
 
 - **Access WiFi Information** (`com.apple.developer.networking.wifi-info`, in
-  `App/App/CitroenConnectedCamera.entitlements`) — reads the joined network's SSID to confirm you
+  `Configurations/CitroenConnectedCamera.entitlements`) — reads the joined network's SSID to confirm you
   are on the camera.
 - **Usage strings** live in `Configurations/Info.plist` and are localized through
   `App/Resources/InfoPlist.xcstrings`:

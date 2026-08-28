@@ -99,7 +99,7 @@ targets:
         PRODUCT_NAME: CitroenConnectedCamera
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Configurations/Info.plist
-        CODE_SIGN_ENTITLEMENTS: App/App/CitroenConnectedCamera.entitlements
+        CODE_SIGN_ENTITLEMENTS: Configurations/CitroenConnectedCamera.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         MARKETING_VERSION: "0.1.0"
