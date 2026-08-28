@@ -31,4 +31,12 @@ public struct UserDefaultsFlagsStore: OnboardingFlagsStore {
 		defaults.set(flags.locationResolved, forKey: Key.location)
 		defaults.set(flags.hasCompletedOnboarding, forKey: Key.completed)
 	}
+
+	/// Clears every onboarding flag. Only the `-uiTestMode` launch path calls this — it is what
+	/// lets a UI test start at Welcome regardless of how the previous run left the simulator.
+	public func reset() {
+		for key in [Key.getStarted, Key.localNetwork, Key.location, Key.completed] {
+			defaults.removeObject(forKey: key)
+		}
+	}
 }

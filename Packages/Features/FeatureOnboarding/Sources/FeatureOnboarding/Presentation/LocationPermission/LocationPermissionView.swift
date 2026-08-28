@@ -24,12 +24,16 @@ struct LocationPermissionView: View {
 				PrimaryButton(OnboardingStrings.locationAllow, isLoading: model.isRequesting) {
 					Task { await model.request() }
 				}
+				.accessibilityIdentifier(AccessibilityID.Onboarding.locationAllow)
 			}
 			SecondaryButton(CommonStrings.notNow) { model.skip() }
+				.accessibilityIdentifier(AccessibilityID.Onboarding.locationSkip)
 		}
 		.padding(AppSpacing.xl)
 		.frame(maxWidth: .infinity, maxHeight: .infinity)
 		.background(AppColor.background)
+		.accessibilityElement(children: .contain)
+		.accessibilityIdentifier(AccessibilityID.Onboarding.location)
 		.task { await model.onAppear() }
 	}
 }

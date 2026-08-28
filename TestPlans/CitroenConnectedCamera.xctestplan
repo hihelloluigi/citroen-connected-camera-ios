@@ -23,56 +23,63 @@
     },
     {
       "target": {
-        "containerPath": "container:Packages\/Core\/CoreCamera",
+        "containerPath": "container:CitroenConnectedCamera.xcodeproj",
+        "identifier": "CitroenConnectedCameraUITests",
+        "name": "CitroenConnectedCameraUITests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Packages/Core/CoreCamera",
         "identifier": "CoreCameraTests",
         "name": "CoreCameraTests"
       }
     },
     {
       "target": {
-        "containerPath": "container:Packages\/Core\/CoreConnectivity",
+        "containerPath": "container:Packages/Core/CoreConnectivity",
         "identifier": "CoreConnectivityTests",
         "name": "CoreConnectivityTests"
       }
     },
     {
       "target": {
-        "containerPath": "container:Packages\/Core\/CoreDomain",
+        "containerPath": "container:Packages/Core/CoreDomain",
         "identifier": "CoreDomainTests",
         "name": "CoreDomainTests"
       }
     },
     {
       "target": {
-        "containerPath": "container:Packages\/Core\/CoreLocalization",
+        "containerPath": "container:Packages/Core/CoreLocalization",
         "identifier": "CoreLocalizationTests",
         "name": "CoreLocalizationTests"
       }
     },
     {
       "target": {
-        "containerPath": "container:Packages\/Core\/CoreStorage",
+        "containerPath": "container:Packages/Core/CoreStorage",
         "identifier": "CoreStorageTests",
         "name": "CoreStorageTests"
       }
     },
     {
       "target": {
-        "containerPath": "container:Packages\/Core\/CoreUI",
+        "containerPath": "container:Packages/Core/CoreUI",
         "identifier": "CoreUITests",
         "name": "CoreUITests"
       }
     },
     {
       "target": {
-        "containerPath": "container:Packages\/Features\/FeatureGallery",
+        "containerPath": "container:Packages/Features/FeatureGallery",
         "identifier": "FeatureGalleryTests",
         "name": "FeatureGalleryTests"
       }
     },
     {
       "target": {
-        "containerPath": "container:Packages\/Features\/FeatureOnboarding",
+        "containerPath": "container:Packages/Features/FeatureOnboarding",
         "identifier": "FeatureOnboardingTests",
         "name": "FeatureOnboardingTests"
       }

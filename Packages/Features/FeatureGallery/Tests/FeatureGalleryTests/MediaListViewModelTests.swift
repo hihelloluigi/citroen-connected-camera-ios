@@ -166,3 +166,36 @@ import Testing
 	#expect(model.actionError == UserFacingError(VIRBError.cameraUnreachable))
 	#expect(model.downloadingIDs.isEmpty)			  // marker cleared even on failure
 }
+
+@MainActor
+@Test func tappingAnItemEmitsTheNavigationAction() async {
+	let service = FakeGalleryRepository()
+	let item = MediaFactory.item(name: "A.MP4")
+	service.mediaResult = [item]
+	nonisolated(unsafe) var actions: [GalleryNavigationAction] = []
+	let model = MediaListViewModel(repository: service, photoSaver: FakePhotoLibrarySaver(),
+								   onAction: { actions.append($0) })
+	await model.load()
+
+	model.select(item)
+
+	#expect(actions == [.mediaTapped(item)])
+}
+
+@MainActor
+@Test func tappingAnItemInSelectModeNavigatesNowhere() async {
+	let service = FakeGalleryRepository()
+	let item = MediaFactory.item(name: "A.MP4")
+	service.mediaResult = [item]
+	nonisolated(unsafe) var actions: [GalleryNavigationAction] = []
+	let model = MediaListViewModel(repository: service, photoSaver: FakePhotoLibrarySaver(),
+								   onAction: { actions.append($0) })
+	await model.load()
+	model.setSelecting(true)
+
+	model.select(item)
+
+	// In select mode a tap toggles selection; pushing the detail screen underneath it would take
+	// the user out of the multi-select they are in the middle of.
+	#expect(actions.isEmpty)
+}

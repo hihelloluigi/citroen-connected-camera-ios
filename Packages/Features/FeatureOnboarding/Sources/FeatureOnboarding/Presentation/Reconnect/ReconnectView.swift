@@ -25,6 +25,8 @@ struct ReconnectView: View {
 		.padding(AppSpacing.xl)
 		.frame(maxWidth: .infinity, maxHeight: .infinity)
 		.background(AppColor.background)
+		.accessibilityElement(children: .contain)
+		.accessibilityIdentifier(AccessibilityID.Onboarding.reconnect)
 		.task { await model.monitor() }
 	}
 }

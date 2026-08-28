@@ -14,7 +14,9 @@ struct LocalNetworkPermissionView: View {
 			title: OnboardingStrings.localNetworkTitle,
 			message: OnboardingStrings.localNetworkBody,
 			primaryTitle: CommonStrings.continue,
-			primaryAction: { actions.markLocalNetworkResolved() }
+			primaryAction: { actions.markLocalNetworkResolved() },
+			screenID: AccessibilityID.Onboarding.localNetwork,
+			primaryID: AccessibilityID.Onboarding.localNetworkContinue
 		)
 	}
 }
@@ -26,6 +28,8 @@ struct OnboardingExplainer: View {
 	let message: String
 	let primaryTitle: String
 	let primaryAction: () -> Void
+	let screenID: String
+	let primaryID: String
 
 	var body: some View {
 		VStack(spacing: AppSpacing.lg) {
@@ -39,9 +43,12 @@ struct OnboardingExplainer: View {
 				.multilineTextAlignment(.center)
 			Spacer()
 			PrimaryButton(primaryTitle, action: primaryAction)
+				.accessibilityIdentifier(primaryID)
 		}
 		.padding(AppSpacing.xl)
 		.frame(maxWidth: .infinity, maxHeight: .infinity)
 		.background(AppColor.background)
+		.accessibilityElement(children: .contain)
+		.accessibilityIdentifier(screenID)
 	}
 }

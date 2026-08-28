@@ -33,6 +33,7 @@ struct MediaListView: View {
 			EmptyStateView(GalleryStrings.emptyTitle,
 						   message: GalleryStrings.emptyBody,
 						   systemImage: "camera")
+				.accessibilityIdentifier(AccessibilityID.Gallery.empty)
 		case .loaded:
 			grid
 		}
@@ -55,6 +56,8 @@ struct MediaListView: View {
 			.padding(AppSpacing.md)
 		}
 		.background(AppColor.background)
+		.accessibilityElement(children: .contain)
+		.accessibilityIdentifier(AccessibilityID.Gallery.grid)
 	}
 
 	@ViewBuilder private func cell(_ item: MediaEntity) -> some View {
@@ -75,7 +78,9 @@ struct MediaListView: View {
 			} else {
 				Button { Task { await model.snapshot() } } label: { Image(systemName: "camera.fill") }
 					.accessibilityLabel(GalleryStrings.takePhoto)
+					.accessibilityIdentifier(AccessibilityID.Gallery.snapshot)
 				Button(CommonStrings.select) { model.setSelecting(true) }
+					.accessibilityIdentifier(AccessibilityID.Gallery.select)
 			}
 		}
 	}
