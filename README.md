@@ -51,7 +51,6 @@ Tracked in [docs/NOTES.md](docs/NOTES.md); the short version:
 - **App Review cannot test this app** without a physical camera. A demo mode or review notes plus a
   video is the largest open item, and it is not a code problem.
 - **Native review of the it/es/fr translations.**
-- **Dynamic Type** — `AppFont` uses fixed sizes, so text does not scale with the user's setting.
 - A support URL and a privacy-policy URL for App Store Connect, and a real marketing version.
 
 ## License

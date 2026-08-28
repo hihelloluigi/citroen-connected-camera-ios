@@ -18,8 +18,7 @@ public struct ErrorStateView: View {
 
 	public var body: some View {
 		VStack(spacing: AppSpacing.lg) {
-			Image(systemName: systemImage)
-				.font(.system(size: AppIconSize.large))
+			HeroIcon(systemImage)
 				.foregroundStyle(AppColor.danger)
 			Text(message)
 				.font(AppFont.body)

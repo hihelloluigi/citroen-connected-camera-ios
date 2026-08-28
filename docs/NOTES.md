@@ -29,11 +29,24 @@ run under `xcodebuild` through the test plan. The knock-on constraint — `CoreD
 copy, or it would become iOS-only too and take the whole logic suite with it — turned out to be a
 better boundary than the one it replaced.
 
-## 2026-08-28 — No Dynamic Type
+## 2026-08-28 — Dynamic Type, and the layout change it forced
 
-`AppFont` uses fixed `Font.system(size:)`, so text does not scale with the user's text size setting.
-Everything already routes through the token, so this is a contained change; it has simply not been
-made. **Deferred**, and it is an accessibility gap, not a preference.
+`AppFont` moved from fixed `Font.system(size:)` to `Font.TextStyle`-based roles, so all type scales.
+The style each role maps to preserves the size it already rendered at, which is why the mapping is
+not always the obvious one — `callout` is a `.subheadline` because that is the 15pt style. Only
+`mono` moved, 14pt to 15pt, because there is no 14pt system text style and inventing one with
+`.custom` would give up the platform's scaling curve to save a point.
+
+Scaling the fonts turned out to be half the work. At AX5 the welcome copy truncated mid-word with
+no way to read the rest: the onboarding screens are `VStack`s with `Spacer()`s and a fixed height,
+so the extra height had nowhere to go. `ScrollableScreen` wraps each one in a `ScrollView` whose
+content carries `minHeight: proxy.size.height` — the small-text layout is byte-identical because the
+content still fills the screen and the `Spacer()`s still distribute, and the scroll only engages
+once the content genuinely outgrows the viewport. `HeroIcon` does the same job for the large SF
+Symbols, which `@ScaledMetric` has to scale because `.font(.system(size:))` will not.
+
+**Still not covered:** the gallery grid and detail screen at accessibility sizes. The grid is
+already a `ScrollView` so it should behave, but it has not been walked at AX5.
 
 ## 2026-08-28 — Three build configurations, not six
 

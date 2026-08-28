@@ -32,21 +32,21 @@ struct OnboardingExplainer: View {
 	let primaryID: String
 
 	var body: some View {
-		VStack(spacing: AppSpacing.lg) {
-			Spacer()
-			Image(systemName: systemImage)
-				.font(.system(size: AppIconSize.large))
-				.foregroundStyle(AppColor.accentEmphasis)
-			Text(title).font(AppFont.title).foregroundStyle(AppColor.textPrimary)
-				.multilineTextAlignment(.center)
-			Text(message).font(AppFont.body).foregroundStyle(AppColor.textSecondary)
-				.multilineTextAlignment(.center)
-			Spacer()
-			PrimaryButton(primaryTitle, action: primaryAction)
-				.accessibilityIdentifier(primaryID)
+		ScrollableScreen {
+			VStack(spacing: AppSpacing.lg) {
+				Spacer()
+				HeroIcon(systemImage)
+					.foregroundStyle(AppColor.accentEmphasis)
+				Text(title).font(AppFont.title).foregroundStyle(AppColor.textPrimary)
+					.multilineTextAlignment(.center)
+				Text(message).font(AppFont.body).foregroundStyle(AppColor.textSecondary)
+					.multilineTextAlignment(.center)
+				Spacer()
+				PrimaryButton(primaryTitle, action: primaryAction)
+					.accessibilityIdentifier(primaryID)
+			}
+			.padding(AppSpacing.xl)
 		}
-		.padding(AppSpacing.xl)
-		.frame(maxWidth: .infinity, maxHeight: .infinity)
 		.background(AppColor.background)
 		.accessibilityElement(children: .contain)
 		.accessibilityIdentifier(screenID)

@@ -23,5 +23,15 @@ existence timeout.
 the one module both features and the app share; keeping it macOS-buildable is what lets its token and
 formatter tests run without a simulator.
 
-**Fonts are fixed sizes and do not scale.** That is a known gap, recorded in `docs/NOTES.md`, not an
-intended design.
+**Every type role is a `Font.TextStyle`, never a point size.** `Font.system(size:)` renders at one
+size forever, which leaves anyone who has raised their text size reading 13pt captions. The style
+each role maps to was chosen to preserve the size it already rendered at, so `callout` is a
+`.subheadline` and `caption` is a `.footnote` — the names are this design system's roles, the styles
+supply Apple's metrics.
+
+**`HeroIcon` and `ScrollableScreen` exist because scaling fonts is only half of Dynamic Type.** A
+symbol sized with `.font(.system(size:))` stays put while the text beside it grows, which reads as a
+layout bug; `@ScaledMetric` fixes that but needs a `View` to live in. And a screen built from a
+`VStack` with `Spacer()`s truncates its copy at large sizes with no way to reach the rest —
+`ScrollableScreen` gives that extra height somewhere to go while keeping the small-text layout
+identical.
