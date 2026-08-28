@@ -45,6 +45,7 @@ packages:
   CoreDomain: { path: Packages/Core/CoreDomain, group: Packages/Core }
   CoreLocalization:
     { path: Packages/Core/CoreLocalization, group: Packages/Core }
+  CoreLogging: { path: Packages/Core/CoreLogging, group: Packages/Core }
   CoreNavigation: { path: Packages/Core/CoreNavigation, group: Packages/Core }
   CoreStorage: { path: Packages/Core/CoreStorage, group: Packages/Core }
   CoreUI: { path: Packages/Core/CoreUI, group: Packages/Core }
@@ -87,6 +88,7 @@ targets:
       - package: CoreConnectivity
       - package: CoreDomain
       - package: CoreLocalization
+      - package: CoreLogging
       - package: CoreNavigation
       - package: CoreStorage
       - package: CoreUI

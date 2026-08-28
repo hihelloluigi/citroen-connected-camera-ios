@@ -11,6 +11,7 @@
 #include "../App.xcconfig"
 
 ENVIRONMENT = Staging
+CCAM_LOG_LEVEL = info
 APP_DISPLAY_NAME = C-CAM Beta
 PRODUCT_BUNDLE_IDENTIFIER = me.luigiaiello.ccam.staging
 

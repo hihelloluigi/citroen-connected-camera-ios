@@ -58,6 +58,13 @@
     },
     {
       "target": {
+        "containerPath": "container:Packages/Core/CoreLogging",
+        "identifier": "CoreLoggingTests",
+        "name": "CoreLoggingTests"
+      }
+    },
+    {
+      "target": {
         "containerPath": "container:Packages/Core/CoreStorage",
         "identifier": "CoreStorageTests",
         "name": "CoreStorageTests"

@@ -16,6 +16,9 @@
     <string>$(MARKETING_VERSION)</string>
     <key>CFBundleVersion</key>
     <string>$(CURRENT_PROJECT_VERSION)</string>
+    <!-- App-owned key, PascalCase, read by CoreLogging's AppLogger. -->
+    <key>CCAMLogLevel</key>
+    <string>$(CCAM_LOG_LEVEL)</string>
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleLocalizations</key>

@@ -6,6 +6,7 @@
 #include "../App.xcconfig"
 
 ENVIRONMENT = Production
+CCAM_LOG_LEVEL = warning
 APP_DISPLAY_NAME = C-CAM
 PRODUCT_BUNDLE_IDENTIFIER = me.luigiaiello.ccam
 

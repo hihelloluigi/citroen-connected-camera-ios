@@ -6,6 +6,7 @@
 #include "../App.xcconfig"
 
 ENVIRONMENT = Development
+CCAM_LOG_LEVEL = debug
 APP_DISPLAY_NAME = C-CAM Dev
 PRODUCT_BUNDLE_IDENTIFIER = me.luigiaiello.ccam.development
 

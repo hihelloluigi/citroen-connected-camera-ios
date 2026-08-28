@@ -171,11 +171,19 @@ analyzer_rules:
 # is advice; a lint rule is a build failure.
 custom_rules:
   no_print:
-    name: "print() instead of os.Logger"
+    name: "print() instead of AppLogger"
     regex: '(?<!\w)print\('
     match_kinds: [identifier]
-    message: "Use os.Logger rather than print()."
+    message: "Use AppLogger (CoreLogging) rather than print()."
     severity: warning
+
+  no_direct_oslogger:
+    name: "os.Logger instead of AppLogger"
+    included: ".*/(App|Packages)/.*\\.swift"
+    excluded: ".*/CoreLogging/.*"
+    regex: '^import os$|(?<!\w)Logger\(subsystem:'
+    message: "Log through AppLogger (CoreLogging), which owns the subsystem and the level gate."
+    severity: error
 
   no_feature_to_feature_import:
     name: "Feature importing a sibling feature"
