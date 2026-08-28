@@ -15,6 +15,8 @@ import os
 /// which one it got.
 @MainActor
 final class AppComposition {
+	// MARK: - Stored Properties
+
 	let camera: any VIRBClientProtocol
 	let phoneId: String
 	let flagsStore: any OnboardingFlagsStore
@@ -26,11 +28,32 @@ final class AppComposition {
 	let coordinator: RootCoordinator
 	let routing: RoutingController
 
-	init(camera: any VIRBClientProtocol, phoneId: String,
-		 flagsStore: any OnboardingFlagsStore, permissions: any PermissionsService,
-		 wifiInfo: any WiFiInfoService, galleryRepository: any GalleryRepositoryProtocol,
-		 photoSaver: any PhotoLibrarySaverProtocol,
-		 connectivity: ConnectivityMonitor, coordinator: RootCoordinator) {
+	// MARK: - Computed Properties
+
+	/// What the onboarding builders need, gathered once.
+	var onboardingDependencies: OnboardingDependencies {
+		OnboardingDependencies(
+			flagsStore: flagsStore,
+			camera: camera,
+			permissions: permissions,
+			wifiInfo: wifiInfo,
+			connectivity: connectivity
+		)
+	}
+
+	// MARK: - Init
+
+	init(
+		camera: any VIRBClientProtocol,
+		phoneId: String,
+		flagsStore: any OnboardingFlagsStore,
+		permissions: any PermissionsService,
+		wifiInfo: any WiFiInfoService,
+		galleryRepository: any GalleryRepositoryProtocol,
+		photoSaver: any PhotoLibrarySaverProtocol,
+		connectivity: ConnectivityMonitor,
+		coordinator: RootCoordinator
+	) {
 		self.camera = camera
 		self.phoneId = phoneId
 		self.flagsStore = flagsStore
@@ -41,12 +64,6 @@ final class AppComposition {
 		self.connectivity = connectivity
 		self.coordinator = coordinator
 		self.routing = RoutingController(coordinator: coordinator, flags: flagsStore.load())
-	}
-
-	/// What the onboarding builders need, gathered once.
-	var onboardingDependencies: OnboardingDependencies {
-		OnboardingDependencies(flagsStore: flagsStore, camera: camera, permissions: permissions,
-							   wifiInfo: wifiInfo, connectivity: connectivity)
 	}
 
 	/// Builds the production graph: Keychain phone id, live camera client, live services, and a
@@ -67,11 +84,14 @@ final class AppComposition {
 				.error("Keychain unavailable for phone id; using a non-persisted fallback: \(error.localizedDescription, privacy: .public)")
 			phoneId = UUID().uuidString
 		}
+
 		let camera: any VIRBClientProtocol = UITestMode.scenario.map(ScriptedVIRBClient.init(scenario:))
 			?? VIRBClient(phoneId: phoneId)
+
 		if UITestMode.shouldResetState {
 			UserDefaultsFlagsStore().reset()
 		}
+
 		return AppComposition(
 			camera: camera, phoneId: phoneId,
 			flagsStore: UserDefaultsFlagsStore(),
@@ -91,8 +111,13 @@ final class AppComposition {
 enum UITestMode {
 	/// `-uiTestMode ready|fresh|absent` swaps the live camera client for a scripted one.
 	static var scenario: ScriptedVIRBClient.Scenario? {
-		guard let index = CommandLine.arguments.firstIndex(of: "-uiTestMode"),
-			  let raw = CommandLine.arguments[safe: index + 1] else { return nil }
+		guard
+			let index = CommandLine.arguments.firstIndex(of: "-uiTestMode"),
+			let raw = CommandLine.arguments[safe: index + 1]
+		else {
+			return nil
+		}
+
 		return ScriptedVIRBClient.Scenario(rawValue: raw)
 	}
 

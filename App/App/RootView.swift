@@ -6,8 +6,12 @@ import SwiftUI
 /// Renders whichever root destination the coordinator is on, by asking that feature's builder for
 /// it. The shell composes; it doesn't construct a single ViewModel of its own.
 struct RootView: View {
+	// MARK: - Stored Properties
+
 	let coordinator: RootCoordinator
 	let composition: AppComposition
+
+	// MARK: - Body
 
 	var body: some View {
 		switch coordinator.destination {
@@ -17,6 +21,7 @@ struct RootView: View {
 				dependencies: composition.onboardingDependencies,
 				onAction: { [routing = composition.routing] action in routing.handle(action) }
 			)
+
 		case .gallery:
 			GalleryBuilder.build(
 				repository: composition.galleryRepository,

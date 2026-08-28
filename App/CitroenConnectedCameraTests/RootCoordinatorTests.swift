@@ -11,8 +11,13 @@ import Testing
 @MainActor
 @Test func coordinatorUpdatesDestinationFromInput() {
 	let coordinator = RootCoordinator()
-	coordinator.update(with: OnboardingRoutingInput(hasCompletedOnboarding: true, isReachable: true,
-													setupComplete: true))
+	coordinator.update(
+		with: OnboardingRoutingInput(
+			hasCompletedOnboarding: true,
+			isReachable: true,
+			setupComplete: true
+		)
+	)
 	#expect(coordinator.destination == .gallery)
 }
 

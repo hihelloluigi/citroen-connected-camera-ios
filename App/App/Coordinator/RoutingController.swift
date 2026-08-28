@@ -12,11 +12,15 @@ import Observation
 @MainActor
 @Observable
 final class RoutingController {
+	// MARK: - Stored Properties
+
 	private let coordinator: RootCoordinator
 	private(set) var flags: OnboardingFlags
 	private var locationStatus: PermissionStatus = .notDetermined
 	private var connectivity = ConnectivitySnapshot()
 	private var didJustChangePassword = false
+
+	// MARK: - Init
 
 	init(coordinator: RootCoordinator, flags: OnboardingFlags) {
 		self.coordinator = coordinator
@@ -24,20 +28,28 @@ final class RoutingController {
 		recompute()
 	}
 
+	// MARK: - Navigation Handling
+
 	/// Handles one navigation action from the onboarding flow.
 	func handle(_ action: OnboardingNavigationAction) {
 		switch action {
 		case .flagsUpdated(let flags):
 			self.flags = flags
+
 		case .passwordChanged:
 			didJustChangePassword = true
+
 		case .reconnectFinished:
 			didJustChangePassword = false
+
 		case .connectivityUpdated(let snapshot):
 			connectivity = snapshot
 		}
+
 		recompute()
 	}
+
+	// MARK: - Updates
 
 	func update(locationStatus: PermissionStatus) {
 		self.locationStatus = locationStatus
@@ -48,6 +60,8 @@ final class RoutingController {
 		self.connectivity = connectivity
 		recompute()
 	}
+
+	// MARK: - Private Helpers
 
 	private func recompute() {
 		coordinator.update(with: RoutingInputAssembler.assemble(

@@ -7,9 +7,12 @@ import FeatureOnboarding
 /// to end.
 
 enum RoutingInputAssembler {
-	static func assemble(flags: OnboardingFlags, locationStatus: PermissionStatus,
-						 connectivity: ConnectivitySnapshot,
-						 didJustChangePassword: Bool = false) -> OnboardingRoutingInput {
+	static func assemble(
+		flags: OnboardingFlags,
+		locationStatus: PermissionStatus,
+		connectivity: ConnectivitySnapshot,
+		didJustChangePassword: Bool = false
+	) -> OnboardingRoutingInput {
 		OnboardingRoutingInput(
 			hasCompletedOnboarding: flags.hasCompletedOnboarding,
 			hasTappedGetStarted: flags.hasTappedGetStarted,

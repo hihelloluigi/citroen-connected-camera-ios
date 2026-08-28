@@ -7,14 +7,22 @@ import Observation
 @MainActor
 @Observable
 final class RootCoordinator: Coordinator {
+	// MARK: - Stored Properties
+
 	private(set) var destination: AppDestination
 	private let resolveStep: any ResolveOnboardingStepUseCaseProtocol
 
-	init(initial: OnboardingRoutingInput = OnboardingRoutingInput(),
-		 resolveStep: any ResolveOnboardingStepUseCaseProtocol = ResolveOnboardingStepUseCase()) {
+	// MARK: - Init
+
+	init(
+		initial: OnboardingRoutingInput = OnboardingRoutingInput(),
+		resolveStep: any ResolveOnboardingStepUseCaseProtocol = ResolveOnboardingStepUseCase()
+	) {
 		self.resolveStep = resolveStep
 		self.destination = AppRouter.destination(for: initial, resolveStep: resolveStep)
 	}
+
+	// MARK: - Routing
 
 	func update(with input: OnboardingRoutingInput) {
 		let next = AppRouter.destination(for: input, resolveStep: resolveStep)

@@ -5,9 +5,12 @@ import FeatureOnboarding
 /// done.
 
 enum AppRouter {
-	static func destination(for input: OnboardingRoutingInput,
-							resolveStep: any ResolveOnboardingStepUseCaseProtocol) -> AppDestination {
+	static func destination(
+		for input: OnboardingRoutingInput,
+		resolveStep: any ResolveOnboardingStepUseCaseProtocol
+	) -> AppDestination {
 		guard let step = resolveStep(input) else { return .gallery }
+
 		return .onboarding(step)
 	}
 }

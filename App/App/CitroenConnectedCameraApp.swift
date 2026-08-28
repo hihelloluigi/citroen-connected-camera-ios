@@ -3,7 +3,11 @@ import SwiftUI
 
 @main
 struct CitroenConnectedCameraApp: App {
+	// MARK: - Wrapped Properties
+
 	@State private var composition = AppComposition.live()
+
+	// MARK: - Body
 
 	var body: some Scene {
 		WindowGroup {

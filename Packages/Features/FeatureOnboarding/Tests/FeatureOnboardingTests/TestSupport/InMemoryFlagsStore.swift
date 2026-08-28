@@ -1,19 +1,23 @@
 import CoreDomain
 
-@testable import FeatureOnboarding
-
-/// In-memory `OnboardingFlagsStore` fake.
-///
-/// CoreDomainTests carries its own copy of this. Test-only helpers can't cross a package boundary
-/// without a shared test module, and one fake per protocol per package is what the fleet does
-/// rather than introduce one.
+/// In-memory `OnboardingFlagsStore` fake. Duplicated per package — test helpers can't cross a
+/// package boundary.
 final class InMemoryFlagsStore: OnboardingFlagsStore, @unchecked Sendable {
+	// MARK: - Stored Properties
+
 	private var flags: OnboardingFlags
+
+	// MARK: - Init
 
 	init(_ flags: OnboardingFlags = .init()) {
 		self.flags = flags
 	}
 
+	// MARK: - OnboardingFlagsStore
+
 	func load() -> OnboardingFlags { flags }
-	func save(_ flags: OnboardingFlags) { self.flags = flags }
+
+	func save(_ flags: OnboardingFlags) {
+		self.flags = flags
+	}
 }

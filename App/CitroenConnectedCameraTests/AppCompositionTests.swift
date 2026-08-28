@@ -5,8 +5,10 @@ import Testing
 @testable import CitroenConnectedCamera
 
 @MainActor
-private func makeComposition(flagsStore: any OnboardingFlagsStore = InMemoryFlagsStore(),
-							 coordinator: RootCoordinator = RootCoordinator()) -> AppComposition {
+private func makeComposition(
+	flagsStore: any OnboardingFlagsStore = InMemoryFlagsStore(),
+	coordinator: RootCoordinator = RootCoordinator()
+) -> AppComposition {
 	AppComposition(
 		camera: MockVIRBClient(), phoneId: "ABC-123",
 		flagsStore: flagsStore, permissions: MockPermissionsService(),
