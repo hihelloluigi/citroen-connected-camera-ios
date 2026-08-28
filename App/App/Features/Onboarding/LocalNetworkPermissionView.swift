@@ -33,7 +33,7 @@ struct OnboardingExplainer: View {
 			Spacer()
 			Image(systemName: systemImage)
 				.font(.system(size: AppIconSize.large))
-				.foregroundStyle(AppColor.accent)
+				.foregroundStyle(AppColor.accentEmphasis)
 			Text(title).font(AppFont.title).foregroundStyle(AppColor.textPrimary)
 				.multilineTextAlignment(.center)
 			Text(message).font(AppFont.body).foregroundStyle(AppColor.textSecondary)

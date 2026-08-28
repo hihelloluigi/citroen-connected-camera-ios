@@ -19,3 +19,11 @@ import Testing
 @Test func gridCellSizeTokenIsPositive() {
 	#expect(AppSize.gridCellMin > 0)
 }
+
+@Test func brandHexIsTheRequestedPeriwinkle() {
+	let rgb = Color.rgb(hex: AppColor.brandHex)
+	// The brand color as picked, in normalized components: R 0.779, G 0.784, B 0.896.
+	#expect(((rgb?.r ?? 0) - 0.779).magnitude < 0.005)
+	#expect(((rgb?.g ?? 0) - 0.784).magnitude < 0.005)
+	#expect(((rgb?.b ?? 0) - 0.896).magnitude < 0.005)
+}

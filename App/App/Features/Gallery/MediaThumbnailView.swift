@@ -46,7 +46,7 @@ struct MediaThumbnailView: View {
 			if isDownloading {
 				ProgressView()
 					.progressViewStyle(.circular)
-					.tint(AppColor.accent)
+					.tint(AppColor.accentEmphasis)
 					.padding(AppSpacing.sm)
 					.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.sm))
 			}

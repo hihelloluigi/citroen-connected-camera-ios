@@ -9,7 +9,7 @@ struct LocationPermissionView: View {
 			Spacer()
 			Image(systemName: "location")
 				.font(.system(size: AppIconSize.large))
-				.foregroundStyle(AppColor.accent)
+				.foregroundStyle(AppColor.accentEmphasis)
 			Text("Allow Location access")
 				.font(AppFont.title).foregroundStyle(AppColor.textPrimary)
 				.multilineTextAlignment(.center)

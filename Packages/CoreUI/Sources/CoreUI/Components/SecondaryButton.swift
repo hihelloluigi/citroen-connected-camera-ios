@@ -15,11 +15,11 @@ public struct SecondaryButton: View {
 		Button(action: action) {
 			Text(title)
 				.font(AppFont.headline)
-				.foregroundStyle(AppColor.accent)
+				.foregroundStyle(AppColor.accentEmphasis)
 				.frame(maxWidth: .infinity)
 				.padding(.vertical, AppSpacing.md)
 				.overlay(
-					RoundedRectangle(cornerRadius: AppRadius.md).strokeBorder(AppColor.accent, lineWidth: 1)
+					RoundedRectangle(cornerRadius: AppRadius.md).strokeBorder(AppColor.accentEmphasis, lineWidth: 1)
 				)
 				.opacity(isEnabled ? 1 : AppOpacity.disabled)
 		}

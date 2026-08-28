@@ -9,7 +9,7 @@ struct WelcomeView: View {
 			Spacer()
 			Image(systemName: "camera.fill")
 				.font(.system(size: AppIconSize.large))
-				.foregroundStyle(AppColor.accent)
+				.foregroundStyle(AppColor.accentEmphasis)
 			Text("Your dashcam, on your phone")
 				.font(AppFont.displayLarge)
 				.foregroundStyle(AppColor.textPrimary)
