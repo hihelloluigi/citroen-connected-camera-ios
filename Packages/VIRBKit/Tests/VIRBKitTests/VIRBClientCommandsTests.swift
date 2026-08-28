@@ -10,7 +10,7 @@ extension VIRBClientTests {
 			nonisolated(unsafe) var sentBody: Data?
 			MockURLProtocol.handler = { request in
 				sentBody = request.httpBody ?? request.bodyData
-				let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+				let response = try MockURLProtocol.response(for: request)
 				return (response, Data(#"{"result":1,"cmdRequestId":6}"#.utf8))
 			}
 			let client = VIRBClient(
@@ -34,7 +34,7 @@ extension VIRBClientTests {
 		@Test func downloadWritesFileToDestination() async throws {
 			let payload = Data("FAKE-VIDEO-BYTES".utf8)
 			MockURLProtocol.handler = { request in
-				let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+				let response = try MockURLProtocol.response(for: request)
 				return (response, payload)
 			}
 			let client = VIRBClient(
@@ -55,7 +55,7 @@ extension VIRBClientTests {
 
 		@Test func downloadThrowsAndWritesNothingOnErrorStatus() async throws {
 			MockURLProtocol.handler = { request in
-				let response = HTTPURLResponse(url: request.url!, statusCode: 404, httpVersion: nil, headerFields: nil)!
+				let response = try MockURLProtocol.response(for: request, status: 404)
 				return (response, Data("<html>not found</html>".utf8))
 			}
 			let client = VIRBClient(

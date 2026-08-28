@@ -9,13 +9,24 @@ enum MediaFactory {
 					 gps: (lat: Double, lon: Double)? = nil) -> MediaItem {
 		MediaItem(
 			kind: kind,
-			url: URL(string: "http://192.168.0.1/DCIM/\(name)")!,
-			thumbURL: URL(string: "http://192.168.0.1/thumb/\(name)")!,
+			url: cameraURL(path: "/DCIM/\(name)"),
+			thumbURL: cameraURL(path: "/thumb/\(name)"),
 			name: name,
 			fileSize: fileSize,
 			date: date,
 			gpsLatitude: gps?.lat,
 			gpsLongitude: gps?.lon
 		)
+	}
+
+	/// The camera's media URL for `path`. Assembled through `URLComponents` rather than
+	/// `URL(string:)!` so the factory stays non-throwing without a force-unwrap; a fixed
+	/// scheme/host/path always resolves, and the fallback is unreachable in practice.
+	private static func cameraURL(path: String) -> URL {
+		var components = URLComponents()
+		components.scheme = "http"
+		components.host = "192.168.0.1"
+		components.path = path
+		return components.url ?? URL(fileURLWithPath: path)
 	}
 }

@@ -1,10 +1,16 @@
 reporter: "xcode"
 
+# Any single violation — warning or error — fails the build. SwiftLint reads a threshold of 0
+# as "always error", which is why this is 1 and not 0. `mint run swiftlint lint --strict` is
+# the standalone gate that fails on exactly what the build-tool plugin would have failed on.
+warning_threshold: 1
+
 included:
-  - Packages/VIRBKit/Sources
-  - Packages/AppCore/Sources
-  - Packages/CoreUI/Sources
-  - App/App
+  - App
+  - Packages
+
+excluded:
+  - "**/.build"
 
 # force_unwrapping is opt-in; it must be enabled before its severity takes effect.
 opt_in_rules:
@@ -26,3 +32,12 @@ disabled_rules:
   # Incompatible with tab indentation: it checks character-column alignment of wrapped
   # parameters, which tabs can't satisfy (the params still align visually at tab width).
   - vertical_parameter_alignment
+
+custom_rules:
+  # print() survives review, ships, and then nobody can filter it in Console.
+  no_print:
+    name: "print() instead of os.Logger"
+    regex: '(?<!\w)print\('
+    match_kinds: [identifier]
+    message: "Use os.Logger rather than print()."
+    severity: warning

@@ -2,9 +2,9 @@ import Foundation
 import Testing
 @testable import AppCore
 
-@Test func groupsByDayNewestFirstWithRelativeTitles() {
+@Test func groupsByDayNewestFirstWithRelativeTitles() throws {
 	var cal = Calendar(identifier: .gregorian)
-	cal.timeZone = TimeZone(identifier: "UTC")!
+	cal.timeZone = try #require(TimeZone(identifier: "UTC"))
 	let now = Date(timeIntervalSince1970: 1_000_000) // fixed reference
 	let today = now
 	let yesterday = now.addingTimeInterval(-86_400)

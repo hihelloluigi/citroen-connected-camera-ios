@@ -1,11 +1,20 @@
 import Foundation
+import Testing
 
 /// Test transport stub. Set `handler` to return canned responses per request.
 final class MockURLProtocol: URLProtocol {
 	nonisolated(unsafe) static var handler: (@Sendable (URLRequest) throws -> (HTTPURLResponse, Data))?
 
-	override class func canInit(with request: URLRequest) -> Bool { true }
-	override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+	/// A response for `request`, 200 unless a test wants a failure status. Centralised so no
+	/// test has to force-unwrap `request.url` or `HTTPURLResponse.init`, both of which the lint
+	/// config rejects.
+	static func response(for request: URLRequest, status: Int = 200) throws -> HTTPURLResponse {
+		let url = try #require(request.url)
+		return try #require(HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: nil))
+	}
+
+	override static func canInit(with request: URLRequest) -> Bool { true }
+	override static func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
 	override func startLoading() {
 		guard let handler = Self.handler else {

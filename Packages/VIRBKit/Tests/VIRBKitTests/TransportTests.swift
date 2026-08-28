@@ -10,10 +10,10 @@ extension VIRBClientTests {
 			MockURLProtocol.handler = { request in
 				#expect(request.url?.path == "/virb")
 				#expect(request.httpMethod == "POST")
-				let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+				let response = try MockURLProtocol.response(for: request)
 				return (response, Data(#"{"result":1,"cmdRequestId":6}"#.utf8))
 			}
-			let config = VIRBConfiguration(baseURL: URL(string: "http://192.168.0.1")!, requestTimeout: 8)
+			let config = VIRBConfiguration(requestTimeout: 8)
 			let transport = URLSessionTransport(configuration: config, session: MockURLProtocol.makeSession())
 
 			let data = try await transport.post(path: "/virb", body: Data("{}".utf8))

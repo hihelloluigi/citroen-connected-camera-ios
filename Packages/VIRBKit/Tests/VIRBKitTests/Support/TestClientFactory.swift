@@ -9,9 +9,7 @@ import Testing
 internal func makeClient(fixture: String) throws -> VIRBClient {
 	let data = try Fixture.load(fixture)
 	MockURLProtocol.handler = { request in
-		let url = try #require(request.url)
-		let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
-		return (response, data)
+		return (try MockURLProtocol.response(for: request), data)
 	}
 	let transport = URLSessionTransport(
 		configuration: .init(),
