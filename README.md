@@ -27,15 +27,15 @@ zoom, video playback, save-to-Photos and share. Available in English, Italian, S
 <table>
   <tr>
     <td align="center"><img src="docs/screenshots/01-welcome.png" width="180" alt="Welcome screen"><br><sub>Guided setup</sub></td>
-    <td align="center"><img src="docs/screenshots/02-local-network.png" width="180" alt="Local Network permission explainer"><br><sub>Permissions, explained</sub></td>
-    <td align="center"><img src="docs/screenshots/03-gallery.png" width="180" alt="Recordings gallery"><br><sub>Recordings by date</sub></td>
+    <td align="center"><img src="docs/screenshots/02-gallery.png" width="180" alt="Recordings gallery"><br><sub>Recordings by date</sub></td>
+    <td align="center"><img src="docs/screenshots/03-media-detail.png" width="180" alt="A recording open, with save, share and delete"><br><sub>Save, share, delete</sub></td>
     <td align="center"><img src="docs/screenshots/04-camera-details.png" width="180" alt="Camera details sheet"><br><sub>Camera details</sub></td>
-    <td align="center"><img src="docs/screenshots/05-select.png" width="180" alt="Multi-select with download and delete"><br><sub>Bulk download & delete</sub></td>
+    <td align="center"><img src="docs/screenshots/05-select.png" width="180" alt="Multi-select with download and delete"><br><sub>Bulk download &amp; delete</sub></td>
   </tr>
 </table>
 
-<sub>Captured in the Simulator against a scripted camera, so the thumbnails render as placeholders —
-on real hardware they are your own footage.</sub>
+<sub>Captured in the Simulator against a scripted camera. The road frames are drawn placeholders
+that ship with the demo build — on real hardware they are your own footage.</sub>
 
 ## Installation
 
@@ -154,7 +154,7 @@ Xcode 26.6, iOS 17+, [Mint](https://github.com/yonaskolb/Mint). XcodeGen and Swi
 
 MVVM + Coordinator over SPM modules, tiered into `Packages/Core/` (8 modules) and
 `Packages/Features/` (2), with a thin app shell. The layer boundaries are enforced by SwiftLint
-rules, not just documented. 139 tests across eleven targets, including a UI suite that drives the
+rules, not just documented. 145 tests across eleven targets, including a UI suite that drives the
 real app against a scripted camera.
 
 ## Documentation
@@ -176,6 +176,10 @@ Tracked in [docs/NOTES.md](docs/NOTES.md); the short version:
   video is the largest open item, and it is not a code problem.
 - **Native review of the it/es/fr translations.**
 - A support URL and a privacy-policy URL for App Store Connect, and a real marketing version.
+
+## Security
+
+Please report vulnerabilities privately — see [SECURITY.md](SECURITY.md).
 
 ## License
 
