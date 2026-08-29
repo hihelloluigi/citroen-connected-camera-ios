@@ -9,7 +9,7 @@ talking to the camera over its WiFi AP. All traffic is **cleartext HTTP on port 
 |---|---|
 | Platform | Garmin VIRB-based dashcam (rebadged) |
 | WiFi SSID | `ConnectedCAM0000` |
-| Default WiFi password | `ConnectedCam` (changed to `Test1234` during testing — see `setWifiPassword`) |
+| Default WiFi password | `ConnectedCam` (changeable — see `setWifiPassword`) |
 | Camera IP / gateway | `192.168.0.1` |
 | Firmware | `200` |
 | vimVersion | `140` |

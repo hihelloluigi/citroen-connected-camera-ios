@@ -55,7 +55,7 @@
                 },
                 "setWifiPassword": {
                   "summary": "Change the AP WiFi password (disconnects clients)",
-                  "value": { "command": "setWifiPassword", "newPassword": "Test1234", "oldPassword": "ConnectedCam", "phoneId": "00000000-0000-4000-A000-000000000001" }
+                  "value": { "command": "setWifiPassword", "newPassword": "<new-password>", "oldPassword": "ConnectedCam", "phoneId": "00000000-0000-4000-A000-000000000001" }
                 },
                 "downloadShareImage": {
                   "summary": "Get the list of incident photos queued for sharing",
