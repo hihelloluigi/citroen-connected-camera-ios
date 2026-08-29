@@ -37,17 +37,25 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # ── Tooling ─────────────────────────────────────────────────────────────────────────
       # Mint, not `brew install xcodegen`: the Mintfile is what pins XcodeGen 2.45.4 and
       # SwiftLint 0.65.0, and a bare brew install would resolve whatever is current and quietly
       # generate a different project than a developer's machine does.
       - name: Install Mint
-        run: brew install mint
+        # The runner image ships an untrusted `aws/tap`, and Homebrew — which detects Actions and
+        # emits its warnings as workflow commands — turns that into an annotation on every run.
+        # Nothing here uses that tap, so remove it rather than set HOMEBREW_NO_REQUIRE_TAP_TRUST:
+        # that disables the trust check instead of resolving it, and Homebrew says it is going
+        # away. Output is silenced so the untap does not print the same warning on its way out,
+        # and `|| true` covers images that do not ship the tap.
+        run: |
+          brew untap aws/tap >/dev/null 2>&1 || true
+          brew install mint
 
       - name: Cache Mint packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.mint
           key: mint-${{ runner.os }}-${{ hashFiles('Mintfile') }}
@@ -58,7 +66,7 @@ jobs:
 
       # ── SPM cache ───────────────────────────────────────────────────────────────────────
       - name: Cache SPM packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
@@ -111,7 +119,7 @@ jobs:
 
       - name: Upload test results
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: TestResults
           path: TestResults.xcresult
