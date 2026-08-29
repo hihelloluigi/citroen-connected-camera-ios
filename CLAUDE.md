@@ -16,7 +16,7 @@ open CitroenConnectedCamera.xcodeproj
 |---|---|
 | `mint run xcodegen generate` | Regenerate the project after adding, moving or removing a file |
 | `mint run swiftlint lint --strict --config .swiftlint.yml` | The standalone lint gate |
-| `xcodebuild test -project CitroenConnectedCamera.xcodeproj -scheme Development -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -testPlan CitroenConnectedCamera -skipPackagePluginValidation` | The whole suite — 134 tests |
+| `./scripts/test.sh` | The whole suite — 139 tests, on whichever simulator is installed |
 | `cd Packages/Core/<Module> && swift test` | One Core module, no simulator (not `CoreLocalization`, not the features) |
 
 Always `mint run`, never a bare `xcodegen` or `swiftlint` — a bare invocation runs whatever is on
@@ -35,12 +35,12 @@ the SwiftLint build-tool plugin.
 | `App/App/` | The shell — `RootCoordinator`, `AppComposition`, `RootView`, and nothing else |
 | `App/CitroenConnectedCameraTests/` | App-shell unit tests |
 | `App/CitroenConnectedCameraUITests/` | The UI suite, driven by `ScriptedVIRBClient` |
-| `Packages/Core/` | 7 `Core*` modules |
+| `Packages/Core/` | 8 `Core*` modules |
 | `Packages/Features/` | `FeatureOnboarding`, `FeatureGallery` |
 | `Configurations/` | **Repo root**, not under `App/` — one xcconfig per environment, one `Info.plist` |
 | `envs/` | Git-ignored `.env.<environment>`; only `.env.example` is tracked |
 | `project.yml` | Source of truth; the `.xcodeproj` is generated and git-ignored |
-| `TestPlans/` | The Development scheme's default plan, aggregating all ten targets |
+| `TestPlans/` | The Development scheme's default plan, aggregating all eleven targets |
 | `docs/NOTES.md` | Accepted tradeoffs and deferred work, newest first |
 
 ## Read before you change

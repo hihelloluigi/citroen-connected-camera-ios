@@ -86,12 +86,11 @@ now" as a first-class choice.
 
 ## Running the tests
 
-The whole suite, all ten targets:
+The whole suite, all eleven targets:
 
 ```sh
-xcodebuild test -project CitroenConnectedCamera.xcodeproj -scheme Development \
-  -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
-  -testPlan CitroenConnectedCamera -skipPackagePluginValidation
+./scripts/test.sh                 # newest installed iPhone
+./scripts/test.sh "iPhone 17 Pro" # a named one
 ```
 
 Individual Core modules that build for macOS run without a simulator:

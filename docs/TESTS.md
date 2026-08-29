@@ -3,13 +3,12 @@
 ## Running them
 
 ```sh
-xcodebuild test -project CitroenConnectedCamera.xcodeproj -scheme Development \
-  -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
-  -testPlan CitroenConnectedCamera -skipPackagePluginValidation
+./scripts/test.sh                 # newest installed iPhone
+./scripts/test.sh "iPhone 17 Pro" # a named one
 ```
 
 `TestPlans/CitroenConnectedCamera.xctestplan` is the Development scheme's default plan and
-aggregates every target — the eight package suites, the app-shell unit bundle, and the UI bundle.
+aggregates every target — the nine package suites, the app-shell unit bundle, and the UI bundle.
 One invocation runs all of it, and that is what CI runs.
 
 Individual Core packages that build for macOS can also be run without a simulator:
@@ -30,6 +29,7 @@ That works for `CoreCamera`, `CoreConnectivity`, `CoreDomain`, `CoreStorage` and
 | `CoreConnectivityTests` | 7 | The session probe's handshake-vs-heartbeat sequencing, and which errors mean "the camera answered" rather than "the camera is gone" |
 | `CoreDomainTests` | 10 | Password rules, onboarding flags, and the error mapping — all case-level, no copy |
 | `CoreLocalizationTests` | 8 | The **compiled** catalog: same keys in every locale, matching format specifiers, a `.stringsdict` per locale, and no accessor returning its own key |
+| `CoreLoggingTests` | 5 | The level ordering and its case-insensitive parsing, an unrecognised name resolving to nil rather than a default, and a non-empty subsystem |
 | `CoreStorageTests` | 2 | The phone id is generated once and persists |
 | `CoreUITests` | 9 | Token parsing and telemetry formatting |
 | `FeatureGalleryTests` | 35 | The DTO↔entity mapping, the coordinator's stack, and every ViewModel against a fake repository |
@@ -37,7 +37,7 @@ That works for `CoreCamera`, `CoreConnectivity`, `CoreDomain`, `CoreStorage` and
 | `CitroenConnectedCameraTests` | 11 | The shell: routing, the coordinator, the composition root |
 | `CitroenConnectedCameraUITests` | 6 | The app boots and the flow lands where the scripted camera says it should |
 
-134 tests.
+139 tests.
 
 ## The UI suite
 

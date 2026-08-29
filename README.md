@@ -28,9 +28,9 @@ Xcode 26.6, iOS 17+, [Mint](https://github.com/yonaskolb/Mint). XcodeGen and Swi
 
 ## Architecture
 
-MVVM + Coordinator over SPM modules, tiered into `Packages/Core/` (7 modules) and
+MVVM + Coordinator over SPM modules, tiered into `Packages/Core/` (8 modules) and
 `Packages/Features/` (2), with a thin app shell. The layer boundaries are enforced by SwiftLint
-rules, not just documented. 134 tests across ten targets, including a UI suite that drives the real
+rules, not just documented. 139 tests across eleven targets, including a UI suite that drives the real
 app against a scripted camera.
 
 ## Documentation
