@@ -4,15 +4,21 @@ Design tokens, shared components, and the accessibility identifiers the UI suite
 
 ## Invariants
 
-**`accent` and `accentEmphasis` are two roles, not two shades.** `accent` is only ever a filled
-surface — it is the brand periwinkle unchanged in both appearances, which is light enough to carry
-`onAccent` at ~9.8:1 and far too light to read as a foreground on a light background (1.5:1).
-`accentEmphasis` takes every foreground use and is darkened for light mode. Using one where the
-other belongs is not a style slip; it is invisible text.
+**`accent` and `accentEmphasis` are two roles, not two shades.** Both greens come from the app
+icon. `accent` is only ever a filled surface — the icon's field colour, unchanged in both
+appearances; as a mid-tone it carries near-black `onAccent` at 5.7:1 but reads at only 2.8:1 as a
+foreground on a light background. `accentEmphasis` takes every foreground use and is the icon's
+darker road green in light mode (5.6:1). Using one where the other belongs is not a style slip; it
+is unreadable text.
 
-**`PrimaryButton`'s hairline is not decoration.** A `#C7C8E5` fill has no visible edge against
-`AppColor.background`. The stroke is `accentEmphasis`, which *is* the fill colour in dark mode, so it
-self-cancels exactly where the fill already stands on its own.
+**`telemetry` is deliberately outside the brand hue.** It used to be a teal, which the green brand
+now occupies — at 1.05:1 against `accentEmphasis` a speed readout was indistinguishable from an
+accent-tinted label. It is blue so that "this is a measurement" stays separable from "this is
+actionable".
+
+**`PrimaryButton`'s hairline self-cancels by design.** The stroke is `accentEmphasis`, which in
+light mode is a deeper green than the fill and gives the CTA a defined edge, and in dark mode *is*
+the fill colour — so it vanishes exactly where the fill already stands on its own.
 
 **`AccessibilityID` lives here rather than in the test bundle.** The features that set the
 identifiers and the bundle that reads them would otherwise hold duplicate literals that drift — and a

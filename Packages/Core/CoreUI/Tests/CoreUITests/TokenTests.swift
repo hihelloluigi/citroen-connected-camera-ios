@@ -20,10 +20,15 @@ import Testing
 	#expect(AppSize.gridCellMin > 0)
 }
 
-@Test func brandHexIsTheRequestedPeriwinkle() {
-	let rgb = Color.rgb(hex: AppColor.brandHex)
-	// The brand color as picked, in normalized components: R 0.779, G 0.784, B 0.896.
-	#expect(((rgb?.r ?? 0) - 0.779).magnitude < 0.005)
-	#expect(((rgb?.g ?? 0) - 0.784).magnitude < 0.005)
-	#expect(((rgb?.b ?? 0) - 0.896).magnitude < 0.005)
+@Test func brandHexesMatchTheAppIcon() {
+	// Sampled from AppIcon's 1024pt artwork: the field it is drawn on, and the road.
+	let field = Color.rgb(hex: AppColor.brandHex)
+	#expect(((field?.r ?? 0) - 0.114).magnitude < 0.005)
+	#expect(((field?.g ?? 0) - 0.655).magnitude < 0.005)
+	#expect(((field?.b ?? 0) - 0.608).magnitude < 0.005)
+
+	let road = Color.rgb(hex: AppColor.brandDeepHex)
+	#expect(((road?.r ?? 0) - 0.012).magnitude < 0.005)
+	#expect(((road?.g ?? 0) - 0.431).magnitude < 0.005)
+	#expect(((road?.b ?? 0) - 0.427).magnitude < 0.005)
 }

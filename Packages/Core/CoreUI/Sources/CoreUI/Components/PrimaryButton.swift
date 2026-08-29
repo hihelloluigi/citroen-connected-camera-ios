@@ -25,9 +25,9 @@ public struct PrimaryButton: View {
 			.frame(maxWidth: .infinity)
 			.padding(.vertical, AppSpacing.md)
 			.background(AppColor.accent, in: RoundedRectangle(cornerRadius: AppRadius.md))
-			// The brand fill is a pale periwinkle that barely separates from the light background;
-			// this hairline gives the CTA an edge. In dark mode `accentEmphasis` *is* the fill, so it
-			// disappears there — where the fill already contrasts with the background on its own.
+			// In light mode `accentEmphasis` is the icon's darker green, so this hairline reads as a
+			// deeper edge around the fill. In dark mode it *is* the fill and disappears, which is
+			// right there — the fill already separates from the background on its own.
 			.overlay(RoundedRectangle(cornerRadius: AppRadius.md)
 				.strokeBorder(AppColor.accentEmphasis, lineWidth: 1))
 			.opacity(isEnabled ? 1 : AppOpacity.disabled)
