@@ -25,6 +25,11 @@ let package = Package(
 		.target(
 			name: "CoreCamera",
 			path: "Sources/CoreCamera",
+			// .process, not .copy. `.copy` preserves the folder, so the generated resource bundle
+			// gets its own `Resources/` subdirectory — and codesign then rejects the whole bundle
+			// as "bundle format unrecognized, invalid, or unsuitable". `.process` flattens the
+			// files to the bundle root, which is why the lookup below takes no `subdirectory:`.
+			resources: [.process("Resources")],
 			plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
 		),
 		.testTarget(

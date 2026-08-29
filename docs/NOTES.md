@@ -2,6 +2,30 @@
 
 Accepted tradeoffs and deferred work, newest first. The log of "why is this half-done?"
 
+## 2026-08-29 — The scripted camera serves pictures now, but not video
+
+`ScriptedVIRBClient` answered the control protocol and nothing else, which was enough for a UI test
+asserting on labels and badges and not enough for anything anyone looks at. The grid hands
+`thumbURL` to `AsyncImage`, which is a plain `URLSession.shared` GET to `192.168.0.1` — an address
+that resolves to nothing in the Simulator — so every cell fell through to its failure placeholder
+and the media detail screen sat on its spinner forever. The one screen the app exists for was the
+one screen you could not photograph, demo, or show a reviewer.
+
+`ScriptedCameraURLProtocol` fills that in: a `URLProtocol` registered by `AppComposition` only under
+`-uiTestMode`, claiming GETs to `/thumb/` and `/DCIM/` on the camera host and nothing else, so
+`POST /virb` is untouched and a normal launch never reaches the class. It serves three bundled
+JPEGs, picked by a checksum of the file name so a thumbnail and its full-size are always the same
+picture and a reload never reshuffles the grid. The frames are deliberately drawn rather than
+photographic — a demo build must not look like it is showing real footage from somebody's car.
+
+**Still deferred:** video playback. A video's `url` gets a frame too, which is what the grid and the
+share sheet need, but it is a JPEG under an `.MP4` name and `MediaDetailView`'s player cannot play
+it. A real demo clip means encoding one and shipping it in the binary, and the honest reason it is
+not done is that nothing needed it yet.
+
+**This is not yet the demo mode App Review needs.** It is the media half of it. The gate is still
+`-uiTestMode`, and a reviewer cannot pass launch arguments — see the entry below.
+
 ## 2026-08-29 — The gallery at accessibility sizes, and a bug it surfaced
 
 Scaling the type and making the onboarding screens scroll did not carry the gallery. Walking it at

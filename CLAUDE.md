@@ -16,7 +16,7 @@ open CitroenConnectedCamera.xcodeproj
 |---|---|
 | `mint run xcodegen generate` | Regenerate the project after adding, moving or removing a file |
 | `mint run swiftlint lint --strict --config .swiftlint.yml` | The standalone lint gate |
-| `./scripts/test.sh` | The whole suite — 139 tests, on whichever simulator is installed |
+| `./scripts/test.sh` | The whole suite — 145 tests, on whichever simulator is installed |
 | `cd Packages/Core/<Module> && swift test` | One Core module, no simulator (not `CoreLocalization`, not the features) |
 
 Always `mint run`, never a bare `xcodegen` or `swiftlint` — a bare invocation runs whatever is on
@@ -100,6 +100,13 @@ the SwiftLint build-tool plugin.
 - **Build pre-action output is invisible in Xcode's build log.** The schemes redirect
   `generate_secrets.sh` to `/tmp/ccam_secrets.log`. Check that file first when a build behaves as
   though a build setting never resolved.
+
+- **`.copy` on a package resource folder breaks code signing.** `.copy("Resources")` preserves the
+  directory, so the generated `<Module>_<Module>.bundle` gets a `Resources/` subdirectory inside it
+  and `codesign` fails with *bundle format unrecognized, invalid, or unsuitable* — pointing at the
+  bundle, not at the manifest line that caused it. Use `.process`, which flattens to the bundle
+  root, and look resources up without a `subdirectory:`. `swift test` passes either way; only the
+  Xcode build signs.
 
 - **Editing the `.xcodeproj` is pointless.** It is generated from `project.yml` and git-ignored;
   Xcode-UI changes are discarded on the next `xcodegen generate`.

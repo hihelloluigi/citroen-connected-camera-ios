@@ -85,8 +85,15 @@ final class AppComposition {
 			phoneId = UUID().uuidString
 		}
 
-		let camera: any VIRBClientProtocol = UITestMode.scenario.map(ScriptedVIRBClient.init(scenario:))
-			?? VIRBClient(phoneId: phoneId)
+		let camera: any VIRBClientProtocol
+		if let scenario = UITestMode.scenario {
+			// The scripted client answers the control protocol; the stub answers the media GETs
+			// that AsyncImage makes straight to the camera, which nothing else routes through it.
+			ScriptedCameraURLProtocol.register()
+			camera = ScriptedVIRBClient(scenario: scenario)
+		} else {
+			camera = VIRBClient(phoneId: phoneId)
+		}
 
 		if UITestMode.shouldResetState {
 			UserDefaultsFlagsStore().reset()

@@ -25,7 +25,7 @@ That works for `CoreCamera`, `CoreConnectivity`, `CoreDomain`, `CoreStorage` and
 
 | Target | Tests | What it proves |
 |---|---:|---|
-| `CoreCameraTests` | 27 | The client and transport against a mocked `URLProtocol` replaying fixtures captured from the real camera — real request and response bytes, no hardware |
+| `CoreCameraTests` | 33 | The client and transport against a mocked `URLProtocol` replaying fixtures captured from the real camera — real request and response bytes, no hardware — plus the scripted media stub: which requests it claims, which it leaves to the control endpoint, and that a thumbnail and its full-size resolve to the same frame |
 | `CoreConnectivityTests` | 7 | The session probe's handshake-vs-heartbeat sequencing, and which errors mean "the camera answered" rather than "the camera is gone" |
 | `CoreDomainTests` | 10 | Password rules, onboarding flags, and the error mapping — all case-level, no copy |
 | `CoreLocalizationTests` | 8 | The **compiled** catalog: same keys in every locale, matching format specifiers, a `.stringsdict` per locale, and no accessor returning its own key |
@@ -37,7 +37,7 @@ That works for `CoreCamera`, `CoreConnectivity`, `CoreDomain`, `CoreStorage` and
 | `CitroenConnectedCameraTests` | 11 | The shell: routing, the coordinator, the composition root |
 | `CitroenConnectedCameraUITests` | 6 | The app boots and the flow lands where the scripted camera says it should |
 
-139 tests.
+145 tests.
 
 ## The UI suite
 
