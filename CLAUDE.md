@@ -108,6 +108,12 @@ the SwiftLint build-tool plugin.
   root, and look resources up without a `subdirectory:`. `swift test` passes either way; only the
   Xcode build signs.
 
+- **The Simulator caches the launch screen past an uninstall.** Change `UILaunchScreen`'s image or
+  colour and the old one keeps rendering — through a rebuild, a reinstall, even `simctl uninstall`.
+  Nothing is wrong with the build: check `xcrun assetutil --info <app>/Assets.car` and the new
+  rendition is right there. Only `simctl shutdown` + `boot` (or `erase`) clears it, so verify a
+  launch-screen change on a freshly booted device or you will debug an asset pipeline that works.
+
 - **Editing the `.xcodeproj` is pointless.** It is generated from `project.yml` and git-ignored;
   Xcode-UI changes are discarded on the next `xcodegen generate`.
 
