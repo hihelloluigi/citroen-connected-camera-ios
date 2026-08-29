@@ -130,9 +130,12 @@ If you have a ConnectedCAM, [open an issue](https://github.com/hihelloluigi/citr
 and say so, whether it worked or not. Please include:
 
 - your car model and year
-- the firmware, vimVersion and part number the app shows under **Camera details** (the ⓘ in the
-  gallery header) — or what it showed before it failed
+- the firmware and part number the app shows under **Camera details** (the ⓘ in the gallery
+  header) — or what it showed before it failed
 - what happened, and at which step
+
+The same sheet shows a **Device ID**, which is your camera's serial number. Please leave it out —
+nothing here needs it, and issues are public. The report form asks for the right fields.
 
 Bug reports and feature requests are welcome in the same place.
 
