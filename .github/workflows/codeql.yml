@@ -31,7 +31,10 @@ jobs:
   analyze:
     name: Analyze Swift
     runs-on: macos-26
-    timeout-minutes: 60
+    # Generous on purpose: a Swift CodeQL build is 2-4x a normal one and this workflow has no
+    # settled baseline yet. Tighten once a few runs have reported real numbers — a timeout that
+    # fires reads as a broken workflow rather than a slow one.
+    timeout-minutes: 90
 
     permissions:
       security-events: write
@@ -58,6 +61,17 @@ jobs:
       - name: Bootstrap pinned tools
         run: mint bootstrap
 
+      # Same cache as ci.yml. Without it every run re-resolves the package graph and
+      # re-downloads the SwiftLint binary artifact before the build can even start.
+      - name: Cache SPM packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
       - name: Generate Xcode project
         run: mint run xcodegen generate
 
@@ -70,6 +84,12 @@ jobs:
 
       # Build only — the test bundles are ci.yml's job, and building them here would double
       # the runtime to analyse code that never ships.
+      #
+      # ARCHS=arm64 is the difference between a 20-minute job and a 40-minute one. A
+      # `generic/platform=iOS Simulator` destination resolves to `ARCHS = arm64 x86_64`, so every
+      # file is compiled twice and CodeQL extracts both slices — for one analysis, since the two
+      # differ in codegen and not in source. ci.yml never hit this because it builds against a
+      # concrete simulator id, which sets ONLY_ACTIVE_ARCH=YES.
       - name: Build
         run: |
           set -o pipefail
@@ -79,6 +99,7 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             -skipPackagePluginValidation \
             -skipMacroValidation \
+            ARCHS=arm64 \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Perform CodeQL analysis
