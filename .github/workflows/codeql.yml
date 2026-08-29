@@ -1,0 +1,87 @@
+# CodeQL — static analysis
+#
+# Same trigger policy as ci.yml: main is the gate, plan branches don't burn runner time. The
+# weekly schedule runs against the default branch and catches rules added to the Swift query
+# pack after a commit landed, which a push-only trigger never would.
+#
+# Swift has no autobuild, so this is `build-mode: manual`: CodeQL watches a real xcodebuild
+# invocation to find the sources. That means the project has to be generated first — the
+# .xcodeproj is git-ignored, see .gitignore — so the Mint and XcodeGen steps are not optional
+# here the way they might look.
+#
+# This file replaces GitHub's default CodeQL setup. The two cannot both be enabled: with
+# default setup on, an advanced workflow's results are rejected. Disable it under
+# Settings → Code security → Code scanning → Default setup before expecting a green run.
+
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "27 4 * * 1"
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze Swift
+    runs-on: macos-26
+    timeout-minutes: 60
+
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── Tooling ─────────────────────────────────────────────────────────────────────────
+      # Mint, not a bare brew install: the Mintfile is what pins XcodeGen 2.45.4, and a
+      # different XcodeGen generates a different project than a developer's machine does.
+      - name: Install Mint
+        run: brew install mint
+
+      - name: Cache Mint packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.mint
+          key: mint-${{ runner.os }}-${{ hashFiles('Mintfile') }}
+          restore-keys: mint-${{ runner.os }}-
+
+      - name: Bootstrap pinned tools
+        run: mint bootstrap
+
+      - name: Generate Xcode project
+        run: mint run xcodegen generate
+
+      # ── Analysis ────────────────────────────────────────────────────────────────────────
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: swift
+          build-mode: manual
+
+      # Build only — the test bundles are ci.yml's job, and building them here would double
+      # the runtime to analyse code that never ships.
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project CitroenConnectedCamera.xcodeproj \
+            -scheme Development \
+            -destination 'generic/platform=iOS Simulator' \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:swift"
