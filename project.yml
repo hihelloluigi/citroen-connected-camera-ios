@@ -25,18 +25,8 @@ configFiles:
 fileGroups:
   - project.yml
   - .swiftlint.yml
-  - .editorconfig
-  - .github
-  - Mintfile
   - Configurations
   - TestPlans
-  - scripts
-  - docs
-  - README.md
-  - CLAUDE.md
-  - AGENTS.md
-  - API_ANALYSIS.md
-  - openapi.json
 
 settings:
   base:
