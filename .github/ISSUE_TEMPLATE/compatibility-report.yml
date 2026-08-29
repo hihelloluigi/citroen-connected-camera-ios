@@ -1,0 +1,70 @@
+name: Compatibility report
+description: Tell us whether the app works with your ConnectedCAM — whether it worked or not.
+title: "[Compatibility] "
+labels: ["compatibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks — this is the most useful thing you can contribute right now. The app has only ever
+        been tested against one camera, so every report, working or not, tells us something.
+
+        **Please don't include your Device ID.** The camera details sheet shows one, and it is your
+        camera's serial number. Nothing here needs it, and this issue is public.
+
+  - type: input
+    id: vehicle
+    attributes:
+      label: Car model and year
+      placeholder: "Citroën C3, 2018"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: What happened?
+      options:
+        - Worked — I could browse and download recordings
+        - Partly worked — see details below
+        - Could not connect to the camera at all
+        - The app crashed
+    validations:
+      required: true
+
+  - type: input
+    id: step
+    attributes:
+      label: If it failed, at which step?
+      description: e.g. joining the Wi-Fi, the set-password screen, loading the gallery.
+      placeholder: "Loading the gallery"
+
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware
+      description: >
+        From the gallery header — tap the ⓘ to open Camera details. Leave blank if you never got
+        that far.
+      placeholder: "200"
+
+  - type: input
+    id: part-number
+    attributes:
+      label: Part number
+      description: The second row of the same sheet. Again, please leave the Device ID out.
+      placeholder: "006-B2465-00"
+
+  - type: input
+    id: ios
+    attributes:
+      label: iPhone and iOS version
+      placeholder: "iPhone 13, iOS 18.5"
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Anything else
+      description: >
+        What you saw, what you expected, and any error text. Screenshots help — please crop out the
+        Device ID and any recording that shows your number plate or location.

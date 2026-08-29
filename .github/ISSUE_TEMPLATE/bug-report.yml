@@ -1,0 +1,57 @@
+name: Bug report
+description: Something in the app behaves incorrectly.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If the app simply cannot reach your camera at all, use **Compatibility report** instead —
+        that is a hardware-support question rather than a bug.
+
+        **Please don't paste your Device ID, and crop screenshots** that show a number plate, a
+        street, or anything else you would rather not publish. This issue is public.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you expected, and what you got instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the gallery
+        2. Select two clips
+        3. Tap Download
+    validations:
+      required: true
+
+  - type: input
+    id: ios
+    attributes:
+      label: iPhone and iOS version
+      placeholder: "iPhone 13, iOS 18.5"
+    validations:
+      required: true
+
+  - type: input
+    id: commit
+    attributes:
+      label: Which commit did you build?
+      description: "`git rev-parse --short HEAD` — there are no released versions to name yet."
+      placeholder: "aab8f4c"
+
+  - type: dropdown
+    id: camera
+    attributes:
+      label: Was a real camera connected?
+      options:
+        - "Yes, a real ConnectedCAM"
+        - "No — Simulator, scripted camera"
+    validations:
+      required: true
